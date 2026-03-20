@@ -29,11 +29,10 @@ app.use('/api', userRouter);
 
 
 mongoose.connect(process.env.MONGO_URI)
-.then(()=>{
-    console.log("Data base connect successfully")
-    app.listen(process.env.MONGO_URI || PORT, (err)=>{
-        console.log(`App running in port ${process.env.MONGO_URI || PORT}`)
-    })
-}).catch((err) => {
-    console.log(`Database error ${err}`)
+    .then(() => console.log("Data base connect successfully"))
+    .catch((err) => console.log(`Database error ${err}`))
+
+// ✅ Must be PORT not MONGO_URI
+app.listen(process.env.PORT || 5000, () => {
+    console.log(`App running in port ${process.env.PORT || 5000}`)
 })
