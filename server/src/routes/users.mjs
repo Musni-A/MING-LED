@@ -105,4 +105,8 @@ router.delete('/users/:id', async(req ,res)=>{
     }
 })
 
+app.use((req, res, next) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
 export default router;
