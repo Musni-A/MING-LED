@@ -25,7 +25,10 @@ function LoginPage(){
 
   }
 
+  const [login, setLogin] = useState(false)
+
   const handleSubmit = async (e)=>{
+    setLogin(true)
     e.preventDefault()
     try{
       const response = await getUser(form);
@@ -33,7 +36,8 @@ function LoginPage(){
       localStorage.setItem('jobRole', response.data.user.jobRole)
       const loggedIn = response.data.loggedIn;
       localStorage.setItem('loggedIn', loggedIn)
-      
+      setLogin(false)
+
       if(loggedIn){
         navigate('/dashboard')
       }
@@ -41,8 +45,10 @@ function LoginPage(){
     }
     catch(err)
     {
+      setLogin(true)
       if(err){
         notify( "Invalid username and password" ,"", "", "❌",);
+        setLogin(false)
       }
     }
   }
@@ -96,8 +102,9 @@ function LoginPage(){
                 </div>
 
             {/* Submit */}
-              <button className="mt-2 w-full py-3.5 rounded-xl text-white font-bold text-base cursor-pointer border-none bg-linear-to-r from-[#e8192c] to-[#c0001f] shadow-[0_8px_24px_rgba(232,25,44,0.3)] hover:opacity-90 transition-opacity">
-                Login →
+              <button className=" flex justify-center mt-2 w-full py-3.5 rounded-xl text-white font-bold text-base cursor-pointer border-none bg-linear-to-r from-[#e8192c] to-[#c0001f] shadow-[0_8px_24px_rgba(232,25,44,0.3)] hover:opacity-90 transition-opacity">
+                { !login && "Login →"}
+                { login && <img className="m-0 p-0 w-6" src="/barLoading.gif"></img>}
               </button>
             </div>
           </form>

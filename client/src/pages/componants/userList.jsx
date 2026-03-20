@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { getAllUsers } from "../../api/userAPI";
 import { useEffect } from "react";
-import gif from "../../../public/loading.gif"
 
 export default function UserList({setShowForm}) {
 
@@ -62,7 +61,7 @@ export default function UserList({setShowForm}) {
 
       {/* Table — desktop */}
       <div className="hidden md:block overflow-x-auto">
-      {loading && <div className="flex justify-center"><img className="" src={gif} alt="" width={150} /></div>}
+      {loading && <div className="flex justify-center"><img className="" src="/loading.gif" alt="" width={150} /></div>}
       {!loading && <table className="w-full text-sm">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-100">
