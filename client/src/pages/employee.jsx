@@ -1,0 +1,41 @@
+import { useEffect } from "react";
+import NavBar from "./navBar";
+import TopBar from "./topBar";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import UserList from "./componants/userList";
+import RegisterPage from "./registerPage";
+
+export default function Employee(){
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showForm, setShowForm] = useState(false)
+    const naviagte = useNavigate();
+    const loggedIn = localStorage.getItem("loggedIn")
+    useEffect(()=>{
+        if(!loggedIn){
+            naviagte('/login')
+        }
+    })
+    return<>
+    <div  className=" flex h-screen bg-[#e0edfa] font-sans overflow-hidden relative">
+        <NavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+            {/* Modal */}
+            {showForm && (
+            <div className="fixed inset-0 bg-black/50 z-20 flex items-center justify-center"
+                onClick={() => setShowForm(false)}>
+                <div onClick={(e) => e.stopPropagation()}>
+                    <RegisterPage setShowForm={setShowForm} />
+                </div>
+            </div>
+            )}
+            <TopBar setSidebarOpen={setSidebarOpen}/>
+            <div className="h-full" onClick={() =>setSidebarOpen(false)}>
+                <div className="px-6 py-4">
+                    <UserList setShowForm={setShowForm} />
+                </div>
+            </div>
+        </div>
+    </div>
+    </>
+}

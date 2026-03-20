@@ -1,0 +1,49 @@
+export default function TopBar( {setSidebarOpen} ){
+
+  const userData = localStorage.getItem('name')
+  const firstLetterOfUserName = userData[0];
+  const date = new Date();
+
+
+    return <>
+    {/* Top bar */}
+        <div className="bg-white border-b border-slate-100 px-4 md:px-8 py-4 flex items-center justify-between shrink-0 gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            {/* Hamburger */}
+            <button
+              className="lg:hidden hover:bg-slate-400 rounded flex flex-col gap-1.5 p-2 shrink-0"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <div className="w-5 h-0.5 bg-[#0d2145] rounded" />
+              <div className="w-5 h-0.5 bg-[#0d2145] rounded" />
+              <div className="w-5 h-0.5 bg-[#0d2145] rounded" />
+            </button>
+            <div className="min-w-0">
+              <h1 className="text-base md:text-xl font-bold text-[#0d2145] truncate">Hello, {userData} 👋</h1>
+              <p className="text-xs text-slate-400 mt-0.5 hidden sm:block">{date.toLocaleDateString()}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 md:gap-4 shrink-0">
+            {/* Search — hidden on mobile */}
+            <div className="hidden md:flex items-center gap-2 bg-slate-100 rounded-xl px-4 py-2">
+              <span className="text-slate-400 text-sm">🔍</span>
+              <input placeholder="Search..." className="bg-transparent text-sm outline-none text-slate-600 w-32 lg:w-40 placeholder:text-slate-400" />
+            </div>
+            {/* Bell */}
+            <div className="relative cursor-pointer">
+              <div className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-base">🔔</div>
+              <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#e8192c] text-white text-[0.5rem] flex items-center justify-center font-bold">3</div>
+            </div>
+            {/* Avatar */}
+            <div className="flex items-center gap-2 cursor-pointer">
+              <div className="w-9 h-9 rounded-xl bg-[#0d2145] flex items-center justify-center text-white font-bold text-sm shrink-0">{ firstLetterOfUserName }</div>
+              <div className="hidden sm:block">
+                <div className="text-xs font-semibold text-[#0d2145]">{userData}</div>
+                <div className="text-[0.6rem] text-slate-400">Developer</div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </>
+}
