@@ -31,8 +31,8 @@ app.use('/api', userRouter);
 mongoose.connect(process.env.MONGO_URI)
 .then(()=>{
     console.log("Data base connect successfully")
-    app.listen(PORT, (err)=>{
-        console.log(`App running in port ${PORT}`)
+    app.listen(process.env.MONGO_URI || PORT, (err)=>{
+        console.log(`App running in port ${process.env.MONGO_URI || PORT}`)
     })
 }).catch((err) => {
     console.log(`Database error ${err}`)
