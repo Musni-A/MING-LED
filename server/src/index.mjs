@@ -13,7 +13,8 @@ const PORT = 5000;
 app.use(cors({
     origin: [
         'http://localhost:5173',
-        'http://192.168.1.4:5173'  // ← add your network IP
+        'http://192.168.1.4:5173',
+        'https://ming-led.onrender.com'  // ← add your network IP
     ]
 }))
 app.use(express.json());
