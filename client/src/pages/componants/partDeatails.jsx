@@ -18,7 +18,6 @@ export default function PartDetails(){
         e.preventDefault();
         const response = await test(form);
         console.log(response)
-
     }
 
     return <>

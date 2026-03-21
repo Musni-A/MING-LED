@@ -105,6 +105,11 @@ router.delete('/users/:id', async(req ,res)=>{
         res.send({msg : err})
     }
 })
+
+router.post('/test',(req, res)=>{
+    res.json({msg : "success"})
+})
+
 app.use((req, res, next) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
