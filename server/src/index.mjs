@@ -8,8 +8,6 @@ import 'dotenv/config'
 
 const app = express();
 
-const PORT = 5000;
-
 app.use(cors({
     origin: [
         'http://localhost:5173',
@@ -27,6 +25,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api', userRouter);
+
 
 
 mongoose.connect(process.env.MONGO_URI)

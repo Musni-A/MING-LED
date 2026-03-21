@@ -3,6 +3,7 @@ import TopBar from "./topBar";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import PartDetails from "./componants/partDeatails";
 
 export default function Inventory(){
     const navigate = useNavigate();
@@ -13,15 +14,20 @@ export default function Inventory(){
           navigate('/login')
         }
       })
+
     return<>
     <div  className=" flex h-screen bg-[#e0edfa] font-sans overflow-hidden relative">
-            <NavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-            <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-                <TopBar setSidebarOpen={setSidebarOpen}/>
-                <div className="h-full" onClick={() =>setSidebarOpen(false)}>
-                    <h1>Inventory</h1>
-                </div>
-            </div>
+      <NavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+        <TopBar setSidebarOpen={setSidebarOpen}/>
+        <div className="h-full flex justify-between"
+          onClick={() => setSidebarOpen(false)}>
+          <div className="h-full w-full overflow-y-auto flex flex-col gap-5 px-6 py-4"
+            onClick={() => setSidebarOpen(false)}>
+              <PartDetails/>
+          </div>
+        </div>
+      </div>
     </div>
     </>
 }

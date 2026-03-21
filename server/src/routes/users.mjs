@@ -6,6 +6,7 @@ import passport from 'passport'
 import { Strategy as localStrategy } from 'passport-local';
 import { comparePassword, hashPassword } from "../util/helper.mjs"
 
+
 const app = express();
 const router = Router();
 
@@ -104,9 +105,10 @@ router.delete('/users/:id', async(req ,res)=>{
         res.send({msg : err})
     }
 })
-
 app.use((req, res, next) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
+
+// Upload route
 
 export default router;

@@ -10,7 +10,7 @@ export default function NavBar({sidebarOpen, setSidebarOpen}){
     {/* Sidebar */}
       <div className={`
         fixed lg:static inset-y-0 left-0 z-30
-        w-64 bg-[#0d2145] flex flex-col py-8 px-5 shrink-0
+        w-64 bg-[#00215e] flex flex-col py-8 px-5 shrink-0
         transform transition-transform duration-300
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0
@@ -36,7 +36,7 @@ export default function NavBar({sidebarOpen, setSidebarOpen}){
             { icon: "📊", label: "Production Reports", path : '/reports' },
             { icon: "👤✔️", label: "Attendence", path : '/attendence' },
             { icon: "👤", label: "Employee", path : '/employee' },
-            { icon: "⚙️", label: "Settings", path : '/settings' },
+            { icon: "⚙️", label: "Settings", path : '/settings' }
           ].map(item => (
             <Link to={item.path}>
               <div key={item.label}
@@ -51,7 +51,7 @@ export default function NavBar({sidebarOpen, setSidebarOpen}){
                 
               >
                 <span className="text-base">{item.icon}</span>
-                <span className="text-sm font-medium">{item.label}</span>
+                <span className="text-sm text-blue-200 font-medium">{item.label}</span>
                 {location.pathname === item.path && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white" />}
               </div>
             </Link>

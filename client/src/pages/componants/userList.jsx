@@ -123,7 +123,8 @@ export default function UserList({setShowForm}) {
 
       {/* Cards — mobile */}
       <div className="md:hidden divide-y divide-slate-100">
-        {users.map((user, i) => (
+      {!loading && <div className="flex justify-center"><img className="" src="/loading.gif" alt="" width={150} /></div>}
+      {loading && users.map((user, i) => (
           <div key={i} className="px-5 py-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
