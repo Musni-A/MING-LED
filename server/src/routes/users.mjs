@@ -110,10 +110,4 @@ router.post('/test',(req, res)=>{
     res.json({msg : "success"})
 })
 
-app.use((req, res, next) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
-
-// Upload route
-
 export default router;
