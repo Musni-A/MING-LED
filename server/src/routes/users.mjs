@@ -5,11 +5,6 @@ import { User } from "../mongoose/schema/users.mjs";
 import passport from 'passport'
 import { Strategy as localStrategy } from 'passport-local';
 import { comparePassword, hashPassword } from "../util/helper.mjs"
-import multer from 'multer'
-import cloudinary from '../util/cloudinary.mjs'
-
-const storage = multer.memoryStorage()
-const upload = multer({ storage })
 
 
 const app = express();
@@ -111,30 +106,14 @@ router.delete('/users/:id', async(req ,res)=>{
     }
 })
 
-
-
-router.post('/test', upload.single('image'), async (req, res) => {
-    try {
-        // Upload to cloudinary
-        const result = await cloudinary.uploader.upload_stream(
-            { folder: 'ming-led' },
-            (error, result) => {
-                if (error) return res.status(500).json({ message: error })
-                res.status(200).json({ url: result.secure_url }) // ✅ image URL
-            }
-        )
-        // Pipe buffer to cloudinary
-        const stream = require('stream')
-        const bufferStream = new stream.PassThrough()
-        bufferStream.end(req.file.buffer)
-        bufferStream.pipe(result)
-    } catch (err) {
-        res.status(500).json({ message: err.message })
-    }
-})
-
-router.post('/sda',(req, res)=>{
+router.post('/test',(req, res)=>{
     res.json({msg : "success"})
 })
+
+app.use((req, res, next) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
+// Upload route
 
 export default router;

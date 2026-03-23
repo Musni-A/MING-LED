@@ -10,7 +10,7 @@ const app = express();
 
 app.use(cors({
     origin: [
-        'https://ming-led.onrender.com', // ← add your network IP
+        'https://ming-led.onrender.com',  // ← add your network IP
         'http://localhost:5173'
     ]
 }))
