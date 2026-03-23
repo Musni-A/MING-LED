@@ -165,7 +165,7 @@ export default function UserList({setShowForm}) {
               </div>
               <div className="flex gap-2">
                 <button className="text-xs font-semibold text-[#0d2145] bg-[#0d2145]/10 px-3 py-1.5 rounded-lg">Edit</button>
-                <button onClick={()=>handleDelete(user._id)} className="text-xs font-semibold text-[#e8192c] bg-[#e8192c]/10 px-3 py-1.5 rounded-lg">
+                <button onClick={()=>handleDelete(user._id)} className="text-xs w-15 font-semibold text-[#e8192c] bg-[#e8192c]/10 px-3 py-1.5 rounded-lg">
                   {deleteId === user._id
                     ? <img className="w-4" src="/barLoading.gif"/>
                     : "Delete"
