@@ -93,20 +93,20 @@ router.get('/users', async(req,res)=>{
 })
 
 router.delete('/users/:id', async(req ,res)=>{
-    // try{
-    //     const userId = req.params.id;
-    //     const deleteUser = await User.findByIdAndDelete(userId)
-    //     if(!deleteUser){
-    //         return res.send({msg : "User not found" })
-    //     }
-    //     return res.send({msg : "Deleted successfully", deleteUser })
-    // }
-    // catch(err){
-    //     res.send({msg : err})
-    // }
+    try{
+        const userId = req.params.id;
+        const deleteUser = await User.findByIdAndDelete(userId)
+        if(!deleteUser){
+            return res.json({msg : "User not found" })
+        }
+        return res.json({msg : "Deleted successfully", deleteUser })
+    }
+    catch(err){
+        res.json({msg : err})
+    }
 
-    const userId = req.params.id;
-    res.json({userId})
+    // const userId = req.params.id;
+    // res.json({userId})
 })
 
 
