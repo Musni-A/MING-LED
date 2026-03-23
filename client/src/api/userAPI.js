@@ -6,4 +6,3 @@ export const createUser = (data) => API.post('/register', data);
 export const getUser = (data) => API.post('/login', data);
 export const getAllUsers = () => API.get('/users')
 export const test = (testData)=> API.post('/test', testData)
-export const upload = (Data, config)=> API.post('/upload', Data, config)

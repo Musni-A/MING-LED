@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { test } from "../../api/userAPI";
+import toast, { Toaster } from 'react-hot-toast';
+
+
 
 
 
 export default function PartDetails(){
+
+    const notify = (message ) => toast(message);
 
     const empty = {search : ''}
 
@@ -17,10 +22,11 @@ export default function PartDetails(){
     const handleSubmit = async (e)=>{
         e.preventDefault();
         const response = await test(form);
-        console.log(response)
+        notify(response.data.msg)
     }
 
     return <>
+    <div><Toaster/></div>
     <div className="bg-white flex flex-col rounded-2xl shadow-2xl">
         <div className="px-6 py-4 flex flex-row justify-between items-center w-full">
             <div className="">
