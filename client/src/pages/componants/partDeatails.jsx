@@ -33,7 +33,7 @@ export default function PartDetails(){
 
     try {
         const response = await axios.post(
-            'https://ming-led-server.onrender.com/api/users/upload',
+            'https://ming-led-server.onrender.com/api/upload',
             formData,
             {
                 headers: {
