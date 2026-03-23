@@ -46,7 +46,7 @@ export default function PartDetails(){
 // In JSX
 
     return <>
-    <input type="file" onChange={handleImageUpload} accept="image/*" />
+    <input type="file" onChange={handleImageUpload} />
     <div><Toaster/></div>
     <div className="bg-white flex flex-col rounded-2xl shadow-2xl">
         <div className="px-6 py-4 flex flex-row justify-between items-center w-full">
