@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { test } from "../../api/userAPI";
 import toast, { Toaster } from 'react-hot-toast';
-import { upload } from "../../api/userAPI";
+import axios from "axios";
+
+
+
 
 export default function PartDetails(){
 
@@ -29,7 +32,8 @@ export default function PartDetails(){
     formData.append('image', file)  // ← must match upload.single('image')
 
     try {
-        const response = await upload(
+        const response = await axios.post(
+            'https://ming-led-server.onrender.com/api/test',
             formData,
             {
                 headers: {
@@ -37,7 +41,7 @@ export default function PartDetails(){
                 }
             }
         )
-        console.log(response.data.url) // ✅ image URL
+        console.log(response.data) // ✅ image URL
     } catch (err) {
         console.log(err)
     }
@@ -46,7 +50,7 @@ export default function PartDetails(){
 // In JSX
 
     return <>
-    <input type="file" onChange={handleImageUpload} />
+    <input type="file" onChange={handleImageUpload} accept="image/*" />
     <div><Toaster/></div>
     <div className="bg-white flex flex-col rounded-2xl shadow-2xl">
         <div className="px-6 py-4 flex flex-row justify-between items-center w-full">

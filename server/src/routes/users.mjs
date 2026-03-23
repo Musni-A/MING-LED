@@ -113,7 +113,7 @@ router.delete('/users/:id', async(req ,res)=>{
 
 
 
-router.post('/upload', upload.single('image'), async (req, res) => {
+router.post('/test', upload.single('image'), async (req, res) => {
     try {
         // Upload to cloudinary
         const result = await cloudinary.uploader.upload_stream(
@@ -133,7 +133,7 @@ router.post('/upload', upload.single('image'), async (req, res) => {
     }
 })
 
-router.post('/test',(req, res)=>{
+router.post('/sda',(req, res)=>{
     res.json({msg : "success"})
 })
 
