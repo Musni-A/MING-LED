@@ -55,7 +55,7 @@ export default function UserList({setShowForm}) {
 
   
   return <>
-    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+    <div className="bg-white md:mx-6 md:my-4 md:rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
 
     <div><Toaster/></div>
       {/* Header */}
