@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { test } from "../../api/userAPI";
+import toast, { Toaster } from 'react-hot-toast';
+import axios from "axios";
+
 
 
 
 export default function PartDetails(){
+
+    const notify = (message ) => toast(message);
 
     const empty = {search : ''}
 
@@ -17,10 +22,36 @@ export default function PartDetails(){
     const handleSubmit = async (e)=>{
         e.preventDefault();
         const response = await test(form);
-        console.log(response)
+        notify(response.data.msg)
+
     }
 
+    const handleImageUpload = async (e) => {
+    const file = e.target.files[0]
+    const formData = new FormData()
+    formData.append('image', file)  // ← must match upload.single('image')
+
+    try {
+        const response = await axios.post(
+            'https://ming-led-server.onrender.com/api/users/upload',
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data'  // ← important!
+                }
+            }
+        )
+        console.log(response.data.url) // ✅ image URL
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+// In JSX
+
     return <>
+    <input type="file" onChange={handleImageUpload} accept="image/*" />
+    <div><Toaster/></div>
     <div className="bg-white flex flex-col rounded-2xl shadow-2xl">
         <div className="px-6 py-4 flex flex-row justify-between items-center w-full">
             <div className="">

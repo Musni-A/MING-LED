@@ -11,7 +11,7 @@ export default function Inventory(){
     const loggedIn = localStorage.getItem('loggedIn');
       useEffect(()=>{
         if(!loggedIn){
-          navigate('/login')
+          navigate('/')
         }
       })
 

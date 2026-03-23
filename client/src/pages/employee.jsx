@@ -13,7 +13,7 @@ export default function Employee(){
     const loggedIn = localStorage.getItem("loggedIn")
     useEffect(()=>{
         if(!loggedIn){
-            naviagte('/login')
+            naviagte('/')
         }
     })
     return<>
