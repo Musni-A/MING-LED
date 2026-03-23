@@ -1,13 +1,17 @@
 import { useState } from "react";
 import { deleteUser, getAllUsers } from "../../api/userAPI";
 import { useEffect } from "react";
+import  toast, {Toaster} from "react-hot-toast";
 
 export default function UserList({setShowForm}) {
 
+  const notify = (message,icon)=>{toast(message, { icon : icon } )}
+
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true)
+  const [deleteId, setDeleteId] = useState(null)
 
-  const jobRole = localStorage.getItem('jobRole')
+  // const jobRole = localStorage.getItem('jobRole')
 
   useEffect(()=>{
     getAllUsers()
@@ -16,9 +20,20 @@ export default function UserList({setShowForm}) {
     .finally(()=>setLoading(false))
   })
 
-  const handleClick = async (id) =>{
-    const response = await deleteUser(id);
-    console.log(response)
+  const handleDelete = async (id) =>{
+    setDeleteId(id)
+    try{
+      const response = await deleteUser(id);
+      console.log(response);
+      notify("Delete Successfully","✅")
+
+    }
+    catch(err){
+      notify(err,"❌")
+    }
+    finally{
+      setDeleteId(null)
+    }
   } 
 
   const DEPT_COLORS = {
@@ -39,9 +54,10 @@ export default function UserList({setShowForm}) {
   };
 
   
-  return (
+  return <>
     <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
 
+    <div><Toaster/></div>
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
         <div>
@@ -58,14 +74,14 @@ export default function UserList({setShowForm}) {
             />
           </div>
           {/* Add button */}
-          {jobRole == "Admin" && <button onClick={()=>setShowForm(true)} className="bg-[#0d2145] text-white text-xs font-semibold px-4 py-2 rounded-xl hover:opacity-90 transition-opacity">
+          {<button onClick={()=>setShowForm(true)} className="bg-[#0d2145] text-white text-xs font-semibold px-4 py-2 rounded-xl hover:opacity-90 transition-opacity">
             + Add Employee
           </button>}
         </div>
       </div>
 
       {/* Table — desktop */}
-      <div className="hidden md:block overflow-x-auto">
+      <div className="hidden md:block ">
       {loading && <div className="flex justify-center"><img className="" src="/loading.gif" alt="" width={150} /></div>}
       {!loading && <table className="w-full text-sm">
           <thead>
@@ -115,8 +131,14 @@ export default function UserList({setShowForm}) {
                     <button className="text-xs font-semibold text-[#0d2145] bg-[#0d2145]/10 px-3 py-1.5 rounded-lg hover:bg-[#0d2145]/20 transition-colors">
                       Edit
                     </button>
-                    <button onClick={()=>handleClick(user._id)} className="text-xs font-semibold text-[#e8192c] bg-[#e8192c]/10 px-3 py-1.5 rounded-lg hover:bg-[#e8192c]/20 transition-colors">
-                      Delete
+                    <button
+                        onClick={() => handleDelete(user._id)}
+                        className="text-xs font-semibold text-[#e8192c] w-15 flex justify-center bg-[#e8192c]/10 px-3 py-1.5 rounded-lg hover:bg-[#e8192c]/20 transition-colors"
+                    >
+                        {deleteId === user._id
+                            ? <img className="w-4" src="/barLoading.gif"/>
+                            : "Delete"
+                        }
                     </button>
                   </div>
                 </td>
@@ -143,7 +165,7 @@ export default function UserList({setShowForm}) {
               </div>
               <div className="flex gap-2">
                 <button className="text-xs font-semibold text-[#0d2145] bg-[#0d2145]/10 px-3 py-1.5 rounded-lg">Edit</button>
-                <button onClick={()=>handleClick(user._id)} className="text-xs font-semibold text-[#e8192c] bg-[#e8192c]/10 px-3 py-1.5 rounded-lg">Del</button>
+                <button onClick={()=>handleDelete(user._id)} className="text-xs font-semibold text-[#e8192c] bg-[#e8192c]/10 px-3 py-1.5 rounded-lg">Del</button>
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -170,5 +192,5 @@ export default function UserList({setShowForm}) {
       </div>
 
     </div>
-  );
+    </>
 }

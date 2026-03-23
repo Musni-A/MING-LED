@@ -17,9 +17,9 @@ export default function Employee(){
         }
     })
     return<>
-    <div  className=" flex h-screen bg-[#e0edfa] font-sans relative">
+    <div  className=" flex h-screen bg-[#e0edfa] font-sans overflow-hidden relative">
         <NavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-        <div className="flex-1 flex h-full flex-col min-w-0">
+        <div className="flex-1 flex flex-col overflow-hidden min-w-0">
             {/* Modal */}
             {showForm && (
             <div className="fixed inset-0 bg-black/50 z-20 flex items-center justify-center"
@@ -30,7 +30,7 @@ export default function Employee(){
             </div>
             )}
             <TopBar setSidebarOpen={setSidebarOpen}/>
-            <div className="h-full" onClick={() =>setSidebarOpen(false)}>
+            <div className="h-full overflow-y-scroll" onClick={() =>setSidebarOpen(false)}>
                 <div className="px-6 py-4">
                     <UserList setShowForm={setShowForm} />
                 </div>
