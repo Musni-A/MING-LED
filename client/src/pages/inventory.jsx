@@ -16,9 +16,9 @@ export default function Inventory(){
       })
 
     return<>
-    <div  className=" flex h-screen bg-[#e0edfa] font-sans overflow-hidden relative">
+    <div  className=" flex h-screen bg-[#e0edfa] font-sans relative">
       <NavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+      <div className="flex-1 flex flex-col min-w-0">
         <TopBar setSidebarOpen={setSidebarOpen}/>
         <div className="h-full flex justify-between"
           onClick={() => setSidebarOpen(false)}>

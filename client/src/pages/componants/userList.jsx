@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getAllUsers } from "../../api/userAPI";
+import { deleteUser, getAllUsers } from "../../api/userAPI";
 import { useEffect } from "react";
 
 export default function UserList({setShowForm}) {
@@ -15,6 +15,11 @@ export default function UserList({setShowForm}) {
     .catch((err)=>{console.log(err)})
     .finally(()=>setLoading(false))
   })
+
+  const handleClick = async (id) =>{
+    const response = await deleteUser(id);
+    console.log(response)
+  } 
 
   const DEPT_COLORS = {
     IT:          "bg-[#0d2145]/10 text-[#0d2145]",
@@ -110,7 +115,7 @@ export default function UserList({setShowForm}) {
                     <button className="text-xs font-semibold text-[#0d2145] bg-[#0d2145]/10 px-3 py-1.5 rounded-lg hover:bg-[#0d2145]/20 transition-colors">
                       Edit
                     </button>
-                    <button className="text-xs font-semibold text-[#e8192c] bg-[#e8192c]/10 px-3 py-1.5 rounded-lg hover:bg-[#e8192c]/20 transition-colors">
+                    <button onClick={()=>handleClick(user._id)} className="text-xs font-semibold text-[#e8192c] bg-[#e8192c]/10 px-3 py-1.5 rounded-lg hover:bg-[#e8192c]/20 transition-colors">
                       Delete
                     </button>
                   </div>
@@ -123,8 +128,8 @@ export default function UserList({setShowForm}) {
 
       {/* Cards — mobile */}
       <div className="md:hidden divide-y divide-slate-100">
-      {!loading && <div className="flex justify-center"><img className="" src="/loading.gif" alt="" width={150} /></div>}
-      {loading && users.map((user, i) => (
+      {loading && <div className="flex justify-center"><img className="" src="/loading.gif" alt="" width={150} /></div>}
+      {!loading && users.map((user, i) => (
           <div key={i} className="px-5 py-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
@@ -138,7 +143,7 @@ export default function UserList({setShowForm}) {
               </div>
               <div className="flex gap-2">
                 <button className="text-xs font-semibold text-[#0d2145] bg-[#0d2145]/10 px-3 py-1.5 rounded-lg">Edit</button>
-                <button className="text-xs font-semibold text-[#e8192c] bg-[#e8192c]/10 px-3 py-1.5 rounded-lg">Del</button>
+                <button onClick={()=>handleClick(user._id)} className="text-xs font-semibold text-[#e8192c] bg-[#e8192c]/10 px-3 py-1.5 rounded-lg">Del</button>
               </div>
             </div>
             <div className="flex flex-wrap gap-2">

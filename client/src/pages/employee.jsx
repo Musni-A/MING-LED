@@ -17,9 +17,9 @@ export default function Employee(){
         }
     })
     return<>
-    <div  className=" flex h-screen bg-[#e0edfa] font-sans overflow-hidden relative">
+    <div  className=" flex h-screen bg-[#e0edfa] font-sans relative">
         <NavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-        <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+        <div className="flex-1 flex h-full flex-col min-w-0">
             {/* Modal */}
             {showForm && (
             <div className="fixed inset-0 bg-black/50 z-20 flex items-center justify-center"
