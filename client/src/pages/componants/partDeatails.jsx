@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { test } from "../../api/userAPI";
 import toast, { Toaster } from 'react-hot-toast';
-import axios from "axios";
-
-
-
+import { upload } from "../../api/userAPI";
 
 export default function PartDetails(){
 
@@ -32,8 +29,7 @@ export default function PartDetails(){
     formData.append('image', file)  // ← must match upload.single('image')
 
     try {
-        const response = await axios.post(
-            'https://ming-led-server.onrender.com/api/upload',
+        const response = await upload(
             formData,
             {
                 headers: {

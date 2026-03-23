@@ -38,8 +38,8 @@ export default function NavBar({sidebarOpen, setSidebarOpen}){
             { icon: "👤", label: "Employee", path : '/employee' },
             { icon: "⚙️", label: "Settings", path : '/settings' }
           ].map(item => (
-            <Link to={item.path}>
-              <div key={item.label}
+            <Link key={item.label} to={item.path}>
+              <div
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all ${
                   location.pathname === item.path
                     ? "bg-[#e8192c] text-white"
