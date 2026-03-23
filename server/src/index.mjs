@@ -27,7 +27,7 @@ app.use('/api', userRouter);
 
 
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect('mongodb+srv://ahmusni0_db_user:redminote9s072@cluster0.0ey9ubs.mongodb.net/led_manager?appName=Cluster0')
     .then(() => console.log("Data base connect successfully"))
     .catch((err) => console.log(`Database error ${err}`))
 
