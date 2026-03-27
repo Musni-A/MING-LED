@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import userRouter from './routes/users.mjs';
+import ledPartsRouter from './routes/ledParts.mjs'
 import cors from 'cors'
 import session from "express-session";
 import passport from 'passport';
@@ -24,6 +25,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api', userRouter);
+app.use('/api', ledPartsRouter)
 
 
 
