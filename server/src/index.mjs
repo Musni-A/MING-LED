@@ -11,8 +11,8 @@ const app = express();
 
 app.use(cors({
     origin: [
-        'https://ming-led.onrender.com', // ← add your network IP
-        'http://localhost:5173'
+        'http://localhost:5173',
+        'https://ming-led.onrender.com' // ← add your network IP
     ]
 }))
 app.use(express.json());
@@ -29,7 +29,7 @@ app.use('/api', ledPartsRouter)
 
 
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI_CLOUD)
     .then(() => console.log("Data base connect successfully"))
     .catch((err) => console.log(`Database error ${err}`))
 
