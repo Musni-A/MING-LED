@@ -49,16 +49,47 @@ export default function PartDetails(){
             </form>
         </div>
         <div>
-            <table>
+            <table className=" w-full">
                 <thead>
                     <tr className="bg-slate-50 border-b border-slate-100">
-                        <th className="text-left px-6 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider"></th>
-                        <th className="text-left px-6 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">18W</th>
-                        <th className="text-left px-6 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">18W</th>
-                        <th className="text-left px-6 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">18W</th>
-                        <th className="text-left px-6 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">18W</th>
+                        <th className="text-left px-6 py-3 border border-slate-200 text-xs font-semibold text-slate-400 uppercase tracking-wider">Watts</th>
+                        <th className="text-left px-6 py-3 border border-slate-200 text-xs font-semibold text-slate-400 uppercase tracking-wider">Bulb-Sheet</th>
+                        <th className="text-left px-6 py-3 border border-slate-200 text-xs font-semibold text-slate-400 uppercase tracking-wider">Driver</th>
+                        <th className="text-left px-6 py-3 border border-slate-200 text-xs font-semibold text-slate-400 uppercase tracking-wider">Lamp-Cup</th>
+                        <th className="text-left px-6 py-3 border border-slate-200 text-xs font-semibold text-slate-400 uppercase tracking-wider">Bottom-Cup</th>
+                        <th className="text-left px-6 py-3 border border-slate-200 text-xs font-semibold text-slate-400 uppercase tracking-wider">Color-Box</th>
+                        <th className="text-left px-6 py-3 border border-slate-200 text-xs font-semibold text-slate-400 uppercase tracking-wider">Cotton-Box</th>
+                        <th className="text-left px-6 py-3 border border-slate-200 text-xs font-semibold text-slate-400 uppercase tracking-wider">Action</th>
                     </tr>
                 </thead>
+                <tbody>
+                    <tr className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                        <td className="px-6 py-4">
+                            <div className="bg-slate-300 rounded-xl mx-3 py-2 font-bold text-sm flex items-center justify-center shrink-0">18w</div>
+                        </td>
+                        <td className="px-6 py-4">
+                            <div className="bg-slate-300 rounded-xl mx-3 py-2 font-bold text-sm flex items-center justify-center shrink-0">18w</div>
+                        </td>
+                        <td className="px-6 py-4">
+                            <div className="bg-slate-300 rounded-xl mx-3 py-2 font-bold text-sm flex items-center justify-center shrink-0">1000</div>
+                        </td>
+                        <td className="px-6 py-4">
+                            <div className="bg-slate-300 rounded-xl mx-3 py-2 font-bold text-sm flex items-center justify-center shrink-0">18w</div>
+                        </td>
+                        <td className="px-6 py-4">
+                            <div className="bg-slate-300 rounded-xl mx-3 py-2 font-bold text-sm flex items-center justify-center shrink-0">18w</div>
+                        </td>
+                        <td className="px-6 py-4">
+                            <div className="bg-slate-300 rounded-xl mx-3 py-2 font-bold text-sm flex items-center justify-center shrink-0">18w</div>
+                        </td>
+                        <td className="px-6 py-4">
+                            <div className="bg-slate-300 rounded-xl mx-3 py-2 font-bold text-sm flex items-center justify-center shrink-0">18w</div>
+                        </td>
+                        <td className="px-6 py-4">
+                            <button></button>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         </div>
         <div></div>

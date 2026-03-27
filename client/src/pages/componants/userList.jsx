@@ -13,13 +13,7 @@ export default function UserList({setShowForm}) {
 
   // const jobRole = localStorage.getItem('jobRole')
 
-  useEffect(()=>{
-    getAllUsers()
-    .then((res)=>{setUsers(res.data)})
-    .catch((err)=>{console.log(err)})
-    .finally(()=>setLoading(false))
-  })
-
+  
   const handleDelete = async (id) =>{
     setDeleteId(id)
     try{
@@ -35,6 +29,13 @@ export default function UserList({setShowForm}) {
       setDeleteId(null)
     }
   } 
+  
+  useEffect(()=>{
+    getAllUsers()
+    .then((res)=>{setUsers(res.data)})
+    .catch((err)=>{console.log(err)})
+    .finally(()=>setLoading(false))
+  })
 
   const DEPT_COLORS = {
     IT:          "bg-[#0d2145]/10 text-[#0d2145]",
@@ -52,6 +53,16 @@ export default function UserList({setShowForm}) {
     Executive:  "bg-red-50 text-red-600",
     Admin : "bg-green-50 text-green-700",
   };
+
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 6
+
+  const totalPages = Math.ceil(users.length / itemsPerPage)
+
+  const currentItems = users.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    )
 
   
   return <>
@@ -95,7 +106,7 @@ export default function UserList({setShowForm}) {
             </tr>
           </thead>
           <tbody>
-          {users.map((user, i) => (
+          {currentItems.map((user, i) => (
               <tr key={i} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
                 {/* Employee */}
                 <td className="px-6 py-4">
@@ -151,7 +162,7 @@ export default function UserList({setShowForm}) {
       {/* Cards — mobile */}
       <div className="md:hidden divide-y divide-slate-100">
       {loading && <div className="flex justify-center"><img className="" src="/loading.gif" alt="" width={150} /></div>}
-      {!loading && users.map((user, i) => (
+      {!loading && currentItems.map((user, i) => (
           <div key={i} className="px-5 py-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
@@ -189,11 +200,31 @@ export default function UserList({setShowForm}) {
       {/* Footer */}
       <div className="px-6 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
         <span className="text-xs text-slate-400">Showing {users.length} of {users.length} employees</span>
-        <div className="flex gap-1">
-          <button className="text-xs px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-500">← Prev</button>
-          <button className="text-xs px-3 py-1.5 rounded-lg bg-[#0d2145] text-white font-semibold">1</button>
-          <button className="text-xs px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-500">Next →</button>
-        </div>
+        {/* Pagination buttons */}
+            <div className="text-xs flex items-center gap-2 justify-center">
+                <button className="text-xs px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-500 disabled:opacity-40 disabled:cursor-not-allowed"
+                    onClick={() => setCurrentPage(prev => prev - 1)}
+                    disabled={currentPage === 1}>
+                    ← Prev
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    <button className={`text-xs px-3 py-1.5 rounded-lg bg-[#0d2145] text-white font-semibold ${currentPage === page
+                    ? "bg-slate-300 text-[#0d2145]"
+                    : "bg-slate-900 text-[#0146c5]"  
+                  }`}
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        style={{ fontWeight: currentPage === page ? 'bold' : 'normal' }}
+                    >
+                        {page}
+                    </button>
+                ))}
+                <button className="text-xs px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-500 disabled:opacity-40 disabled:cursor-not-allowed"
+                    onClick={() => setCurrentPage(prev => prev + 1)}
+                    disabled={currentPage === totalPages}>
+                    Next →
+                </button>
+            </div>
       </div>
 
     </div>
