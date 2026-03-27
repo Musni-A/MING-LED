@@ -9,7 +9,8 @@ router.post('ledParts', (req, res)=>{
 })
 
 router.post('/test',(req, res)=>{
-    res.json({msg : "success"})
+    const testData = req.body;
+    res.json({msg : "success", testData})
 })
 
 export default router;
