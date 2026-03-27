@@ -109,10 +109,4 @@ router.delete('/users/:id', async(req ,res)=>{
     // res.json({userId})
 })
 
-
-
-router.post('/test',(req, res)=>{
-    res.json({msg : "success"})
-})
-
 export default router;

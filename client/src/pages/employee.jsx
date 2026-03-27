@@ -4,7 +4,7 @@ import TopBar from "./topBar";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserList from "./componants/userList";
-import RegisterPage from "./registerPage";
+import RegisterPage from "./componants/registerUserPage";
 
 export default function Employee(){
     const [sidebarOpen, setSidebarOpen] = useState(false);

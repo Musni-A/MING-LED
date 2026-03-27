@@ -7,3 +7,7 @@ const router = Router();
 router.post('ledParts', (req, res)=>{
     res.send('Musni')
 })
+
+router.post('/test',(req, res)=>{
+    res.json({msg : "success"})
+})

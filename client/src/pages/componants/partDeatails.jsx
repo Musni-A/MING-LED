@@ -1,22 +1,19 @@
 import { useState } from "react";
-import { test } from "../../api/userAPI";
+import { test } from "../../api/ledPartsAPI";
 import toast, { Toaster } from 'react-hot-toast';
-
-
-
-
 
 export default function PartDetails(){
 
     const notify = (message ) => toast(message);
 
-    const empty = {search : ''}
+    const empty = {Watts:'', BulbSheet:'', Driver:'', LampCup:'', BottomCup:'', ColorBox:'', CottonBox:''}
 
     const [form, setForm] = useState(empty)
 
     const handleChange = (e) => {
         const { name, value } = e.target
         setForm(prev => ({ ...prev, [name]: value }))
+        console.log(form)
     }
 
     const handleSubmit = async (e)=>{
@@ -37,7 +34,7 @@ export default function PartDetails(){
             <div className="flex flex-row gap-3">
                 <div className="hidden sm:flex items-center gap-2 bg-slate-100 rounded-xl px-3 py-2">
                     <span className="text-slate-400 text-xs">🔍</span>
-                    <input name="search" value={form.search} onChange={handleChange}
+                    <input name="BottomCup" value={form.BottomCup} onChange={handleChange}
                     placeholder="Search Parts..."
                     className="bg-transparent text-xs outline-none text-slate-600 w-36 placeholder:text-slate-400"
                     />

@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { createUser } from "../api/userAPI";
+import { createUser } from "../../api/userAPI";
 import toast, { Toaster } from 'react-hot-toast';
 
 
