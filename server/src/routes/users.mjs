@@ -73,7 +73,7 @@ router.post('/register', userValidation, async(req, res)=>{
     }
 });
 
-router.post('/login',(req, res, next)=>{
+router.get('/login',(req, res, next)=>{
     passport.authenticate('local', (err, user, info)=>{
         let loggedIn;
         if(err) return next(err);
@@ -91,7 +91,6 @@ router.get('/users', async(req,res)=>{
     const users = await User.find();
     res.status(200).json(users)
 })
-
 router.delete('/users/:id', async(req ,res)=>{
     try{
         const userId = req.params.id;

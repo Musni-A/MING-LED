@@ -18,8 +18,8 @@ export default function UserList({setShowForm}) {
     setDeleteId(id)
     try{
       const response = await deleteUser(id);
-      console.log(response);
-      notify("Delete Successfully","✅")
+      console.log(response.data);
+      notify(`Deleted User ${response.data.deleteUser.name}`,"✅")
 
     }
     catch(err){

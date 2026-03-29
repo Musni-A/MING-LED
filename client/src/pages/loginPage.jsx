@@ -35,7 +35,10 @@ function LoginPage(){
       localStorage.setItem('name', response.data.user.name)
       localStorage.setItem('jobRole', response.data.user.jobRole)
       const loggedIn = response.data.loggedIn;
+      console.log(response.data.user._id)
+      const userId = response.data.user._id
       localStorage.setItem('loggedIn', loggedIn)
+      localStorage.setItem('userId', userId)
       setLogin(false)
 
       if(loggedIn){
