@@ -60,7 +60,7 @@ export default function PartDetails({setShow}){
 
                 {/* <div className="flex gap-2"> */}
 
-                    <button className="border-2 border-red-800 bg-red-800/20 text-red-800 text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-300 hover:bg-red-800 hover:text-white shadow-md flex items-center justify-center gap-2">
+                    <button className="border-2 border-red-800 bg-red-800/20 text-red-800 sm:text-sm text-[10px] font-semibold px-4 py-2 rounded-xl transition-all duration-300 hover:bg-red-800 hover:text-white shadow-md flex items-center justify-center gap-2">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                     </svg>
@@ -68,7 +68,7 @@ export default function PartDetails({setShow}){
                     </button>
 
                     {/* Add Parts Button */}
-                    <button onClick={()=>setShow(true)} className="border-2 border-blue-800 bg-blue-800/20 text-blue-800 text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-300 hover:bg-blue-800 hover:text-white shadow-md flex items-center justify-center gap-2">
+                    <button onClick={()=>setShow(true)} className="border-2 border-blue-800 bg-blue-800/20 text-blue-800 sm:text-sm text-[10px] font-semibold px-4 py-2 rounded-xl transition-all duration-300 hover:bg-blue-800 hover:text-white shadow-md flex items-center justify-center gap-2">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                     </svg>
