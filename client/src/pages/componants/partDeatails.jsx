@@ -44,7 +44,7 @@ export default function PartDetails({setShow}){
             </div>
 
             {/* Action Buttons & Search */}
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+            <div className="flex gap-2 sm:gap-3 justify-end">
                 
                 {/* Search Bar - Desktop */}
                 <div className="hidden sm:flex items-center gap-2 bg-gray-100 rounded-xl px-3 py-2 min-w-50">
@@ -58,21 +58,23 @@ export default function PartDetails({setShow}){
                 />
                 </div>
 
-                {/* Issue Button */}
-                <button className="border-2 border-red-800 bg-red-800/20 text-red-800 text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-300 hover:bg-red-800 hover:text-white shadow-md flex items-center justify-center gap-2">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
-                Issue to Production (-)
-                </button>
+                {/* <div className="flex gap-2"> */}
 
-                {/* Add Parts Button */}
-                <button onClick={()=>setShow(true)} className="border-2 border-blue-800 bg-blue-800/20 text-blue-800 text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-300 hover:bg-blue-800 hover:text-white shadow-md flex items-center justify-center gap-2">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-                Add Parts (+)
-                </button>
+                    <button className="border-2 border-red-800 bg-red-800/20 text-red-800 text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-300 hover:bg-red-800 hover:text-white shadow-md flex items-center justify-center gap-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                    </svg>
+                        Issue to Production (-)
+                    </button>
+
+                    {/* Add Parts Button */}
+                    <button onClick={()=>setShow(true)} className="border-2 border-blue-800 bg-blue-800/20 text-blue-800 text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-300 hover:bg-blue-800 hover:text-white shadow-md flex items-center justify-center gap-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                        Add Parts (+)
+                    </button>
+                {/* </div> */}
             </div>
             </div>
 
@@ -108,25 +110,25 @@ export default function PartDetails({setShow}){
             </thead>
             <tbody className="divide-y divide-gray-200">
                 {currentItems.map((parts,i)=>(
-                    <tr className="hover:bg-gray-50 transition-colors">
-                <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="inline-flex px-3 py-1 text-sm font-bold bg-blue-100 text-blue-800 rounded-full">{parts.watts}w</span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.bulbSheet} Pcs</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.driver} Pcs</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.lampCup} Pcs</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.bottomCup} Pcs</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.colorBox} Pcs</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.cottonBox} Pcs</td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                    <button className=" border-2 text-red-800 px-2 py-1 rounded-[9px] hover:bg-red-800 hover:text-white font-medium text-sm transition-all duration-200 flex items-center gap-1">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                    </svg>
-                    Issue
-                    </button>
-                </td>
-                </tr>
+                    <tr key={i} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="inline-flex px-3 py-1 text-sm font-bold bg-blue-100 text-blue-800 rounded-full">{parts.watts}w</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.bulbSheet} Pcs</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.driver} Pcs</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.lampCup} Pcs</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.bottomCup} Pcs</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.colorBox} Pcs</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.cottonBox} Pcs</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                        <button className=" border-2 text-red-800 px-2 py-1 rounded-[9px] hover:bg-red-800 hover:text-white font-medium text-sm transition-all duration-200 flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                        </svg>
+                        Issue
+                        </button>
+                    </td>
+                    </tr>
                 ))}
                 
             </tbody>
@@ -175,7 +177,36 @@ export default function PartDetails({setShow}){
             </div>
         </div>
 
-        </div>
+        
+        <div className="px-6 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+        <span className="text-xs text-slate-400">Showing {parts.length} of {parts.length} employees</span>
+        {/* Pagination buttons */}
+            <div className="text-xs flex items-center gap-2 justify-center">
+                <button className="text-xs px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-500 disabled:opacity-40 disabled:cursor-not-allowed"
+                    onClick={() => setCurrentPage(prev => prev - 1)}
+                    disabled={currentPage === 1}>
+                    ← Prev
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    <button className={`text-xs px-3 py-1.5 rounded-lg bg-[#0d2145] text-white font-semibold ${currentPage === page
+                    ? "bg-slate-300 text-[#0d2145]"
+                    : "bg-slate-900 text-[#0146c5]"  
+                  }`}
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        style={{ fontWeight: currentPage === page ? 'bold' : 'normal' }}
+                    >
+                        {page}
+                    </button>
+                ))}
+                <button className="text-xs px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-500 disabled:opacity-40 disabled:cursor-not-allowed"
+                    onClick={() => setCurrentPage(prev => prev + 1)}
+                    disabled={currentPage === totalPages}>
+                    Next →
+                </button>
+            </div>
+            </div>
+      </div>
     </div>
     </>
 }
