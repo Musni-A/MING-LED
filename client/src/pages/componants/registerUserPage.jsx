@@ -46,7 +46,7 @@ export default function RegisterPage({setShowForm}) {
 
       <div><Toaster></Toaster></div>
       {/* Card */}
-      <div className="bg-blue-950 p-10 rounded-2xl">
+      <div className=" bg-blue-950 p-10 rounded-2xl">
 
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col gap-4">

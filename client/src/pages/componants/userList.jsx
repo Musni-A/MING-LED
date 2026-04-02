@@ -35,7 +35,7 @@ export default function UserList({setShowForm}) {
     .then((res)=>{setUsers(res.data)})
     .catch((err)=>{console.log(err)})
     .finally(()=>setLoading(false))
-  })
+  },[])
 
   const DEPT_COLORS = {
     IT:          "bg-[#0d2145]/10 text-[#0d2145]",

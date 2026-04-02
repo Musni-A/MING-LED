@@ -11,6 +11,7 @@ export default function Employee(){
   const [showForm, setShowForm] = useState(false)
     const naviagte = useNavigate();
     const loggedIn = localStorage.getItem("loggedIn")
+    
     useEffect(()=>{
         if(!loggedIn){
             naviagte('/')
@@ -22,9 +23,9 @@ export default function Employee(){
         <div className="flex-1 flex flex-col overflow-hidden min-w-0">
             {/* Modal */}
             {showForm && (
-            <div className="fixed inset-0 bg-black/50 z-20 flex items-center justify-center"
+            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
                 onClick={() => setShowForm(false)}>
-                <div onClick={(e) => e.stopPropagation()}>
+                <div className="transition-all transition-discrete" onClick={(e) => e.stopPropagation()}>
                     <RegisterPage setShowForm={setShowForm} />
                 </div>
             </div>

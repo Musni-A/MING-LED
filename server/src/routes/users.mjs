@@ -6,7 +6,6 @@ import passport from 'passport'
 import { Strategy as localStrategy } from 'passport-local';
 import { comparePassword, hashPassword } from "../util/helper.mjs"
 
-
 const app = express();
 const router = Router();
 
@@ -60,7 +59,6 @@ router.post('/register', userValidation, async(req, res)=>{
     if(!error.isEmpty()){
         return res.status(400).json({Error : error.array()})
     }
-    
     try{
         const body = matchedData(req);
         body.password = hashPassword(body.password);
@@ -73,7 +71,7 @@ router.post('/register', userValidation, async(req, res)=>{
     }
 });
 
-router.get('/login',(req, res, next)=>{
+router.post('/login',(req, res, next)=>{
     passport.authenticate('local', (err, user, info)=>{
         let loggedIn;
         if(err) return next(err);
@@ -87,9 +85,14 @@ router.get('/login',(req, res, next)=>{
     })(req, res, next);
 })
 
-router.get('/users', async(req,res)=>{
-    const users = await User.find();
-    res.status(200).json(users)
+router.get('/users', async(req, res)=>{
+    try{
+        const users = await User.find();
+        res.status(200).json(users)
+    }
+    catch(err){
+        res.json({Error : err})
+    }
 })
 router.delete('/users/:id', async(req ,res)=>{
     try{
