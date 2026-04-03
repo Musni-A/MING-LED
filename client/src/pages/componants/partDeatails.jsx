@@ -1,31 +1,45 @@
 import { useEffect, useState } from "react"
 import { getAllLedParts } from "../../api/partsAPI"
+import AddParts from "./addParts";
 
 
-export default function PartDetails({setShow}){
 
+export default function PartDetails(){
+    const [show, setShow] = useState(false)
     const [parts, setParts] = useState([]);
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(true);
 
     useEffect(()=>{
         getAllLedParts()
         .then((res)=>setParts(res.data))
         .catch((err)=>{console.log(err)})
         .finally(()=>setLoading(false))
-    },[])
+    },[parts])
 
     const [currentPage, setCurrentPage] = useState(1)
-      const itemsPerPage = 6
-    
-      const totalPages = Math.ceil(parts.length / itemsPerPage)
-    
-      const currentItems = parts.slice(
-            (currentPage - 1) * itemsPerPage,
-            currentPage * itemsPerPage
-        )
+    const itemsPerPage = 6
+    const totalPages = Math.ceil(parts.length / itemsPerPage)
+    const currentItems = parts.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    )
 
     return <>
     <div className="">
+        {show &&
+          <div onClick={()=>setShow(false)} className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+            <div className=" p-6 rounded-xl shadow-2xl border border-gray-200 
+         transition-all duration-300 ease-out 
+         
+         opacity-100 scale-95
+         
+         popover-open:opacity-100 popover-open:scale-100
+
+         backdrop:transition-all backdrop:duration-300
+         backdrop:bg-black/50 backdrop:opacity-0 
+         popover-open:backdrop:opacity-100" onClick={(e)=>{e.stopPropagation()}}><AddParts setShow={setShow}/></div>
+          </div>
+        }
         {/* Main Card */}
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
         
@@ -95,7 +109,8 @@ export default function PartDetails({setShow}){
 
         {/* Desktop Table View (hidden on mobile/tablet) */}
         <div className="hidden lg:block overflow-x-auto">
-            <table className="w-full">
+            {loading && <div className="flex justify-center"><img className="" src="/loading.gif" alt="" width={150} /></div>}
+            {!loading && <table className="w-full">
             <thead className="bg-gray-50">
                 <tr>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Watts</th>
@@ -112,7 +127,7 @@ export default function PartDetails({setShow}){
                 {currentItems.map((parts,i)=>(
                     <tr key={i} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex px-3 py-1 text-sm font-bold bg-blue-100 text-blue-800 rounded-full">{parts.watts}w</span>
+                        <span className={`inline-flex px-3 py-1 text-sm font-bold ${parts.watts.charAt(3) == "C" ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-700' } rounded-xl`}>{parts.watts}</span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.bulbSheet} Pcs</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.driver} Pcs</td>
@@ -132,54 +147,58 @@ export default function PartDetails({setShow}){
                 ))}
                 
             </tbody>
-            </table>
+            </table>}
         </div>
 
         {/* Mobile & Tablet Card View (hidden on desktop) */}
         <div className="lg:hidden p-4 space-y-4">
-            {/* Card 1 */}
-            <div className="bg-gray-50 rounded-xl p-4 shadow-sm border border-gray-200">
-            <div className="flex justify-between items-start mb-3">
-                <span className="inline-flex px-3 py-1 text-sm font-semibold bg-blue-100 text-blue-800 rounded-full">18w</span>
-                <button className="text-red-600 hover:text-red-800 text-sm font-medium flex items-center gap-1">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
-                Issue
-                </button>
-            </div>
-            <div className="grid grid-cols-2 gap-3 text-sm">
-                <div>
-                <p className="text-gray-500 text-xs">Bulb Sheet</p>
-                <p className="font-medium text-gray-900">LED-18-Sheet</p>
+            {loading && <div className="flex justify-center"><img className="" src="/loading.gif" alt="" width={150} /></div>}
+            {!loading && currentItems.map((parts,i)=>(
+                <div key={i} className="bg-gray-50 rounded-xl p-4 shadow-sm border border-gray-200">
+                <div className="flex justify-between items-start mb-3">
+                    <span className={`inline-flex px-3 py-1 text-sm font-semibold ${parts.watts.charAt(3) == "C" ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-700' } bg-blue-100 text-blue-800 rounded-full`}>{parts.watts}</span>
+                    <button className="text-red-600 hover:text-red-800 text-sm font-medium flex items-center gap-1">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                    </svg>
+                    Issue
+                    </button>
                 </div>
-                <div>
-                <p className="text-gray-500 text-xs">Driver</p>
-                <p className="font-medium text-gray-900">1000</p>
+            
+                    <div className="grid grid-cols-3 gap-3 text-sm">
+                        <div>
+                        <p className="text-gray-500 text-xs">Bulb Sheet</p>
+                        <p className="font-medium text-gray-900">{parts.bulbSheet} Pcs</p>
+                        </div>
+                        <div>
+                        <p className="text-gray-500 text-xs">Driver</p>
+                        <p className="font-medium text-gray-900">{parts.driver} Pcs</p>
+                        </div>
+                        <div>
+                        <p className="text-gray-500 text-xs">Lamp Cup</p>
+                        <p className="font-medium text-gray-900">{parts.lampCup} Pcs</p>
+                        </div>
+                        <div>
+                        <p className="text-gray-500 text-xs">Bottom Cup</p>
+                        <p className="font-medium text-gray-900">{parts.bottomCup} Pcs</p>
+                        </div>
+                        <div>
+                        <p className="text-gray-500 text-xs">Color Box</p>
+                        <p className="font-medium text-gray-900">{parts.colorBox}Pcs</p>
+                        </div>
+                        <div>
+                        <p className="text-gray-500 text-xs">Cotton Box</p>
+                        <p className="font-medium text-gray-900">{parts.cottonBox} Pcs</p>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                <p className="text-gray-500 text-xs">Lamp Cup</p>
-                <p className="font-medium text-gray-900">LC-18</p>
-                </div>
-                <div>
-                <p className="text-gray-500 text-xs">Bottom Cup</p>
-                <p className="font-medium text-gray-900">BC-18</p>
-                </div>
-                <div>
-                <p className="text-gray-500 text-xs">Color Box</p>
-                <p className="font-medium text-gray-900">CB-Red</p>
-                </div>
-                <div>
-                <p className="text-gray-500 text-xs">Cotton Box</p>
-                <p className="font-medium text-gray-900">CTN-18</p>
-                </div>
-            </div>
-            </div>
+            ))}
+            
         </div>
 
         
         <div className="px-6 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-        <span className="text-xs text-slate-400">Showing {parts.length} of {parts.length} employees</span>
+        <span className="text-xs text-slate-400">Showing {parts.length} of {currentItems.length} Parts</span>
         {/* Pagination buttons */}
             <div className="text-xs flex items-center gap-2 justify-center">
                 <button className="text-xs px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-500 disabled:opacity-40 disabled:cursor-not-allowed"

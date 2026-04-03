@@ -38,7 +38,7 @@ router.post('/parts', partsValidation, async(req, res)=>{
         res.json({msg : "success", saveParts});
     }
     catch(err){
-        res.json({Error : err , msg : "Filed to create parts"})
+        res.status(500).json({Message : 'Server error', error : err.message})
     }
 })
 

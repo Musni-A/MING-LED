@@ -18,7 +18,6 @@ export default function UserList({setShowForm}) {
     setDeleteId(id)
     try{
       const response = await deleteUser(id);
-      console.log(response.data);
       notify(`Deleted User ${response.data.deleteUser.name}`,"✅")
 
     }
@@ -35,11 +34,11 @@ export default function UserList({setShowForm}) {
     .then((res)=>{setUsers(res.data)})
     .catch((err)=>{console.log(err)})
     .finally(()=>setLoading(false))
-  },[])
+  },[users])
 
   const DEPT_COLORS = {
     IT:          "bg-[#0d2145]/10 text-[#0d2145]",
-    Engineering: "bg-[#7b9fd4]/20 text-[#3a6ea8]",
+    Engineering: "bg-[#7b9fd4]/20 text-[#3a6ea8]",  
     Finance:     "bg-[#f5c800]/20 text-[#a07c00]",
     Sales:       "bg-[#e8192c]/10 text-[#e8192c]",
     Admin:       "bg-green-100 text-green-700",

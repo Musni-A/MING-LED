@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createParts } from "../../api/partsAPI";
+import  toast, {Toaster} from "react-hot-toast";
 
 export default function AddParts({setShow}){
 
@@ -8,6 +9,9 @@ export default function AddParts({setShow}){
         lampCup:'',bottomCup:'',colorBox:'',
         cottonBox:''
     }
+
+    const notify = (message,icon)=>{toast(message, { icon : icon } )}
+
 
     const [form, setForm] = useState(empty)
 
@@ -18,12 +22,19 @@ export default function AddParts({setShow}){
 
     const handleSubmit = async()=>{
         try{
-            const reponse = await createParts(form)
-            console.log(reponse.data)
-        }
+            const response = await createParts(form)
+            notify("Success on add parts","✅")
+            setShow(false)
+        }   
         catch(err){
-            console.log(err)
+            if(err){
+                notify( "Can not create parts" , "❌",);
+            }
         }
+    }
+
+    const handleUpdate = ()=>{
+        
     }
 
     return<>
@@ -35,7 +46,7 @@ export default function AddParts({setShow}){
                 <div className="flex gap-4">
                     <div className="flex-1 min-w-0 flex flex-col gap-1.5" style={{flexBasis:"calc(50% - 8px)"}}>
                         <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">Watts</label>
-                        <input value={form.watts} onChange={handleChange} placeholder="Enter Watts of Bulb" className="bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-sm outline-none w-full placeholder:text-white/30" type="number" name="watts"/>
+                        <input value={form.watts} onChange={handleChange} placeholder="Enter Watts of Bulb" className="bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-sm outline-none w-full placeholder:text-white/30" type="text" name="watts"/>
                     </div>
                     <div className="flex-1 min-w-0 flex flex-col gap-1.5" style={{flexBasis:"calc(50% - 8px)"}}>
                         <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">Bulb-Sheet</label>
