@@ -5,6 +5,10 @@ const ledPartsSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    tempColor: {
+        type : String,
+        required : true
+    },
     bulbSheet: {
         type: String,
         required: true

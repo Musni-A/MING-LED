@@ -19,15 +19,15 @@ export default function Inventory(){
     })
 
   return<>
-  <Toaster/>
-  <div className=" flex h-screen bg-[#e0edfa] font-sans relative">
+  <Toaster />
+  <div className=" flex sm:h-screen bg-[#e0edfa] font-sans relative">
     <NavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
     <div className="flex-1 flex flex-col min-w-0">
       <TopBar setSidebarOpen={setSidebarOpen}/>
       <div className="h-full flex justify-between"
         onClick={() => setSidebarOpen(false)}>
         
-        <div className="w-full  flex flex-col gap-5 sm:px-6 sm:py-4 p-2"
+        <div className="h-full w-full sm:overflow-y-auto flex flex-col gap-5 sm:px-6 sm:py-4 p-2"
           onClick={() => setSidebarOpen(false)}>
             <PartDetails />
         </div>

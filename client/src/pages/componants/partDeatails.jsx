@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react"
-import { getAllLedParts } from "../../api/partsAPI"
+import { deleteLedParts, getAllLedParts } from "../../api/partsAPI"
 import AddParts from "./addParts";
+import { FaTrash, FaTrashAlt } from 'react-icons/fa'; // Font Awesome 5
+import  toast, {Toaster} from "react-hot-toast";
 
 
 
 export default function PartDetails(){
     const [show, setShow] = useState(false)
+    const [button, setButton] = useState(null)
     const [parts, setParts] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -23,6 +26,46 @@ export default function PartDetails(){
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     )
+    const handleDelete = (part) => {
+    toast((t) => (
+      <div className="flex flex-col gap-2">
+        <p>Delete {part.watts}w {part.tempColor} permanently?</p>
+        <div className="flex gap-2 justify-evenly">
+          <button
+            onClick={() => {
+              toast.dismiss(t.id);
+              confirmDelete(part._id);
+            }}
+            className="px-3 py-1 bg-red-600 text-white rounded text-sm"
+          >
+            Yes, Delete
+          </button>
+          <button
+            onClick={() => toast.dismiss(t.id)}
+            className="px-3 py-1 bg-gray-300 rounded text-sm"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ), {
+      duration: 5000,
+      position: 'top-center',
+    });
+  };
+
+  const confirmDelete =  async (id) => {
+    try{
+        const response = await deleteLedParts(id)
+        toast.success(`${response.data.deletedLedParts.watts}w Part deleted successfully!`, {
+          position: 'top-right',
+          duration: 3000,
+        });
+    }
+    catch(err){
+        toast.error(err.name)
+    }
+  };
 
     return <>
     <div className="">
@@ -37,7 +80,7 @@ export default function PartDetails(){
 
          backdrop:transition-all backdrop:duration-300
          backdrop:bg-black/50 backdrop:opacity-0 
-         popover-open:backdrop:opacity-100" onClick={(e)=>{e.stopPropagation()}}><AddParts setShow={setShow}/></div>
+         popover-open:backdrop:opacity-100" onClick={(e)=>{e.stopPropagation()}}><AddParts button={button} setShow={setShow}/></div>
           </div>
         }
         {/* Main Card */}
@@ -74,7 +117,7 @@ export default function PartDetails(){
 
                 {/* <div className="flex gap-2"> */}
 
-                    <button className="border-2 border-red-800 bg-red-800/20 text-red-800 sm:text-sm text-[13px] font-semibold px-4 py-2 rounded-xl transition-all duration-300 hover:bg-red-800 hover:text-white shadow-md flex items-center justify-center gap-2">
+                    <button onClick={()=>{setShow(true); setButton('update')}} className="border-2 border-red-800 bg-red-800/20 text-red-800 sm:text-sm text-sm font-semibold px-3 py-1 rounded-xl transition-all duration-300 hover:bg-red-800 hover:text-white shadow-md flex items-center justify-center gap-2">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                     </svg>
@@ -82,7 +125,7 @@ export default function PartDetails(){
                     </button>
 
                     {/* Add Parts Button */}
-                    <button onClick={()=>setShow(true)} className="border-2 border-blue-800 bg-blue-800/20 text-blue-800 sm:text-sm text-[13px] font-semibold px-4 py-2 rounded-xl transition-all duration-300 hover:bg-blue-800 hover:text-white shadow-md flex items-center justify-center gap-2">
+                    <button onClick={()=>{setShow(true); setButton('add')}} className="border-2 border-blue-800 bg-blue-800/20 text-blue-800 sm:text-sm text-[13px] font-semibold px-3 py-1 rounded-xl transition-all duration-300 hover:bg-blue-800 hover:text-white shadow-md flex items-center justify-center gap-2">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                     </svg>
@@ -127,7 +170,8 @@ export default function PartDetails(){
                 {currentItems.map((parts,i)=>(
                     <tr key={i} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-3 py-1 text-sm font-bold ${parts.watts.charAt(3) == "C" ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-700' } rounded-xl`}>{parts.watts}</span>
+                        <span className={`inline-flex px-3 py-1 text-sm font-bold ${parts.tempColor.charAt(0) == "C" ? 
+                            'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-700' } rounded-xl`}>{parts.watts}w {parts.tempColor}</span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.bulbSheet} Pcs</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.driver} Pcs</td>
@@ -136,12 +180,19 @@ export default function PartDetails(){
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.colorBox} Pcs</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.cottonBox} Pcs</td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                        <button className=" border-2 text-red-800 px-2 py-1 rounded-[9px] hover:bg-red-800 hover:text-white font-medium text-sm transition-all duration-200 flex items-center gap-1">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                        </svg>
-                        Issue
-                        </button>
+                        <div className="flex gap-2">
+                            <button onClick={()=>{handleDelete(parts)}} className=" border-2 rounded-xl px-2 cursor-pointer hover:bg-[#b10000] border-[#b10000] text-[#b10000] hover:text-white">
+                                <FaTrashAlt className="search-icon " />
+                            </button>
+
+                            <button className=" cursor-pointer border-2 text-red-800 px-2 py-1 rounded-[9px] hover:bg-red-800 hover:text-white 
+                            font-medium text-sm transition-all duration-200 flex items-center gap-1">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                            </svg>
+                            Issue
+                            </button>
+                        </div>
                     </td>
                     </tr>
                 ))}
@@ -157,12 +208,17 @@ export default function PartDetails(){
                 <div key={i} className="bg-gray-50 rounded-xl p-4 shadow-sm border border-gray-200">
                 <div className="flex justify-between items-start mb-3">
                     <span className={`inline-flex px-3 py-1 text-sm font-semibold ${parts.watts.charAt(3) == "C" ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-700' } bg-blue-100 text-blue-800 rounded-full`}>{parts.watts}</span>
-                    <button className="text-red-600 hover:text-red-800 text-sm font-medium flex items-center gap-1">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                    </svg>
-                    Issue
-                    </button>
+                    <div className="flex gap-2">
+                        <button className=" border-2 rounded-xl px-2 py-1 cursor-pointer hover:bg-[#b10000] border-[#b10000] text-[#b10000] hover:text-white">
+                            <FaTrashAlt className="search-icon " />
+                        </button>
+                        <button className="border-2 px-1 rounded-xl hover:bg-[#b10000] border-[#b10000] text-[#b10000] hover:text-white text-sm font-medium flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                        </svg>
+                        Issue
+                        </button>
+                    </div>
                 </div>
             
                     <div className="grid grid-cols-3 gap-3 text-sm">

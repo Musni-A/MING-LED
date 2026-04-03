@@ -9,6 +9,7 @@ const router = Router();
 
 const partsValidation = [
     body('watts').notEmpty(),
+    body('tempColor').notEmpty(),
     body('bulbSheet').notEmpty(),
     body('driver').notEmpty(),
     body('lampCup').notEmpty(),
@@ -46,6 +47,17 @@ router.get('/parts', async(req, res)=>{
     try{
         const getPart = await Parts.find()
         res.status(200).json(getPart)
+    }
+    catch(err){
+        res.json({Error : err})
+    }
+})
+
+router.delete('/parts/:id', async (req, res)=>{
+    try{
+        const id = req.params.id
+        const deletedLedParts = await Parts.findByIdAndDelete(id)
+        res.json({deletedLedParts})
     }
     catch(err){
         res.json({Error : err})

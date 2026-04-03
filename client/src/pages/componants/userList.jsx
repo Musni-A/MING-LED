@@ -5,8 +5,6 @@ import  toast, {Toaster} from "react-hot-toast";
 
 export default function UserList({setShowForm}) {
 
-  const notify = (message,icon)=>{toast(message, { icon : icon } )}
-
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true)
   const [deleteId, setDeleteId] = useState(null)
@@ -14,20 +12,51 @@ export default function UserList({setShowForm}) {
   // const jobRole = localStorage.getItem('jobRole')
 
   
-  const handleDelete = async (id) =>{
+  const handleDelete = (user) => {
+    toast((t) => (
+      <div className="flex flex-col gap-2">
+        <p>Delete {user.name} permanently?</p>
+        <div className="flex gap-2 justify-evenly">
+          <button
+            onClick={() => {
+              toast.dismiss(t.id);
+              confirmDelete(user._id);
+            }}
+            className="px-3 py-1 bg-red-600 text-white rounded text-sm"
+          >
+            Yes, Delete
+          </button>
+          <button
+            onClick={() => toast.dismiss(t.id)}
+            className="px-3 py-1 bg-gray-300 rounded text-sm"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    ), {
+      duration: 5000,
+      position: 'top-center',
+    });
+  };
+
+  const confirmDelete =  async (id) => {
     setDeleteId(id)
     try{
       const response = await deleteUser(id);
-      notify(`Deleted User ${response.data.deleteUser.name}`,"✅")
+      toast.success(`${response.data.deleteUser.name} deleted successfully!`, {
+      position: 'top-right',
+      duration: 3000,
+    });
 
     }
     catch(err){
-      notify(err,"❌")
+      toast.error(err)
     }
     finally{
       setDeleteId(null)
     }
-  } 
+  };
   
   useEffect(()=>{
     getAllUsers()
@@ -65,9 +94,9 @@ export default function UserList({setShowForm}) {
 
   
   return <>
-    <div className="bg-white md:mx-6 md:my-4 md:rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
 
-    <div><Toaster/></div>
+    <div><Toaster /></div>
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
         <div>
@@ -84,7 +113,7 @@ export default function UserList({setShowForm}) {
             />
           </div>
           {/* Add button */}
-          {<button onClick={()=>setShowForm(true)} className="bg-[#0d2145] text-white text-xs font-semibold px-4 py-2 rounded-xl hover:opacity-90 transition-opacity">
+          {<button onClick={()=>setShowForm(true)} className="border-2 border-blue-800 bg-blue-800/20 text-blue-800 sm:text-sm text-[13px] font-semibold px-3 py-1 rounded-xl transition-all duration-300 hover:bg-blue-800 hover:text-white shadow-md flex items-center justify-center gap-2">
             + Add Employee
           </button>}
         </div>
@@ -142,7 +171,7 @@ export default function UserList({setShowForm}) {
                       Edit
                     </button>
                     <button
-                        onClick={() => handleDelete(user._id)}
+                        onClick={() => handleDelete(user)}
                         className="text-xs font-semibold text-[#e8192c] w-15 flex justify-center bg-[#e8192c]/10 px-3 py-1.5 rounded-lg hover:bg-[#e8192c]/20 transition-colors"
                     >
                         {deleteId === user._id
@@ -175,7 +204,7 @@ export default function UserList({setShowForm}) {
               </div>
               <div className="flex gap-2">
                 <button className="text-xs font-semibold text-[#0d2145] bg-[#0d2145]/10 px-3 py-1.5 rounded-lg">Edit</button>
-                <button onClick={()=>handleDelete(user._id)} className="text-xs flex justify-center w-15 font-semibold text-[#e8192c] bg-[#e8192c]/10 px-3 py-1.5 rounded-lg">
+                <button onClick={()=>handleDelete(user)} className="text-xs flex justify-center w-15 font-semibold text-[#e8192c] bg-[#e8192c]/10 px-3 py-1.5 rounded-lg">
                   {deleteId === user._id
                     ? <img className="w-4" src="/barLoading.gif"/>
                     : "Delete"
