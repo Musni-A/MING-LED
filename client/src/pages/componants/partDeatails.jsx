@@ -80,7 +80,7 @@ export default function PartDetails(){
 
          backdrop:transition-all backdrop:duration-300
          backdrop:bg-black/50 backdrop:opacity-0 
-         popover-open:backdrop:opacity-100" onClick={(e)=>{e.stopPropagation()}}><AddParts button={button} setShow={setShow}/></div>
+         popover-open:backdrop:opacity-100" onClick={(e)=>{e.stopPropagation()}}><AddParts button={button} show={show} setShow={setShow}/></div>
           </div>
         }
         {/* Main Card */}
@@ -207,7 +207,7 @@ export default function PartDetails(){
             {!loading && currentItems.map((parts,i)=>(
                 <div key={i} className="bg-gray-50 rounded-xl p-4 shadow-sm border border-gray-200">
                 <div className="flex justify-between items-start mb-3">
-                    <span className={`inline-flex px-3 py-1 text-sm font-semibold ${parts.watts.charAt(3) == "C" ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-700' } bg-blue-100 text-blue-800 rounded-full`}>{parts.watts}</span>
+                    <span className={`inline-flex px-3 py-1 text-sm font-semibold ${parts.tempColor.charAt(0) == "C" ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-700' } bg-blue-100 text-blue-800 rounded-full`}>{parts.watts}w {parts.tempColor}</span>
                     <div className="flex gap-2">
                         <button className=" border-2 rounded-xl px-2 py-1 cursor-pointer hover:bg-[#b10000] border-[#b10000] text-[#b10000] hover:text-white">
                             <FaTrashAlt className="search-icon " />

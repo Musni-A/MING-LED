@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { createParts } from "../../api/partsAPI";
+import { createParts, updateParts } from "../../api/partsAPI";
 import  toast, {Toaster} from "react-hot-toast";
 
-export default function AddParts({setShow, button}){
-
+export default function AddParts({show, setShow, button}){
+    
     const empty = {
         watts:'', tempColor:'', bulbSheet:'', driver:'',
         lampCup:'',bottomCup:'',colorBox:'',
@@ -11,7 +11,7 @@ export default function AddParts({setShow, button}){
     }
     const notify = (message,icon)=>{toast(message, { icon : icon } )}
 
-
+    const [loading, setLoading] = useState(false);
     const [form, setForm] = useState(empty)
 
     const handleChange = (e)=>{
@@ -33,8 +33,19 @@ export default function AddParts({setShow, button}){
         }
     }
 
-    const handleUpdate = ()=>{
-        
+    const handleUpdate = async ()=>{
+        setLoading(true)
+        try{
+            const response = await updateParts(form)
+            console.log(response)
+            setShow(false)
+            setLoading(false)
+
+        }
+        catch(err){
+            toast.error("Pls select watts and temp color")
+            setLoading(false)
+        }
     }
 
     return<>
@@ -46,37 +57,12 @@ export default function AddParts({setShow, button}){
                 <div className="flex gap-4">
                     <div className="flex-1 min-w-0 flex flex-col gap-1.5" style={{flexBasis:"calc(50% - 8px)"}}>
                         <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">Watts</label>
-                        <input value={form.watts} onChange={handleChange} placeholder="Enter Watts of Bulb" className="bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-sm outline-none w-full placeholder:text-white/30" type="number" name="watts"/>
-                    </div>
-                    <div className="flex-1 min-w-0 flex flex-col gap-1.5" style={{flexBasis:"calc(50% - 8px)"}}>
-                        <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">Bulb-Sheet</label>
-                        <input value={form.bulbSheet} onChange={handleChange} placeholder="Count of Bulb-Sheet" className="bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-sm outline-none w-full placeholder:text-white/30" type="number" name="bulbSheet"/>
-                    </div>
-                </div>
-                <div className="flex gap-4">
-                    <div className="flex-1 min-w-0 flex flex-col gap-1.5" style={{flexBasis:"calc(50% - 8px)"}}>
-                        <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">Driver</label>
-                        <input value={form.driver} onChange={handleChange} placeholder="Count of Driver" className="bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-sm outline-none w-full placeholder:text-white/30" type="number" name="driver"/>
-                    </div>
-                    <div className="flex-1 min-w-0 flex flex-col gap-1.5" style={{flexBasis:"calc(50% - 8px)"}}>
-                        <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">Lamp-Cup</label>
-                        <input value={form.lampCup} onChange={handleChange} placeholder="Count of Lamp-Cup" className="bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-sm outline-none w-full placeholder:text-white/30" type="number" name="lampCup"/>
-                    </div>
-                </div>
-                <div className="flex gap-4">
-                    <div className="flex-1 min-w-0 flex flex-col gap-1.5" style={{flexBasis:"calc(50% - 8px)"}}>
-                        <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">Bottom-Cup</label>
-                        <input value={form.bottomCup} onChange={handleChange} placeholder="Count of Bottom-Cup" className="bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-sm outline-none w-full placeholder:text-white/30" type="number" name="bottomCup"/>
-                    </div>
-                    <div className="flex-1 min-w-0 flex flex-col gap-1.5" style={{flexBasis:"calc(50% - 8px)"}}>
-                        <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">Color-Box</label>
-                        <input value={form.colorBox} onChange={handleChange} placeholder="Count of Color-Box" className="bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-sm outline-none w-full placeholder:text-white/30" type="number" name="colorBox"/>
-                    </div>
-                </div>
-                <div className="flex gap-4">
-                    <div className="flex-1 min-w-0 flex flex-col gap-1.5" style={{flexBasis:"calc(50% - 8px)"}}>
-                        <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">Cotton-Box</label>
-                        <input value={form.cottonBox} onChange={handleChange} placeholder="Count of Cotton-Box" className="bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-sm outline-none w-full placeholder:text-white/30" type="number" name="cottonBox"/>
+                        <select name="watts" value={form.watts} onChange={handleChange} className="bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-[#ffffff] text-sm outline-none w-full">
+                        <option value="">Select Watts</option>
+                        {['5','7','9','12','15','18','28','38','48'].map(o => (
+                            <option key={o} className="bg-[#0d2145] text-white">{o}</option>
+                        ))}
+                        </select>
                     </div>
                     <div className="flex-1 min-w-0 flex flex-col gap-1.5" style={{flexBasis:"calc(50% - 8px)"}}>
                         <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">Temprature Color</label>
@@ -88,9 +74,40 @@ export default function AddParts({setShow, button}){
                         </select>
                     </div>
                 </div>
+                <div className="flex gap-4">
+                    <div className="flex-1 min-w-0 flex flex-col gap-1.5" style={{flexBasis:"calc(50% - 8px)"}}>
+                        <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">Bulb-Sheet</label>
+                        <input value={form.bulbSheet} onChange={handleChange} placeholder="Count of Bulb-Sheet" className="bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-sm outline-none w-full placeholder:text-white/30" type="number" name="bulbSheet"/>
+                    </div>
+                    <div className="flex-1 min-w-0 flex flex-col gap-1.5" style={{flexBasis:"calc(50% - 8px)"}}>
+                        <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">Driver</label>
+                        <input value={form.driver} onChange={handleChange} placeholder="Count of Driver" className="bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-sm outline-none w-full placeholder:text-white/30" type="number" name="driver"/>
+                    </div>
+                </div>
+                <div className="flex gap-4">
+                    <div className="flex-1 min-w-0 flex flex-col gap-1.5" style={{flexBasis:"calc(50% - 8px)"}}>
+                        <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">Lamp-Cup</label>
+                        <input value={form.lampCup} onChange={handleChange} placeholder="Count of Lamp-Cup" className="bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-sm outline-none w-full placeholder:text-white/30" type="number" name="lampCup"/>
+                    </div>
+                    <div className="flex-1 min-w-0 flex flex-col gap-1.5" style={{flexBasis:"calc(50% - 8px)"}}>
+                        <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">Bottom-Cup</label>
+                        <input value={form.bottomCup} onChange={handleChange} placeholder="Count of Bottom-Cup" className="bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-sm outline-none w-full placeholder:text-white/30" type="number" name="bottomCup"/>
+                    </div>
+                </div>
+                <div className="flex gap-4">
+                    <div className="flex-1 min-w-0 flex flex-col gap-1.5" style={{flexBasis:"calc(50% - 8px)"}}>
+                        <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">Color-Box</label>
+                        <input value={form.colorBox} onChange={handleChange} placeholder="Count of Color-Box" className="bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-sm outline-none w-full placeholder:text-white/30" type="number" name="colorBox"/>
+                    </div>
+                    <div className="flex-1 min-w-0 flex flex-col gap-1.5" style={{flexBasis:"calc(50% - 8px)"}}>
+                        <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">Cotton-Box</label>
+                        <input value={form.cottonBox} onChange={handleChange} placeholder="Count of Cotton-Box" className="bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-sm outline-none w-full placeholder:text-white/30" type="number" name="cottonBox"/>
+                    </div> 
+                </div>
                 <div className="flex gap-4 justify-end">
                     <button onClick={button === 'add' ? handleSubmit : handleUpdate} className="border font-bold px-4 py-2 rounded-xl cursor-pointer transition duration-300 hover:bg-[#002cb1] hover:scale-105">
-                        {button === 'update' ? 'Update Parts' : 'Add Parts' }
+                        { !loading && (button === 'update' ? 'Update Parts' : 'Add Parts' )}
+                        { loading && <img className="w-6" src="/barLoading.gif"></img>}
                     </button>
                     <button onClick={()=>{setShow(false)}} className="border font-bold px-4 py-2 rounded-xl cursor-pointer transition duration-300 hover:bg-[#b10000] hover:scale-105">
                         Cancel

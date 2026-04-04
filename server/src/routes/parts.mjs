@@ -63,4 +63,43 @@ router.delete('/parts/:id', async (req, res)=>{
         res.json({Error : err})
     }
 })
+
+router.patch('/parts', async (req, res)=>{
+    try{
+        const {body} = req;
+
+        const bulbSheet = parseInt(body.bulbSheet) || 0;
+        const driver = parseInt(body.driver) || 0;
+        const lampCup = parseInt(body.lampCup) || 0;
+        const bottomCup = parseInt(body.bottomCup) || 0;
+        const colorBox = parseInt(body.colorBox) || 0;
+        const cottonBox = parseInt(body.cottonBox) || 0;
+
+        const foundPart = await Parts.find({watts : body.watts, tempColor: body.tempColor });
+
+        const updatedbulbSheetCount = parseInt(foundPart[0].bulbSheet) - bulbSheet;
+        const updateddriverCount = parseInt(foundPart[0].driver) - driver;
+        const updatedlampCupCount = parseInt(foundPart[0].lampCup) - lampCup;
+        const updatedbottomCupCount = parseInt(foundPart[0].bottomCup) - bottomCup;
+        const updatedcolorBoxCount = parseInt(foundPart[0].colorBox) - colorBox;
+        const updatedcottonBoxCount = parseInt(foundPart[0].cottonBox) - cottonBox;
+
+        const updatedParts = await Parts.findOneAndUpdate(
+            {watts : body.watts, tempColor: body.tempColor },
+            {
+                bulbSheet : updatedbulbSheetCount,
+                driver : updateddriverCount,
+                lampCup : updatedlampCupCount,
+                bottomCup : updatedbottomCupCount,
+                colorBox : updatedcolorBoxCount,
+                cottonBox : updatedcottonBoxCount
+            },
+            { returnDocument: 'after' }
+        )
+        res.json({updatedParts})
+    }
+    catch(err){
+        res.status(400).json(err)
+    }
+});
 export default router;
