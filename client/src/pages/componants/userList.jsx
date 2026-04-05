@@ -11,6 +11,12 @@ export default function UserList({setShowForm}) {
 
   // const jobRole = localStorage.getItem('jobRole')
 
+  const fetchData = ()=>{
+    getAllUsers()
+    .then((res)=>{setUsers(res.data)})
+    .catch((err)=>{console.log(err)})
+    .finally(()=>setLoading(false))
+  }
   
   const handleDelete = (user) => {
     toast((t) => (
@@ -44,9 +50,10 @@ export default function UserList({setShowForm}) {
     setDeleteId(id)
     try{
       const response = await deleteUser(id);
+      await fetchData();
       toast.success(`${response.data.deleteUser.name} deleted successfully!`, {
       position: 'top-right',
-      duration: 3000,
+      duration: 1000,
     });
 
     }
@@ -59,11 +66,8 @@ export default function UserList({setShowForm}) {
   };
   
   useEffect(()=>{
-    getAllUsers()
-    .then((res)=>{setUsers(res.data)})
-    .catch((err)=>{console.log(err)})
-    .finally(()=>setLoading(false))
-  },[users])
+    fetchData()
+  },[])
 
   const DEPT_COLORS = {
     IT:          "bg-[#0d2145]/10 text-[#0d2145]",

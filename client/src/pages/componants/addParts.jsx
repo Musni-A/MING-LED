@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { createParts, updateParts } from "../../api/partsAPI";
-import  toast, {Toaster} from "react-hot-toast";
+import { updateParts } from "../../api/partsAPI";
+// import { handleUpdate } from "../commonFun/handleFun";
+import toast from "react-hot-toast";
 
-export default function AddParts({show, setShow, button}){
+export default function AddParts({ fetchData, setShow, button }){
     
     const empty = {
         watts:'', tempColor:'', bulbSheet:'', driver:'',
         lampCup:'',bottomCup:'',colorBox:'',
         cottonBox:''
     }
-    const notify = (message,icon)=>{toast(message, { icon : icon } )}
 
     const [loading, setLoading] = useState(false);
     const [form, setForm] = useState(empty)
@@ -19,40 +19,41 @@ export default function AddParts({show, setShow, button}){
         setForm(prev=>({...prev,[name]:value}))
         console.log(form)
     }
+    
+    const handleUpdate = async (API, toastSuccMsg, toastErrMsg, form, arithType, show, loading)=>{
+    loading(true)
+    try{
+        const response = await API(form, arithType);
+        await fetchData();
+        toast.success(toastSuccMsg);
+        show(false);
 
-    const handleSubmit = async()=>{
-        try{
-            await createParts(form)
-            notify("Success on add parts","✅")
-            setShow(false)
-        }   
-        catch(err){
-            if(err){
-                notify( "Can not create parts" , "❌",);
-            }
+    }
+    catch(err){
+        if(err.response.data.negativeNumber){
+            return toast(err.response.data.message, {
+                icon: '⚠️',
+                style: {
+                background: 'white',
+                padding: '12px',
+                borderRadius: '12px'
+                }
+            });
+        }
+        if(err.response.data.fieldMissing){
+            return toast.error(err.response.data.message)
         }
     }
-
-    const handleUpdate = async ()=>{
-        setLoading(true)
-        try{
-            const response = await updateParts(form)
-            console.log(response)
-            setShow(false)
-            setLoading(false)
-
-        }
-        catch(err){
-            toast.error("Pls select watts and temp color")
-            setLoading(false)
-        }
+    finally{
+        loading(false)
     }
+}
 
     return<>
-        <div className="text-white bg-blue-950 p-10 rounded-2xl ">
-            <div className="flex flex-col gap-4">
+        <div className="text-white bg-blue-950 p-7 rounded-2xl ">
+            <div className="flex flex-col gap-4 it">
                 <div className="flex justify-center">
-                    <p className="text-2xl font-bold pb-3">{button === 'add' ? 'Add Parts' : 'Update Parts'}</p>
+                    <p className="text-2xl font-bold pb-3">{button === 'add' ? 'Add Parts ( + )' : 'Reduce Parts ( - )'}</p>
                 </div>
                 <div className="flex gap-4">
                     <div className="flex-1 min-w-0 flex flex-col gap-1.5" style={{flexBasis:"calc(50% - 8px)"}}>
@@ -104,9 +105,12 @@ export default function AddParts({show, setShow, button}){
                         <input value={form.cottonBox} onChange={handleChange} placeholder="Count of Cotton-Box" className="bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-sm outline-none w-full placeholder:text-white/30" type="number" name="cottonBox"/>
                     </div> 
                 </div>
+                <div className="flex justify-center">
+                    <div className="text-center text-yellow-300 w-65 rounded-xl"><p>Pls re-check values are correct !</p></div>
+                </div>
                 <div className="flex gap-4 justify-end">
-                    <button onClick={button === 'add' ? handleSubmit : handleUpdate} className="border font-bold px-4 py-2 rounded-xl cursor-pointer transition duration-300 hover:bg-[#002cb1] hover:scale-105">
-                        { !loading && (button === 'update' ? 'Update Parts' : 'Add Parts' )}
+                    <button onClick={button === 'add' ? ()=>handleUpdate(updateParts, "Part updated successfully!", 'Please check the inputs!', form, "add", setShow, setLoading) : ()=>handleUpdate(updateParts, "Part updated successfully!", 'Please check the inputs!', form, "reduce", setShow, setLoading)} className="border font-bold px-4 py-2 rounded-xl cursor-pointer transition duration-300 hover:bg-[#002cb1] hover:scale-105">
+                        { !loading && (button === 'update' ? 'Reduce Parts' : 'Add Parts' )}
                         { loading && <img className="w-6" src="/barLoading.gif"></img>}
                     </button>
                     <button onClick={()=>{setShow(false)}} className="border font-bold px-4 py-2 rounded-xl cursor-pointer transition duration-300 hover:bg-[#b10000] hover:scale-105">

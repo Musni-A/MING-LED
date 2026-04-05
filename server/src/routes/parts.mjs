@@ -64,42 +64,162 @@ router.delete('/parts/:id', async (req, res)=>{
     }
 })
 
-router.patch('/parts', async (req, res)=>{
-    try{
-        const {body} = req;
+router.patch('/parts', async (req, res) => {
+    try {
+        const { body } = req;
+        if (!body.data.watts || !body.data.tempColor) {
+            return res.status(400).json({ 
+                error: 'Insufficient stock',
+                message: 'Required fields missing',
+                fieldMissing : true
+            });
+        }
+        
+        // Parse quantities
+        const bulbSheet = parseInt(body.data.bulbSheet) || 0;
+        const driver = parseInt(body.data.driver) || 0;
+        const lampCup = parseInt(body.data.lampCup) || 0;
+        const bottomCup = parseInt(body.data.bottomCup) || 0;
+        const colorBox = parseInt(body.data.colorBox) || 0;
+        const cottonBox = parseInt(body.data.cottonBox) || 0;
 
-        const bulbSheet = parseInt(body.bulbSheet) || 0;
-        const driver = parseInt(body.driver) || 0;
-        const lampCup = parseInt(body.lampCup) || 0;
-        const bottomCup = parseInt(body.bottomCup) || 0;
-        const colorBox = parseInt(body.colorBox) || 0;
-        const cottonBox = parseInt(body.cottonBox) || 0;
-
-        const foundPart = await Parts.find({watts : body.watts, tempColor: body.tempColor });
-
-        const updatedbulbSheetCount = parseInt(foundPart[0].bulbSheet) - bulbSheet;
-        const updateddriverCount = parseInt(foundPart[0].driver) - driver;
-        const updatedlampCupCount = parseInt(foundPart[0].lampCup) - lampCup;
-        const updatedbottomCupCount = parseInt(foundPart[0].bottomCup) - bottomCup;
-        const updatedcolorBoxCount = parseInt(foundPart[0].colorBox) - colorBox;
-        const updatedcottonBoxCount = parseInt(foundPart[0].cottonBox) - cottonBox;
-
+        if(bulbSheet == 0 && driver == 0 && lampCup == 0 && bottomCup == 0 && colorBox == 0 && cottonBox == 0){
+            return res.status(400).json({ 
+                error: 'Insufficient stock',
+                message: 'Required fields missing',
+                fieldMissing : true
+            });
+        }
+        
+        // Find the part - use findOne instead of find
+        const foundPart = await Parts.findOne({ 
+            watts: body.data.watts, 
+            tempColor: body.data.tempColor 
+        });
+        
+        // Declare variables outside if blocks
+        let updatedbulbSheetCount, updateddriverCount, updatedlampCupCount;
+        let updatedbottomCupCount, updatedcolorBoxCount, updatedcottonBoxCount;
+        
+        // Calculate based on arithType
+        if (body.arithType === 'add') {
+            updatedbulbSheetCount = parseInt(foundPart.bulbSheet) + bulbSheet;
+            updateddriverCount = parseInt(foundPart.driver) + driver;
+            updatedlampCupCount = parseInt(foundPart.lampCup) + lampCup;
+            updatedbottomCupCount = parseInt(foundPart.bottomCup) + bottomCup;
+            updatedcolorBoxCount = parseInt(foundPart.colorBox) + colorBox;
+            updatedcottonBoxCount = parseInt(foundPart.cottonBox) + cottonBox;
+        } 
+        else if (body.arithType === 'reduce') {
+            // Check for negative values before reducing
+            if (bulbSheet < 0 ||
+                driver < 0 ||
+                lampCup < 0) {
+                return res.status(400).json({ 
+                    error: 'Insufficient stock',
+                    message: 'Cannot reduce below zero',
+                    negativeNumber : true
+                });
+            }
+            
+            updatedbulbSheetCount = parseInt(foundPart.bulbSheet) - bulbSheet;
+            updateddriverCount = parseInt(foundPart.driver) - driver;
+            updatedlampCupCount = parseInt(foundPart.lampCup) - lampCup;
+            updatedbottomCupCount = parseInt(foundPart.bottomCup) - bottomCup;
+            updatedcolorBoxCount = parseInt(foundPart.colorBox) - colorBox;
+            updatedcottonBoxCount = parseInt(foundPart.cottonBox) - cottonBox;
+        }
+        else {
+            return res.status(400).json({ 
+                error: 'Invalid arithType',
+                message: 'arithType must be "add" or "reduce"'
+            });
+        }
+        
+        // Update the part - use correct field access
         const updatedParts = await Parts.findOneAndUpdate(
-            {watts : body.watts, tempColor: body.tempColor },
-            {
-                bulbSheet : updatedbulbSheetCount,
-                driver : updateddriverCount,
-                lampCup : updatedlampCupCount,
-                bottomCup : updatedbottomCupCount,
-                colorBox : updatedcolorBoxCount,
-                cottonBox : updatedcottonBoxCount
+            { 
+                watts: body.data.watts,      // Fixed: body.data.watts
+                tempColor: body.data.tempColor  // Fixed: body.data.tempColor
             },
-            { returnDocument: 'after' }
-        )
-        res.json({updatedParts})
-    }
-    catch(err){
-        res.status(400).json(err)
+            {
+                bulbSheet: updatedbulbSheetCount.toString(),
+                driver: updateddriverCount.toString(),
+                lampCup: updatedlampCupCount.toString(),
+                bottomCup: updatedbottomCupCount.toString(),
+                colorBox: updatedcolorBoxCount.toString(),
+                cottonBox: updatedcottonBoxCount.toString()
+            },
+            { returnDocument: 'after', runValidators: true }
+        );
+        
+        res.json({ 
+            success: true,
+            message: `Parts ${body.arithType}ed successfully`,
+            updatedParts 
+        });
+        
+    } catch (err) {
+        console.error('Error updating parts:', err);
+        res.status(500).json({ 
+            error: 'Internal server error',
+            message: err.message 
+        });
     }
 });
+
+// router.patch('/parts', async (req, res)=>{
+//     try{
+//         const {body} = req;
+
+//         const bulbSheet = parseInt(body.data.bulbSheet) || 0;
+//         const driver = parseInt(body.data.driver) || 0;
+//         const lampCup = parseInt(body.data.lampCup) || 0;
+//         const bottomCup = parseInt(body.data.bottomCup) || 0;
+//         const colorBox = parseInt(body.data.colorBox) || 0;
+//         const cottonBox = parseInt(body.data.cottonBox) || 0;
+
+//         let updatedbulbSheetCount, updateddriverCount, updatedlampCupCount;
+//         let updatedbottomCupCount, updatedcolorBoxCount, updatedcottonBoxCount;
+
+//         const foundPart = await Parts.find({watts : body.data.watts, tempColor: body.data.tempColor });
+//         console.log(foundPart)
+//         if(body.arithType == 'add'){
+//             updatedbulbSheetCount = parseInt(foundPart[0].bulbSheet) + bulbSheet;
+//             updateddriverCount = parseInt(foundPart[0].driver) + driver;
+//             updatedlampCupCount = parseInt(foundPart[0].lampCup) + lampCup;
+//             updatedbottomCupCount = parseInt(foundPart[0].bottomCup) + bottomCup;
+//             updatedcolorBoxCount = parseInt(foundPart[0].colorBox) + colorBox;
+//             updatedcottonBoxCount = parseInt(foundPart[0].cottonBox) + cottonBox;
+//         }
+//         if(body.arithType == 'reduce'){
+//             updatedbulbSheetCount = parseInt(foundPart[0].bulbSheet) - bulbSheet;
+//             updateddriverCount = parseInt(foundPart[0].driver) - driver;
+//             updatedlampCupCount = parseInt(foundPart[0].lampCup) - lampCup;
+//             updatedbottomCupCount = parseInt(foundPart[0].bottomCup) - bottomCup;
+//             updatedcolorBoxCount = parseInt(foundPart[0].colorBox) - colorBox;
+//             updatedcottonBoxCount = parseInt(foundPart[0].cottonBox) - cottonBox;
+//         }
+
+
+
+
+//         const updatedParts = await Parts.findOneAndUpdate(
+//             {watts : body.watts, tempColor: body.tempColor },
+//             {
+//                 bulbSheet : updatedbulbSheetCount,
+//                 driver : updateddriverCount,
+//                 lampCup : updatedlampCupCount,
+//                 bottomCup : updatedttomCupCount,
+//                 colorBox : updatedcolorBoxCount,
+//                 cottonBox : updatedcottonBoxCount
+//             },
+//             { returnDocument: 'after' }
+//         )
+//         res.json({updatedParts})
+//     }
+//     catch(err){
+//         res.status(400).json(err)
+//     }
+// });
 export default router;

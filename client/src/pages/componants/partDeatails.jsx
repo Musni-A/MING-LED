@@ -12,13 +12,30 @@ export default function PartDetails(){
     const [parts, setParts] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(()=>{
+    const fetchData = ()=>{
         getAllLedParts()
         .then((res)=>setParts(res.data))
         .catch((err)=>{console.log(err)})
         .finally(()=>setLoading(false))
-    },[parts])
+    }
 
+    useEffect(()=>{
+        fetchData()
+    },[])
+    
+    // const partsDetails = parts.map(parts=>parts)
+
+    // const partsValue = [
+    //     parseInt(partsDetails[0].bulbSheet),
+    //     parseInt(partsDetails[0].driver),
+    //     parseInt(partsDetails[0].bottomCup),
+    //     parseInt(partsDetails[0].colorBox),
+    //     parseInt(partsDetails[0].cottonBox)
+    // ]
+
+    // const low = Math.min(...partsValue)
+    // console.log(low)
+    
     const [currentPage, setCurrentPage] = useState(1)
     const itemsPerPage = 6
     const totalPages = Math.ceil(parts.length / itemsPerPage)
@@ -56,10 +73,11 @@ export default function PartDetails(){
 
   const confirmDelete =  async (id) => {
     try{
-        const response = await deleteLedParts(id)
+        const response = await deleteLedParts(id);
+        await fetchData();
         toast.success(`${response.data.deletedLedParts.watts}w Part deleted successfully!`, {
           position: 'top-right',
-          duration: 3000,
+          duration: 1000,
         });
     }
     catch(err){
@@ -71,7 +89,7 @@ export default function PartDetails(){
     <div className="">
         {show &&
           <div onClick={()=>setShow(false)} className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-            <div className=" p-6 rounded-xl shadow-2xl border border-gray-200 
+            <div className=" p-5 rounded-xl shadow-2xl border border-gray-200 
          transition-all duration-300 ease-out 
          
          opacity-100 scale-95
@@ -80,7 +98,7 @@ export default function PartDetails(){
 
          backdrop:transition-all backdrop:duration-300
          backdrop:bg-black/50 backdrop:opacity-0 
-         popover-open:backdrop:opacity-100" onClick={(e)=>{e.stopPropagation()}}><AddParts button={button} show={show} setShow={setShow}/></div>
+         popover-open:backdrop:opacity-100" onClick={(e)=>{e.stopPropagation()}}><AddParts fetchData={fetchData} button={button} show={show} setShow={setShow}/></div>
           </div>
         }
         {/* Main Card */}
@@ -163,7 +181,7 @@ export default function PartDetails(){
                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Bottom Cup</th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Color Box</th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Cotton Box</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Action</th>
+                {/* <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Action</th> */}
                 </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -179,7 +197,7 @@ export default function PartDetails(){
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.bottomCup} Pcs</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.colorBox} Pcs</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-bold">{parts.cottonBox} Pcs</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    {/* <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex gap-2">
                             <button onClick={()=>{handleDelete(parts)}} className=" border-2 rounded-xl px-2 cursor-pointer hover:bg-[#b10000] border-[#b10000] text-[#b10000] hover:text-white">
                                 <FaTrashAlt className="search-icon " />
@@ -193,7 +211,7 @@ export default function PartDetails(){
                             Issue
                             </button>
                         </div>
-                    </td>
+                    </td> */}
                     </tr>
                 ))}
                 
@@ -209,7 +227,7 @@ export default function PartDetails(){
                 <div className="flex justify-between items-start mb-3">
                     <span className={`inline-flex px-3 py-1 text-sm font-semibold ${parts.tempColor.charAt(0) == "C" ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-700' } bg-blue-100 text-blue-800 rounded-full`}>{parts.watts}w {parts.tempColor}</span>
                     <div className="flex gap-2">
-                        <button className=" border-2 rounded-xl px-2 py-1 cursor-pointer hover:bg-[#b10000] border-[#b10000] text-[#b10000] hover:text-white">
+                        <button onClick={handleDelete} className=" border-2 rounded-xl px-2 py-1 cursor-pointer hover:bg-[#b10000] border-[#b10000] text-[#b10000] hover:text-white">
                             <FaTrashAlt className="search-icon " />
                         </button>
                         <button className="border-2 px-1 rounded-xl hover:bg-[#b10000] border-[#b10000] text-[#b10000] hover:text-white text-sm font-medium flex items-center gap-1">

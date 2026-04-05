@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const ledPartsSchema = new mongoose.Schema({
     watts: {
         type: String,
-        required: true
+        required: true,
+        unique : true
     },
     tempColor: {
         type : String,
