@@ -2,6 +2,7 @@ import NavBar from "./navBar";
 import { useEffect, useState } from "react";
 import TopBar from "./topBar";
 import { Link, useNavigate } from "react-router-dom";
+import DashboardContent from "./componants/dashBoard";
 
 
 export default function Dashboard() {
@@ -19,9 +20,9 @@ export default function Dashboard() {
       <NavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           <div className="flex-1 flex flex-col min-w-0">
               <TopBar setSidebarOpen={setSidebarOpen} />
-              <div className="h-full flex justify-between"
+              <div className="h-full overflow-y-scroll flex justify-between"
                   onClick={() => setSidebarOpen(false)}>
-                  <h1>Dashboard</h1>
+                    <DashboardContent/>
               </div>
           </div>
       </div>
