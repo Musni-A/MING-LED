@@ -2,7 +2,7 @@ import { useState } from "react";
 import { getUser } from "../api/userAPI";
 import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
-
+import { LoaderIcon } from "lucide-react";
 
 function LoginPage(){
   
@@ -36,8 +36,12 @@ function LoginPage(){
       localStorage.setItem('jobRole', response.data.user.jobRole)
       const loggedIn = response.data.loggedIn;
       const userId = response.data.user._id
+      const userRole = response.data.user.jobRole
+      const userDepartment = response.data.user.department
+      localStorage.setItem('userRole', userRole)
       localStorage.setItem('loggedIn', loggedIn)
       localStorage.setItem('userId', userId)
+      localStorage.setItem('userDepartment', userDepartment)
       setLogin(false)
 
       if(loggedIn){
@@ -105,8 +109,7 @@ function LoginPage(){
 
             {/* Submit */}
               <button className=" flex justify-center mt-2 w-full py-3.5 rounded-xl text-white font-bold text-base cursor-pointer border-none bg-linear-to-r from-[#e8192c] to-[#c0001f] shadow-[0_8px_24px_rgba(232,25,44,0.3)] hover:opacity-90 transition-opacity">
-                { !login && "Login →"}
-                { login && <img className="m-0 p-0 w-6" src="/barLoading.gif"></img>}
+                { !login ? "Login →" : <LoaderIcon className="animate-spin" /> }
               </button>
             </div>
           </form>

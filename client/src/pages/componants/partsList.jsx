@@ -5,7 +5,7 @@ import toast from "react-hot-toast"
 import LightWatts from "./lightWattsForm"
 import UpdateForm from "./updateForm"
 import { getLightWatts } from "../../api/lightAPI"
-import { Plus, BookmarkPlus, ArrowDownFromLine, LoaderPinwheelIcon } from 'lucide-react';
+import { Plus, BookmarkPlus, ArrowDownFromLine, LoaderCircle } from 'lucide-react';
 
 export default function PartsList(){
     
@@ -156,7 +156,7 @@ export default function PartsList(){
         <div className="sm:max-h-125 overflow-y-auto">
             {loading ? (
                 <div className="flex justify-center items-center py-12">
-                    <LoaderPinwheelIcon className="w-12 h-12 text-blue-400 animate-spin" />
+                    <LoaderCircle className="w-12 h-12 text-blue-400 animate-spin" />
                 </div>
             ) : (
                 <>
@@ -197,7 +197,7 @@ export default function PartsList(){
                                                         </div>
                                                     </td>
                                                     {selectedType.parts.map((part, pIndex) => (
-                                                        <td key={pIndex} className="px-4 py-3 whitespace-nowrap text-sm text-center border-l-2 border-r-2 border-gray-300">
+                                                        <td key={pIndex} className="px-3 whitespace-nowrap text-sm text-center border-l-2 border-r-2 border-gray-300">
                                                             {watt.parts[pIndex]?.quantity ? (
                                                                 <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 ">
                                                                     {watt.parts[pIndex].quantity} pcs

@@ -2,12 +2,15 @@ import { useState } from "react";
 import { deleteUser, getAllUsers } from "../../api/userAPI";
 import { useEffect } from "react";
 import  toast, {Toaster} from "react-hot-toast";
+import { LoaderCircleIcon } from "lucide-react";
 
 export default function UserList({setShowForm}) {
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true)
   const [deleteId, setDeleteId] = useState(null)
+
+  localStorage.setItem('users', users)
 
   // const jobRole = localStorage.getItem('jobRole')
 
@@ -125,7 +128,7 @@ export default function UserList({setShowForm}) {
 
       {/* Table — desktop */}
       <div className="hidden md:block ">
-      {loading && <div className="flex justify-center"><img className="" src="/loading.gif" alt="" width={150} /></div>}
+      {loading && <div className="flex justify-center m-10"><LoaderCircleIcon className="animate-spin text-blue-500" size={48} /></div>}
       {!loading && <table className="w-full text-sm">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-100">
