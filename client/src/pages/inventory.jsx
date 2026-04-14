@@ -3,9 +3,8 @@ import TopBar from "./topBar";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import PartDetails from "./componants/partDeatails";
-import AddParts from "./componants/addParts";
 import { Toaster } from 'react-hot-toast';
+import PartsList from "./componants/partsList";
 
 
 export default function Inventory(){
@@ -26,11 +25,7 @@ export default function Inventory(){
       <TopBar setSidebarOpen={setSidebarOpen}/>
       <div className="h-full flex justify-between"
         onClick={() => setSidebarOpen(false)}>
-        
-        <div className="h-full w-full sm:overflow-y-auto flex flex-col gap-5 sm:px-6 sm:py-4 p-2"
-          onClick={() => setSidebarOpen(false)}>
-            <PartDetails />
-        </div>
+          <PartsList/>
       </div>
     </div>
   </div>

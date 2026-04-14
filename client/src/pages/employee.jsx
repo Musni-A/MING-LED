@@ -8,7 +8,7 @@ import RegisterPage from "./componants/registerUserPage";
 
 export default function Employee(){
     const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [showForm, setShowForm] = useState(false)
+    const [showForm, setShowForm] = useState(false)
     const naviagte = useNavigate();
     const loggedIn = localStorage.getItem("loggedIn")
     
@@ -25,16 +25,7 @@ export default function Employee(){
             {showForm && (
             <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
                 onClick={() => setShowForm(false)}>
-                <div className="transition-discrete p-6 rounded-xl shadow-2xl border border-gray-200 
-                    transition-all duration-300 ease-out 
-                    
-                    opacity-100 scale-95
-                    
-                    popover-open:opacity-100 popover-open:scale-100
-
-                    backdrop:transition-all backdrop:duration-300
-                    backdrop:bg-black/50 backdrop:opacity-0 
-                    popover-open:backdrop:opacity-100" onClick={(e) => e.stopPropagation()}>
+                <div onClick={(e) => e.stopPropagation()}>
                     <RegisterPage setShowForm={setShowForm} />
                 </div>
             </div>

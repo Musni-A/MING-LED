@@ -14,7 +14,7 @@ export default function UserList({setShowForm}) {
   const fetchData = ()=>{
     getAllUsers()
     .then((res)=>{setUsers(res.data)})
-    .catch((err)=>{console.log(err)})
+    .catch((err)=>{toast.error(err)})
     .finally(()=>setLoading(false))
   }
   

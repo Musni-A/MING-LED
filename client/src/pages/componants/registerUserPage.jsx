@@ -11,34 +11,32 @@ export default function RegisterPage({setShowForm}) {
   const empty = {
     name : '', username : '', age : '' , phoneNumber : '',
     department : '', jobRole : '', address : '',
-    password : ''
+    password : '', confirmPassword : ''
   }
-
-  const notify = (message, bg, color, icon ) => toast(message , {
-      style : {
-        background : bg,
-        color : color,
-      },
-      icon : icon
-    });
 
   const [form, setForm] = useState(empty)
 
   const handleChange = (e) => {
         const { name, value } = e.target
         setForm(prev => ({ ...prev, [name]: value }))
+        console.log(form)
     }
 
   const handleSubmit = async (e) => {
       e.preventDefault();
-      try {
-          const response = await createUser(form)
-          console.log(response.data)
-          setShowForm(false)
-      } catch (err) {
-        if(err){
-          notify( "Can not create a user" ,"", "", "❌",);
+      if(form.password == form.confirmPassword){
+        try {
+            const response = await createUser(form)
+            console.log(response.data)
+            setShowForm(false)
+        } catch (err) {
+          if(err){
+            toast.error("Can not create a user");
+          }
         }
+      }
+      else{
+        toast.error('Check passwords')
       }
   }
 
@@ -46,10 +44,11 @@ export default function RegisterPage({setShowForm}) {
 
       <div><Toaster></Toaster></div>
       {/* Card */}
-      <div className=" bg-blue-950 p-10 rounded-2xl">
+      <div className=" bg-blue-950 p-7 rounded-2xl border-4 border-white">
 
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col gap-4">
+            <div className="text-white text-2xl font-bold text-center pb-2">Add Employee</div>
 
             {/* Row 1 - Name & Username */}
             <div className="flex gap-4">
@@ -117,7 +116,7 @@ export default function RegisterPage({setShowForm}) {
               </div>
               <div className="flex-1 min-w-0 flex flex-col gap-1.5" style={{flexBasis:"calc(50% - 8px)"}}>
                 <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">Confirm Password *</label>
-                <input type="password" placeholder="Repeat password" onChange={handleChange}
+                <input value={form.confirmPassword} name="confirmPassword" type="password" placeholder="Repeat password" onChange={handleChange}
                   className="bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-sm outline-none w-full placeholder:text-white/30" />
               </div>
             </div>

@@ -1,11 +1,12 @@
+import 'dotenv/config'
 import express from 'express';
 import mongoose from 'mongoose';
-import userRouter from './routes/users.mjs';
-import ledPartsRouter from './routes/parts.mjs'
 import cors from 'cors'
 import session from "express-session";
 import passport from 'passport';
-import 'dotenv/config'
+import userRouter from './routes/users.mjs';
+import lightTypeRouter from './routes/lightType.mjs'
+import lightWatts from './routes/light.mjs'
 
 const app = express();
 
@@ -25,7 +26,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api', userRouter);
-app.use('/api', ledPartsRouter)
+app.use('/api', lightTypeRouter)
+app.use('/api', lightWatts)
 
 
 
