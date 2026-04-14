@@ -9,7 +9,7 @@ export default function NavBar({sidebarOpen, setSidebarOpen}){
     return<>
     {/* Sidebar */}
       <div className={`
-        fixed lg:static inset-y-0 left-0 z-30
+        lg:static inset-y-0 left-0 z-30
         w-64 bg-linear-to-r from-blue-900 to-blue-950 flex flex-col py-8 px-5 shrink-0
         transform transition-transform duration-300
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}

@@ -7,7 +7,7 @@ export default function TopBar( {setSidebarOpen} ){
 
     return <>
     {/* Top bar */}
-        <div className="bg-white border-b border-slate-300  px-4 md:px-8 py-4 flex items-center justify-between shrink-0 gap-3">
+        <div className="bg-white border-b overflow-hidden border-slate-300  px-4 md:px-8 py-4 flex items-center justify-between shrink-0 gap-3">
           <div className="flex items-center gap-3 min-w-0">
             {/* Hamburger */}
             <button

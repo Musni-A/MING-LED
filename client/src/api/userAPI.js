@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 // 'http://localhost:5000/api'
-export const baseURL = 'https://ming-led-server.onrender.com/api';
+// https://ming-led-server.onrender.com/api
+export const baseURL = 'http://localhost:5000/api';
 
 export const API = axios.create({baseURL : baseURL});
 
