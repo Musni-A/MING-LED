@@ -1,6 +1,7 @@
 import axios from "axios";
+import { baseURL } from "./userAPI";
 
-export const API = axios.create({baseURL: "http://localhost:5000/api"});
+export const API = axios.create({baseURL: baseURL});
 
 export const test = (testData)=> API.post('/test', testData)
 export const createParts = (data) => API.post('/parts', data)

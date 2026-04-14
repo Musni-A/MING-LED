@@ -1,6 +1,7 @@
 import axios from "axios";
+import { baseURL } from "./userAPI";
 
-export const API = axios.create({baseURL: "http://localhost:5000/api"});
+export const API = axios.create({baseURL: baseURL});
 
 export const createLightWatts = (Data)=> API.post('/lightWatts', Data);
 export const getLightWatts = ()=> API.get('/lightWatts')
