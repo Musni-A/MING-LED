@@ -2,7 +2,7 @@ import NavBar from "./navBar";
 import { useEffect, useState } from "react";
 import TopBar from "./topBar";
 import { Link, useNavigate } from "react-router-dom";
-import ContentOfDashboard from "./componants/dashboardContant";
+import DashboardContent from "./componants/dashboardContant";
 
 
 export default function Dashboard() {
@@ -16,13 +16,13 @@ export default function Dashboard() {
   })
   
   return<>
-      <div className="flex h-screen overflow-hidden bg-[#e0edfa] font-sans">
-      <NavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <div className="flex sm:h-screen overflow-hidden bg-[#e0edfa] font-sans relative">
+        <NavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           <div className="flex-1 flex flex-col min-w-0">
               <TopBar setSidebarOpen={setSidebarOpen} />
-              <div className="h-full overflow-y-scroll flex justify-between"
+              <div className="h-full sm:overflow-y-scroll flex justify-between"
                   onClick={() => setSidebarOpen(false)}>
-                    <ContentOfDashboard />
+                    <DashboardContent />
               </div>
           </div>
       </div>

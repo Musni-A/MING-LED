@@ -1,6 +1,6 @@
-export default function ContentOfDashboard() {
+export default function DashboardContent() {
   return (
-    <div className="flex-1 sm:px-6 py-4 sm:py-3" style={{background: "#f0f4f8"}}>
+    <div className="flex-1 sm:px-6 px-2 py-4 sm:py-3" style={{background: "#f0f4f8"}}>
 
       {/* KPI Cards - Responsive Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5 mb-4 sm:mb-6">
@@ -122,7 +122,7 @@ export default function ContentOfDashboard() {
       </div>
 
       {/* Bottom row - Responsive */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 pb-4 sm:pb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 sm:pb-6">
 
         {/* Recent Activity - Full width on mobile */}
         <div className="lg:col-span-2 bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6"
