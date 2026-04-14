@@ -137,7 +137,7 @@ export default function LightWatts({showForm, setShowForm, fetchData, lightTypes
             <div className="flex flex-col gap-1">
               <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">Type Name *</label>
               <select 
-                className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none placeholder:text-white/30 focus:border-[#7b9fd4] transition-colors"
+                className="bg-white/5 border sm:w-full w-35 border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none placeholder:text-white/30 focus:border-[#7b9fd4] transition-colors"
                 onChange={(e) => {
                   const type = lightTypes.find(t => t.typeName === e.target.value)
                   handleTypeSelect(type)
@@ -159,7 +159,7 @@ export default function LightWatts({showForm, setShowForm, fetchData, lightTypes
                 <input 
                   value={selectedType.typeName} 
                   disabled
-                  className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white/60 text-sm outline-none cursor-not-allowed"
+                  className="bg-white/5 border sm:w-full w-35 border-white/10 rounded-xl px-4 py-3 text-white/60 text-sm outline-none cursor-not-allowed"
                 />
               </div>
             )}
@@ -192,11 +192,11 @@ export default function LightWatts({showForm, setShowForm, fetchData, lightTypes
                       <span className="text-[#7b9fd4] text-xs font-bold w-5">{index + 1}.</span>
                       
                       {/* Part Name - Display only (from selected type) */}
-                      <div className="flex-1 flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-4 py-3">
+                      <div className="flex-1 flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-2 py-3">
                         <input
                           value={part.partsName}
                           disabled
-                          className="bg-transparent text-white/60 text-sm outline-none flex-1 cursor-not-allowed"
+                          className="bg-transparent w-20 text-white/60 text-sm outline-none flex-1 cursor-not-allowed"
                         />
                       </div>
                       
@@ -207,7 +207,7 @@ export default function LightWatts({showForm, setShowForm, fetchData, lightTypes
                           onChange={(e) => handlePartsNameOnChange(index, 'quantity', e.target.value)}
                           type="number"
                           placeholder="Enter quantity"
-                          className="bg-transparent text-white text-sm outline-none flex-1 placeholder:text-white/30"
+                          className="bg-transparent w-10 text-white text-sm outline-none flex-1 placeholder:text-white/30"
                           min="0"
                         />
                       </div>

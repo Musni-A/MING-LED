@@ -114,7 +114,7 @@ export default function LightTypeForm({setTypeShowForm, fetchData}){
                     onChange={(e)=>handlePartsNameOnChange(index,'partsName',e.target.value)}
                     type="text"
                     placeholder="Enter part name"
-                    className="bg-transparent text-white text-sm outline-none flex-1 placeholder:text-white/30"
+                    className="bg-transparent w-10 text-white text-sm outline-none flex-1 placeholder:text-white/30"
                   />
                 </div>
                 <button onClick={()=>{removePart(index)}} className="w-9 h-9 flex items-center justify-center rounded-xl bg-[#e8192c]/10 border border-[#e8192c]/20 text-[#e8192c] text-sm hover:bg-[#e8192c]/20 transition-colors shrink-0">

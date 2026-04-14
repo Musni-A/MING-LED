@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { getLightWatts } from "../../api/lightAPI";
 import { getLightType } from "../../api/lightTypeAPI";
-import { motion } from "framer-motion";
 import { Loader2Icon } from "lucide-react";
 
 export default function DashboardContent() {
@@ -31,21 +30,18 @@ export default function DashboardContent() {
 
 
   return (
-    <div onClick={()=>{console.log(wattsData)}} className="flex-1 sm:px-6 px-2 py-4 sm:py-3" style={{background: "#e0edfa"}}>
+    <div className="flex-1 sm:px-6 px-2 py-4 sm:py-3" style={{background: "#e0edfa"}}>
 
       {/* KPI Cards - Responsive Grid */}
 
-    {!loading ? (<div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-6">
-  {typeData.map((type, index) => {
+    {!loading ? (<div className="  hidden sm:grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-6">
+    {typeData.map((type, index) => {
     const typeWatts = wattsData.filter(watt => watt.typeName === type.typeName);
     const wattCount = typeWatts.length;
     
     return (
-      <motion.div
+      <div
       key={index}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        whileHover={{ y: -4 }}
         className={` ${type.typeName === "Panel Common Parts" && 'hidden'} group border-b-8 border-blue-500 relative bg-linear-to-br from-white to-gray-50/80 rounded-2xl p-5 shadow-2xl hover:shadow-2xl hover:border-blue-400/30 transition-all duration-300 overflow-hidden`}
       >
         {/* Animated Background Gradient */}
@@ -57,7 +53,7 @@ export default function DashboardContent() {
         {/* Header Section */}
         <div className="relative flex items-start justify-between mb-4">
           <div className="flex-1">
-            <h3 className=" font-bold text-gray-800 group-hover:text-blue-600 transition-colors duration-300 truncate pr-2">
+            <h3 className=" font-bold text-sm sm:text-base text-gray-800 group-hover:text-blue-600 transition-colors duration-300 pr-2">
               {type.typeName}
             </h3>
             <div className="flex items-center gap-2 mt-1">
@@ -87,18 +83,14 @@ export default function DashboardContent() {
               </div>
               <div className=" grid grid-cols-2 gap-2">
                 {typeWatts.map((watt, wIndex) => (
-                  <motion.div
+                  <div
                     key={wIndex}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: index * 0.1 + wIndex * 0.05 }}
-                    whileHover={{ scale: 1.05 }}
                     className="group/watt relative"
                   >
                     <div className="px-1 py-1 bg-linear-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200/50 hover:border-blue-400 hover:shadow-md transition-all duration-300">
                       <div className="flex items-center gap-1.5">
                         <div className="w-1.5 h-1.5 rounded-full bg-blue-500 group-hover/watt:bg-blue-600 transition-colors" />
-                        <p className="text-xs font-semibold text-gray-700 group-hover/watt:text-blue-600 transition-colors">
+                        <p className="text-[10px] truncate sm:text-xs font-semibold text-gray-700 group-hover/watt:text-blue-600 transition-colors">
                           {watt.watts} :-
                           {Math.min(...watt.parts.map(part => part.quantity))}
                         </p>
@@ -110,7 +102,7 @@ export default function DashboardContent() {
                       {Math.min(...watt.parts.map(part => part.quantity))} Possible to produce
                       <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-0.5 border-4 border-transparent border-t-gray-900" />
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </>
@@ -145,11 +137,40 @@ export default function DashboardContent() {
             </div>
           </div>
         )}
-      </motion.div>
+      </div>
     );
   })}
 </div>) : <Loader2Icon className="animate-spin text-blue-500 mx-auto my-10" size={48} />}
 
+<div className="sm:hidden mb-7 border-t-8 border-blue-500 relative bg-gradient-to-br from-white to-gray-50/80 rounded-2xl p-5 shadow-2xl transition-all duration-300 overflow-hidden">
+  <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+    Available Wattages
+  </div>
+  
+  <div className="grid grid-cols-3 gap-4">
+    {wattsData.map((watt, index) => {
+      const lowestQuantity = watt.parts?.length > 0 
+        ? Math.min(...watt.parts.map(part => part.quantity))
+        : 0;
+      
+      return (
+        <div 
+          key={index} 
+          className="flex items-center gap-2 py-1 bg-blue-200 rounded-lg hover:bg-blue-50 transition-colors group/item"
+        >
+          <div className="w-1.5 h-1.5 rounded-full ml-1 bg-blue-500 group-hover/item:bg-blue-600 transition-colors" />
+          <div className="text-sm font-medium">
+            <span className="text-gray-700 ">{watt.watts}</span>
+            <span className="text-gray-400 mx-1">•</span>
+            <span className={`font-semibold ${lowestQuantity < 100 ? 'text-red-500' : 'text-green-600'}`}>
+              {lowestQuantity}
+            </span>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</div>
       {/* Middle row - Responsive */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 mb-4 sm:mb-6">
 
