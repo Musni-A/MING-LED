@@ -1,4 +1,4 @@
-export default function DashboardContent() {
+export default function ContentOfDashboard() {
   return (
     <div className="flex-1 sm:px-6 py-4 sm:py-3" style={{background: "#f0f4f8"}}>
 

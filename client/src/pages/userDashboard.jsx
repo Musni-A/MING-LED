@@ -2,7 +2,7 @@ import NavBar from "./navBar";
 import { useEffect, useState } from "react";
 import TopBar from "./topBar";
 import { Link, useNavigate } from "react-router-dom";
-import DashboardContent from "./componants/dashBoard";
+import ContentOfDashboard from "./componants/dashboardContant";
 
 
 export default function Dashboard() {
@@ -22,7 +22,7 @@ export default function Dashboard() {
               <TopBar setSidebarOpen={setSidebarOpen} />
               <div className="h-full overflow-y-scroll flex justify-between"
                   onClick={() => setSidebarOpen(false)}>
-                    <DashboardContent />
+                    <ContentOfDashboard />
               </div>
           </div>
       </div>
