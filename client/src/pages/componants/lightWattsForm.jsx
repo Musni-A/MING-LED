@@ -1,10 +1,12 @@
 import { useState } from "react"
 import toast from "react-hot-toast";
 import { createLightWatts } from "../../api/lightAPI";
+import { LoaderIcon } from "lucide-react";
 
 export default function LightWatts({showForm, setShowForm, fetchData, lightTypes}) {
 
   const [selectedType, setSelectedType] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   const [formData, setFormData] = useState({
     typeName: '',
@@ -33,6 +35,7 @@ export default function LightWatts({showForm, setShowForm, fetchData, lightTypes
   }
 
   const handleSubmit = async () => {
+    setLoading(true);
     try {
       const submitData = {
         ...formData,
@@ -43,8 +46,6 @@ export default function LightWatts({showForm, setShowForm, fetchData, lightTypes
       console.log(response.data)
       toast.success("Success")
       await fetchData()
-      setShowForm(false)
-
       setFormData({
         typeName: '',
         watts: '',
@@ -55,6 +56,10 @@ export default function LightWatts({showForm, setShowForm, fetchData, lightTypes
     catch(err) {
       toast.error(err.response?.data?.Msg || err.response?.Msg || "Something went wrong")
       console.log(err.response)
+    }
+    finally {
+      setShowForm(false)
+      setLoading(false);
     }
   }
 
@@ -226,13 +231,18 @@ export default function LightWatts({showForm, setShowForm, fetchData, lightTypes
 
           {/* Submit */}
           <div className="flex justify-evenly gap-4">
-            <button 
-              onClick={handleSubmit} 
-              disabled={!selectedType || !formData.watts}
-              className="mt-2 w-full py-3.5 rounded-xl text-white font-bold text-base cursor-pointer border-none bg-linear-to-r from-[#e8192c] to-[#c0001f] shadow-[0_8px_24px_rgba(232,25,44,0.3)] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            {loading ? (
+              <div className="mt-2 w-full py-3.5 rounded-xl text-white font-bold text-base cursor-pointer border-none bg-linear-to-r from-[#e8192c] to-[#c0001f] shadow-[0_8px_24px_rgba(232,25,44,0.3)] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">
+                <LoaderIcon className="animate-spin mx-auto" />
+              </div>
+            ) : (
+              <button 
+                onClick={handleSubmit} 
+                disabled={!selectedType || !formData.watts}
+                className="mt-2 w-full py-3.5 rounded-xl text-white font-bold text-base cursor-pointer border-none bg-linear-to-r from-[#e8192c] to-[#c0001f] shadow-[0_8px_24px_rgba(232,25,44,0.3)] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+              >
               Save Light Type →
-            </button>
+            </button>)}
 
             <button 
               onClick={() => {

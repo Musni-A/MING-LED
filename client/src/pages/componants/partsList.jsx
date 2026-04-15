@@ -5,7 +5,7 @@ import toast from "react-hot-toast"
 import LightWatts from "./lightWattsForm"
 import UpdateForm from "./updateForm"
 import { getLightWatts } from "../../api/lightAPI"
-import { Plus, BookmarkPlus, ArrowDownFromLine, LoaderCircle } from 'lucide-react';
+import { PlusSquare, Plus, MinusSquareIcon, BookmarkPlus, ArrowDownFromLine, LoaderCircle, Trash2Icon } from 'lucide-react';
 
 export default function PartsList(){
     
@@ -105,33 +105,43 @@ export default function PartsList(){
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-2 border-b-2 border-gray-300 bg-white/50 backdrop-blur-sm">
             <div className="w-full gap-8 justify-between items-center sm:flex sm:w-auto">
-                {/* <div className="pl-2">
-                    <h2 className="text-xl md:text-xl font-bold text-gray-800">Parts Management</h2>
-                    <p className="text-xs md:text-sm text-gray-500">Manage product types and their components</p>
-                </div> */}
-                
-                {/* Select Dropdown */}
-                <div className="mt-1 px-4 gap-2 flex justify-between items-center border-2 py-1 border-gray-300 rounded-xl bg-white/50 backdrop-blur-sm">
-                    <select 
-                        className="w-full sm:w-fit bg-white border-gray-200 rounded-xl text-gray-700 font-medium cursor-pointer outline-none transition-all appearance-none"
-                        onChange={(e) => {
-                            const type = lightTypes.find(t => t.typeName === e.target.value)
-                            const watts = lightWatts.filter(w => w.typeName === e.target.value)
-                            handleTypeSelect(type, watts)
-                        }}
-                    >
-                        <option value="">Select product type...</option>
-                        {lightTypes.map((type) => (
-                            <option key={type._id} value={type.typeName}>
-                                {type.typeName} ({lightWatts.filter(w => w.typeName === type.typeName).length} variants)
-                            </option>
-                        ))}
-                    </select>
-                    <div className="">
-                        <ArrowDownFromLine className="w-4 h-4" />
-                    </div>
-                </div>
-            </div>
+  <div className="mt-1 w-full sm:w-auto">
+    <div className="flex items-center gap-3">
+      {/* Icon Badge */}
+      <div className="hidden sm:flex w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 items-center justify-center shadow-md shadow-blue-200">
+        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+        </svg>
+      </div>
+
+      {/* Select Container */}
+      <div className="relative flex-1">
+        <select 
+          className="w-full sm:w-64 pl-4 pr-10 py-2.5 bg-white border-2 border-gray-200 rounded-xl text-gray-700 font-medium cursor-pointer hover:border-blue-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all appearance-none text-sm shadow-sm"
+          onChange={(e) => {
+            const type = lightTypes.find(t => t.typeName === e.target.value)
+            const watts = lightWatts.filter(w => w.typeName === e.target.value)
+            handleTypeSelect(type, watts)
+          }}
+        >
+          <option value="">📦 Select product type...</option>
+          {lightTypes.map((type) => (
+            <option key={type._id} value={type.typeName}>
+              {type.typeName} • {lightWatts.filter(w => w.typeName === type.typeName).length} variants
+            </option>
+          ))}
+        </select>
+        
+        {/* Arrow */}
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
             
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
@@ -199,11 +209,11 @@ export default function PartsList(){
                                                     {selectedType.parts.map((part, pIndex) => (
                                                         <td key={pIndex} className="px-3 whitespace-nowrap text-sm text-center border-l-2 border-r-2 border-gray-300">
                                                             {watt.parts[pIndex]?.quantity ? (
-                                                                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 ">
+                                                                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-300/20 text-blue-800">
                                                                     {watt.parts[pIndex].quantity} pcs
                                                                 </span>
                                                             ) : (
-                                                                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100">
+                                                                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs  font-bold bg-red-100">
                                                                     —
                                                                 </span>
                                                             )}
@@ -211,17 +221,22 @@ export default function PartsList(){
                                                     ))}
                                                     <td className="px-4 py-3 w-20 whitespace-nowrap text-sm font-semibold text-gray-900 border-l-2 border-r-2 border-gray-300">
                                                         <div className="flex items-center justify-center gap-2">
-                                                        <div onClick={()=>{setShowUpdateForm(true); getId(watt._id, index, 'add');}} className="bg-blue-200 px-2 py-0.5 rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-300 hover:scale-105 duration-200 transition-all">
-                                                            <button className="text-blue-600 hover:text-blue-700">
-                                                                Add (+)
-                                                            </button>
+                                                            <div onClick={()=>{setShowUpdateForm(true); getId(watt._id, index, 'add');}} className="bg-blue-200 p-0.5 rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-300 hover:scale-105 duration-200 transition-all">
+                                                                <button className="text-blue-600 hover:text-blue-700">
+                                                                    <PlusSquare className="w-6 h-6 text-blue-600" />
+                                                                </button>
+                                                            </div>
+                                                            <div onClick={()=>{setShowUpdateForm(true); getId(watt._id, index, 'subtract');}} className="bg-yellow-200 p-0.5 rounded-lg flex items-center justify-center cursor-pointer hover:bg-yellow-300 hover:scale-105 duration-200 transition-all">
+                                                                <button className="text-blue-600 hover:text-blue-700">
+                                                                    <MinusSquareIcon className="w-6 h-6 text-yellow-600" />
+                                                                </button>
+                                                            </div>
+                                                            <div  className="bg-red-200 p-0.5 rounded-lg flex items-center justify-center cursor-pointer hover:bg-red-300 hover:scale-105 duration-200 transition-all">
+                                                                <button className="text-blue-600 hover:text-blue-700">
+                                                                    <Trash2Icon className="w-6 h-6 text-red-600" />
+                                                                </button>
+                                                            </div>
                                                         </div>
-                                                        <div onClick={()=>{setShowUpdateForm(true); getId(watt._id, index, 'subtract');}} className="bg-blue-200 px-2 py-0.5 rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-300 hover:scale-105 duration-200 transition-all">
-                                                            <button className="text-blue-600 hover:text-blue-700">
-                                                                Sub (-)
-                                                            </button>
-                                                        </div>
-                                                    </div>
                                                     </td>
                                                 </tr>
                                             ))
@@ -262,14 +277,19 @@ export default function PartsList(){
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center gap-2">
-                                                        <div onClick={()=>{setShowUpdateForm(true); getId(watt._id, wattIndex, 'add');}} className="bg-blue-200 px-2 py-0.5 rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-300 hover:scale-105 duration-200 transition-all">
+                                                        <div onClick={()=>{setShowUpdateForm(true); getId(watt._id, wattIndex, 'add');}} className="bg-blue-200 p-0.5 rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-300 hover:scale-105 duration-200 transition-all">
                                                             <button className="text-blue-600 hover:text-blue-700">
-                                                                Add (+)
+                                                                <PlusSquare className="w-6 h-6 text-blue-600" />
                                                             </button>
                                                         </div>
-                                                        <div onClick={()=>{setShowUpdateForm(true); getId(watt._id, wattIndex, 'subtract');}} className="bg-blue-200 px-2 py-0.5 rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-300 hover:scale-105 duration-200 transition-all">
+                                                        <div onClick={()=>{setShowUpdateForm(true); getId(watt._id, wattIndex, 'subtract');}} className="bg-yellow-200 p-0.5 rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-300 hover:scale-105 duration-200 transition-all">
                                                             <button className="text-blue-600 hover:text-blue-700">
-                                                                Sub (-)
+                                                                <MinusSquareIcon className="w-6 h-6 text-yellow-600" />
+                                                            </button>
+                                                        </div>
+                                                        <div  className="bg-red-200 p-0.5 rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-300 hover:scale-105 duration-200 transition-all">
+                                                            <button className="text-blue-600 hover:text-blue-700">
+                                                                <Trash2Icon className="w-6 h-6 text-red-600" />
                                                             </button>
                                                         </div>
                                                     </div>

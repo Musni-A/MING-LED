@@ -1,8 +1,11 @@
 import { useState } from "react"
 import toast from "react-hot-toast";
 import { createLightType } from "../../api/lightTypeAPI";
+import { LoaderIcon } from "lucide-react";
 
 export default function LightTypeForm({setTypeShowForm, fetchData}){
+
+  const [loading, setLoading] = useState(false)
 
   const [formData, setFormData] = useState({
     typeName : '',
@@ -47,14 +50,18 @@ export default function LightTypeForm({setTypeShowForm, fetchData}){
   };
 
   const handleSubmit = async () =>{
+    setLoading(true);
     try{
       const response = await createLightType(formData)
-      toast.success("Success")
+      toast.success(response.data.Msg)
       fetchData();
     }
     catch(err){
-      toast.error(err.response.Msg)
-      console.log(err.response)
+      toast.error(err.response.data.Msg)
+    }
+    finally{
+      setLoading(false);
+      setTypeShowForm(false);
     }
   }
 
@@ -132,9 +139,15 @@ export default function LightTypeForm({setTypeShowForm, fetchData}){
           </div>
 
           {/* Submit */}
-          <button onClick={handleSubmit} className="mt-2 w-full py-3.5 rounded-xl text-white font-bold text-base cursor-pointer border-none bg-linear-to-r from-[#e8192c] to-[#c0001f] shadow-[0_8px_24px_rgba(232,25,44,0.3)] hover:opacity-90 transition-opacity">
-            Save Light Type →
-          </button>
+            {loading ? (
+              <button className="mt-2 w-full py-3.5 rounded-xl text-white font-bold text-base cursor-pointer border-none bg-linear-to-r from-[#e8192c] to-[#c0001f] shadow-[0_8px_24px_rgba(232,25,44,0.3)] hover:opacity-90 transition-opacity">
+                <LoaderIcon className="animate-spin mx-auto" />
+              </button>
+            ) : (
+              <button onClick={handleSubmit} className="mt-2 w-full py-3.5 rounded-xl text-white font-bold text-base cursor-pointer border-none bg-linear-to-r from-[#e8192c] to-[#c0001f] shadow-[0_8px_24px_rgba(232,25,44,0.3)] hover:opacity-90 transition-opacity">
+                Save Light Type →
+              </button>
+            )}
 
           <button onClick={()=>{setTypeShowForm(false)}} className="w-full py-3 rounded-xl text-[#7b9fd4] font-semibold text-sm cursor-pointer border border-white/10 bg-transparent hover:bg-white/5 transition-colors">
             Cancel
