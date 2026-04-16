@@ -1,63 +1,64 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getUser } from "../api/userAPI";
 import { Link, useNavigate } from "react-router-dom";
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
 import { LoaderIcon } from "lucide-react";
 
-function LoginPage(){
-  
-  const notify = (message, bg, color, icon ) => toast(message , {
-    style : {
-      background : bg,
-      color : color,
-    },
-    icon : icon
-  });
+function LoginPage() {
+  const navigate = useNavigate();
 
-  const navigate = useNavigate()
+  // ✅ Redirect if already logged in
+  useEffect(() => {
+    const loggedIn = localStorage.getItem("loggedIn") === "true";
+    if (loggedIn) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
-  const [form, setForm] = useState({username : "", password : ""})
+  const notify = (message, bg, color, icon) =>
+    toast(message, {
+      style: {
+        background: bg,
+        color: color,
+      },
+      icon: icon,
+    });
 
-  const handleChange = (e)=>{
-    const {name, value} = e.target;
-    setForm( pre =>({...pre, [name] : value}))
-        console.log(form)
+  const [form, setForm] = useState({ username: "", password: "" });
+  const [login, setLogin] = useState(false);
 
-  }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+    // ✅ Removed console.log - it would show stale state
+  };
 
-  const [login, setLogin] = useState(false)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLogin(true);
 
-  const handleSubmit = async (e)=>{
-    setLogin(true)
-    e.preventDefault()
-    try{
+    try {
       const response = await getUser(form);
-      localStorage.setItem('name', response.data.user.name)
-      localStorage.setItem('jobRole', response.data.user.jobRole)
-      const loggedIn = response.data.loggedIn;
-      const userId = response.data.user._id
-      const userRole = response.data.user.jobRole
-      const userDepartment = response.data.user.department
-      localStorage.setItem('userRole', userRole)
-      localStorage.setItem('loggedIn', loggedIn)
-      localStorage.setItem('userId', userId)
-      localStorage.setItem('userDepartment', userDepartment)
-      setLogin(false)
 
-      if(loggedIn){
-        navigate('/dashboard')
-      }
+      // Store user data
+      localStorage.setItem("name", response.data.user.name);
+      localStorage.setItem("jobRole", response.data.user.jobRole);
+      localStorage.setItem("userRole", response.data.user.jobRole);
+      localStorage.setItem("loggedIn", response.data.loggedIn);
+      localStorage.setItem("userId", response.data.user._id);
+      localStorage.setItem("userDepartment", response.data.user.department);
 
-    }
-    catch(err)
-    {
-      setLogin(true)
-      if(err){
-        notify( "Invalid username and password" ,"", "", "❌",);
-        setLogin(false)
+      setLogin(false);
+
+      if (response.data.loggedIn) {
+        navigate("/dashboard");
       }
+    } catch (err) {
+      // ✅ Fixed: setLogin(false) first, then show toast
+      setLogin(false);
+      notify("Invalid username and password", "", "", "❌");
     }
-  }
+  };
   
     return<>
     <div><Toaster/></div>
