@@ -105,43 +105,43 @@ export default function PartsList(){
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-2 border-b-2 border-gray-300 bg-white/50 backdrop-blur-sm">
             <div className="w-full gap-8 justify-between items-center sm:flex sm:w-auto">
-  <div className="mt-1 w-full sm:w-auto">
-    <div className="flex items-center gap-3">
-      {/* Icon Badge */}
-      <div className="hidden sm:flex w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 items-center justify-center shadow-md shadow-blue-200">
-        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-        </svg>
-      </div>
+            <div className="mt-1 w-full sm:w-auto">
+                <div className="flex items-center gap-3">
+                {/* Icon Badge */}
+                <div className="hidden sm:flex w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 items-center justify-center shadow-md shadow-blue-200">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                </div>
 
-      {/* Select Container */}
-      <div className="relative flex-1">
-        <select 
-          className="w-full sm:w-64 pl-4 pr-10 py-2.5 bg-white border-2 border-gray-200 rounded-xl text-gray-700 font-medium cursor-pointer hover:border-blue-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all appearance-none text-sm shadow-sm"
-          onChange={(e) => {
-            const type = lightTypes.find(t => t.typeName === e.target.value)
-            const watts = lightWatts.filter(w => w.typeName === e.target.value)
-            handleTypeSelect(type, watts)
-          }}
-        >
-          <option value="">📦 Select product type...</option>
-          {lightTypes.map((type) => (
-            <option key={type._id} value={type.typeName}>
-              {type.typeName} • {lightWatts.filter(w => w.typeName === type.typeName).length} variants
-            </option>
-          ))}
-        </select>
-        
-        {/* Arrow */}
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-          </svg>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+                {/* Select Container */}
+                <div className="relative flex-1">
+                    <select 
+                    className="w-full sm:w-64 pl-4 pr-10 py-2.5 bg-white border-2 border-gray-200 rounded-xl text-gray-700 font-medium cursor-pointer hover:border-blue-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all appearance-none text-sm shadow-sm"
+                    onChange={(e) => {
+                        const type = lightTypes.find(t => t.typeName === e.target.value)
+                        const watts = lightWatts.filter(w => w.typeName === e.target.value)
+                        handleTypeSelect(type, watts)
+                    }}
+                    >
+                    <option value="">📦 Select product type...</option>
+                    {lightTypes.map((type) => (
+                        <option key={type._id} value={type.typeName}>
+                        {type.typeName} • {lightWatts.filter(w => w.typeName === type.typeName).length} variants
+                        </option>
+                    ))}
+                    </select>
+                    
+                    {/* Arrow */}
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
             
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
@@ -177,7 +177,7 @@ export default function PartsList(){
                                 <table className="w-full text-sm">
                                     <thead>
                                         <tr className="border-b-2 border-gray-300 bg-gray-100">
-                                            <th className="px-4 py-3 text-center text-xs font-semibold text-black uppercase tracking-wider border-l-2 border-gray-300">
+                                            <th className="px-4 py-3 text-center text-xs font-semibold text-black uppercase tracking-wider border-l-2 border-gray-300 sticky left-0 bg-gray-100 z-20 w-24">
                                                 <div className="flex flex-col items-center gap-1">
                                                     <span className="font-bold text-black">Watts</span>
                                                 </div>
@@ -200,7 +200,7 @@ export default function PartsList(){
                                         {selectedWatts.length > 0 ? (
                                             selectedWatts.map((watt, index) => (
                                                 <tr key={index} className={`hover:bg-blue-50/30 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}>
-                                                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-gray-900 border-l-2 border-r-2 border-gray-300">
+                                                    <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-gray-900 border-l-2 border-r-2 border-gray-300 text-center sticky left-0 bg-inherit z-10">
                                                         <div className="flex items-center justify-center gap-2">
                                                             <div className="w-2 h-2 rounded-full bg-blue-500"></div>
                                                             <span>{watt.watts}</span>

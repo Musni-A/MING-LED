@@ -13,7 +13,9 @@ const app = express();
 app.use(cors({
     origin: [
         'http://localhost:5173',
-        'https://ming-led.onrender.com' // ← add your network IP
+        'https://ming-led.onrender.com',
+        'https://ming-led.netlify.app'
+        // ← add your network IP
     ]
 }))
 app.use(express.json());
