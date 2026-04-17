@@ -71,7 +71,7 @@ function LoginPage() {
         style={{background:"radial-gradient(circle, rgba(245,200,0,0.05) 0%, transparent 70%)"}} />
 
       {/* Card */}
-      <div className="relative z-10 w-full max-w-150 bg-linear-to-br from-[#173249] via-[#173249] to-[#0b1449] backdrop-blur-xl border rounded-3xl p-10 shadow-[0_32px_80px_rgba(0,0,0,0.4)]">
+      <div className="relative z-10 w-full max-w-150 bg-linear-to-r from-blue-900 to-blue-950 backdrop-blur-xl border rounded-3xl p-10 shadow-[0_32px_80px_rgba(0,0,0,0.4)]">
 
         {/* Logo */}
         <div className="flex items-center justify-center gap-4 mb-7">
