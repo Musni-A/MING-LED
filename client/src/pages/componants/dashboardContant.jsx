@@ -92,6 +92,7 @@ export default function DashboardContent() {
 
     useEffect(() => {
         fetchData();
+        console.log('API call made at:', new Date().toISOString());
     }, [fetchData]);
 
     // ✅ MEMOIZED: Chart data based on filter

@@ -1,4 +1,8 @@
+import { Link, useLocation } from "react-router-dom";
+
 export default function TopBar( {setSidebarOpen} ){
+
+  const location = useLocation();
 
   const userData = localStorage.getItem('name')
   const firstLetterOfUserName = userData[0];
@@ -36,13 +40,15 @@ export default function TopBar( {setSidebarOpen} ){
               <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#e8192c] text-white text-[0.5rem] flex items-center justify-center font-bold">3</div>
             </div>
             {/* Avatar */}
-            <div className="flex items-center gap-2 cursor-pointer">
-              <div className="w-9 h-9 rounded-xl bg-[#0d2145] flex items-center justify-center text-white font-bold text-sm shrink-0">{ firstLetterOfUserName }</div>
-              <div className="hidden sm:block">
-                <div className="text-xs font-semibold text-[#0d2145]">{userData}</div>
-                <div className="text-[0.6rem] text-slate-400">Developer</div>
+            <Link to={'/profile'}>
+              <div className="flex items-center gap-2 cursor-pointer">
+                <div className={`${location.pathname == '/profile' ? ' border-4 border-red-600' : ''} w-9 h-9 rounded-xl bg-[#0d2145] flex items-center justify-center text-white font-bold text-sm shrink-0`}>{ firstLetterOfUserName }</div>
+                <div className="hidden sm:block">
+                  <div className="text-xs font-semibold text-[#0d2145]">{userData}</div>
+                  <div className="text-[0.6rem] text-slate-400">Developer</div>
+                </div>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
     </>

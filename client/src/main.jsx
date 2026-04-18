@@ -10,6 +10,7 @@ import Inventory from './pages/inventory.jsx';
 import Reports from './pages/reports.jsx';
 import Attendence from './pages/attendence.jsx';
 import Settings from './pages/settings.jsx';
+import UserProfile from './pages/userProfile.jsx';
 
 const router = createBrowserRouter([
   {
@@ -43,11 +44,15 @@ const router = createBrowserRouter([
   {
     path : '/settings',
     element : <Settings/>
+  },
+  {
+    path : '/profile',
+    element : <UserProfile/>
   }
 ])
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <RouterProvider router={router} />
-  </StrictMode>,
+  // </StrictMode>,
 )
