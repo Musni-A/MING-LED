@@ -7,6 +7,7 @@ import passport from 'passport';
 import userRouter from './routes/users.mjs';
 import lightTypeRouter from './routes/lightType.mjs'
 import lightWatts from './routes/light.mjs'
+import compression from 'compression';
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(cors({
         // ← add your network IP
     ]
 }))
+app.use(compression());
 app.use(express.json());
 app.use(session({
     secret: process.env.SESSION_SECRET || "fallback_secret",

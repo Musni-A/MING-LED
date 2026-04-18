@@ -151,7 +151,6 @@ export default function UserList({setShowForm}) {
                     </div>
                     <div>
                       <div className="font-semibold text-[#0d2145] text-sm">{user.name}</div>
-                      <div className="text-xs text-slate-400">@{user.username}</div>
                     </div>
                   </div>
                 </td>

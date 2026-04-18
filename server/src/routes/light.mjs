@@ -18,7 +18,7 @@ router.post('/lightWatts', async(req, res)=>{
 
 router.get('/lightWatts', async(req, res)=>{
     try{
-        const lightWatts = await LightWatts.find()
+        const lightWatts = await LightWatts.find();
         res.status(200).json(lightWatts)
     }
     catch(err){

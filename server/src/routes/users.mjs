@@ -5,6 +5,9 @@ import { User } from "../mongoose/schema/users.mjs";
 import passport from 'passport'
 import { Strategy as localStrategy } from 'passport-local';
 import { comparePassword, hashPassword } from "../util/helper.mjs"
+import uploadParser, { uploadToCloudinary } from "../config/cloudinary.mjs";
+import fs from 'fs';
+import path from 'path';
 
 const app = express();
 const router = Router();
@@ -18,9 +21,8 @@ const userValidation = [
     body('password').notEmpty().withMessage('Invalid password'),
     body('department').notEmpty().withMessage('Invalid department'),
     body('jobRole').default("Not yet assign job role"),
+    body('imageUrl').optional().isString(),
 ]
-
-
 
 passport.use(new localStrategy(
     {usernameField:"username", passwordField:"password"},
@@ -53,8 +55,31 @@ passport.deserializeUser(async(id, done)=>{
     }
 })
 
+// Updated upload endpoint
+router.post('/upload', uploadParser.single('image'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'No file uploaded' });
+        }
+        
+        // Upload to Cloudinary
+        const result = await uploadToCloudinary(req.file.path);
+        
+        // Delete temp file
+        fs.unlinkSync(req.file.path);
+        
+        res.status(200).json({
+            message: 'File uploaded successfully!',
+            imageUrl: result.secure_url
+        });
+    } catch (error) {
+        console.error('Upload error:', error);
+        res.status(500).json({ message: 'Server error during upload.' });
+    }
+});
 
 router.post('/register', userValidation, async(req, res)=>{
+    console.log("Received registration data:", req.body);
     const error = validationResult(req);
     if(!error.isEmpty()){
         return res.status(400).json({Error : error.array()})
@@ -94,6 +119,50 @@ router.get('/users', async(req, res)=>{
         res.json({Error : err})
     }
 })
+
+router.get('/users/:id', async(req, res)=>{
+    try{
+        const userId = req.params.id;
+        const user = await User.findById(userId);
+        if(!user){
+            return res.json({msg : "User not found" })
+        }
+        res.status(200).json(user);
+    }
+    catch(err){
+        res.json({Error : err})
+    }
+})
+
+router.patch('/users/:id', async(req, res)=>{
+    try{
+        const userId = req.params.id;
+        const updates = req.body;
+        const user = await User.findById(userId);
+        if(!user){
+            return res.json({msg : "User not found" })
+        }
+        if(updates.upType === 'updatePassword'){
+            const compareResult = comparePassword(updates.data.currentPassword, user.password);
+            console.log(compareResult)
+            if (!compareResult) {
+                return res.json({ msg: "Current password is incorrect" });
+            }
+            const hashedPassword = hashPassword(updates.data.newPassword);
+            const updateUser = await User.findByIdAndUpdate(userId, { password: hashedPassword }, { returnDocument : 'after' });
+            return res.status(200).json(updateUser);
+        }
+        if(updates.upType === 'updateDetails'){
+            const user = await User.findByIdAndUpdate(userId, updates.data, { returnDocument : 'after' });
+            return res.status(200).json(user);
+        }
+    }
+    catch(err){
+        res.json({Error : err})
+    }
+});
+
+
 router.delete('/users/:id', async(req ,res)=>{
     try{
         const userId = req.params.id;
@@ -106,9 +175,6 @@ router.delete('/users/:id', async(req ,res)=>{
     catch(err){
         res.json({msg : err})
     }
-
-    // const userId = req.params.id;
-    // res.json({userId})
 })
 
 export default router;

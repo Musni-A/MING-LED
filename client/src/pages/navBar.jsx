@@ -63,7 +63,7 @@ export default function NavBar({sidebarOpen, setSidebarOpen}){
             { 
               icon: <UserCheck />, 
               label: "Attendance", 
-              path: '/attendance',
+              path: '/Attendence',
               showFor: ['Admin', 'Manager', 'Assembler', 'HR']
             },
             
@@ -83,7 +83,7 @@ export default function NavBar({sidebarOpen, setSidebarOpen}){
               showFor: ['Admin', 'Manager', 'Assembler', 'Inventory', 'HR']
             }
           ]
-          .filter(item => item.showFor.includes(userRole))
+          .filter(item => item.showFor.includes(userDepartment))
           .map(item => (
             <Link key={item.label} to={item.path}>
               <div

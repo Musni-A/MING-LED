@@ -37,6 +37,11 @@ const usersSchema = new mongoose.Schema({
     jobRole : {
         type : String,
         required : true
+    },
+    imageUrl: {
+        type: String,
+        default: null,
+        trim: true
     }
 }, { timestamps: true });
 

@@ -1,3 +1,4 @@
+import Profile from "./componants/profile";
 import NavBar from "./navBar";
 import TopBar from "./topBar";
 import { useState } from "react";
@@ -10,7 +11,7 @@ export default function Attendence(){
         <div className="flex-1 flex flex-col min-w-0">
             <TopBar setSidebarOpen={setSidebarOpen}/>
             <div className="h-full" onClick={() =>setSidebarOpen(false)}>
-                <h1>Attendence</h1>
+                <Profile/>
             </div>
         </div>
     </div>
