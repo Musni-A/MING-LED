@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import LightTypeForm from "./lightTypeForm"
-import { getLightType } from "../../api/lightTypeAPI"
+import { getLightType, deleteLightType } from "../../api/lightTypeAPI"
 import toast from "react-hot-toast"
 import LightWatts from "./lightWattsForm"
 import UpdateForm from "./updateForm"
@@ -15,13 +15,13 @@ export default function PartsList(){
     const [lightTypes, setLightTypes] = useState([])
     const [lightWatts, setLightWatts] = useState([])
     const [selectedType, setSelectedType] = useState(null)
+    const [typeId, setTypeId] = useState(null)
     const [selectedWatts, setSelectedWatts] = useState(null)
     const [selectedWattsId, setSelectedWattsId] = useState(null)
     const [arithType, setArithType] = useState(null)
     const [getIndex, setGetIndex] = useState(null)
     const [loading, setLoading] = useState(true)
     const [lastSelectedTypeName, setLastSelectedTypeName] = useState(null)
-    const [deleteId, setDeleteId] = useState(null);
 
     const fetchData = async () => {
         try {
@@ -50,6 +50,37 @@ export default function PartsList(){
     useEffect(() => {
         fetchData();
     }, [])
+
+    const handleOnTypeDelete = (typeName)=>{
+        toast(
+        (t) => (
+            <div className="flex flex-col gap-2">
+            <p>Delete {typeName} permanently?</p>
+            <div className="flex gap-2 justify-evenly">
+                <button
+                onClick={() => {
+                    toast.dismiss(t.id);
+                    confirmDeleteType(typeId);
+                }}
+                className="px-3 py-1 bg-red-600 text-white rounded text-sm"
+                >
+                Yes, Delete
+                </button>
+                <button
+                onClick={() => toast.dismiss(t.id)}
+                className="px-3 py-1 bg-gray-300 rounded text-sm"
+                >
+                Cancel
+                </button>
+            </div>
+            </div>
+        ),
+        {
+            duration: 5000,
+            position: "top-center",
+        }
+        );
+    }
 
     const handleTypeSelect = (type, watts) => {
         setSelectedType(type)
@@ -87,27 +118,48 @@ export default function PartsList(){
         }
         );
     }
+
     const confirmDelete = async (id) => {
-    setDeleteId(id);
-    try {
-      const response = await deleteLightWatts(id);
-      await fetchData();
-      // ✅ Fix: Access the message correctly
-      const successMessage = response?.data?.deleteUser?.name 
-        ? `${response.name} deleted successfully!`
-        : "deleted successfully!";
-      toast.success(successMessage, {
-        position: "top-right",
-        duration: 1000,
-      });
-    } catch (err) {
-      // ✅ Fix: Convert error to string
-      const errorMessage = err?.response?.data?.message || err?.message || "Failed to delete user";
-      toast.error(errorMessage);
-    } finally {
-      setDeleteId(null);
-    }
-  };
+        try {
+            const response = await deleteLightWatts(id);
+            await fetchData();
+            // ✅ Fix: Access the message correctly
+            const successMessage = response?.data?.deleteUser?.name 
+                ? `${response.name} deleted successfully!`
+                : "deleted successfully!";
+            toast.success(successMessage, {
+                position: "top-right",
+                duration: 1000,
+            });
+        } catch (err) {
+            // ✅ Fix: Convert error to string
+            const errorMessage = err?.response?.data?.message || err?.message || "Failed to delete watts";
+            toast.error(errorMessage, {
+                duration : 1000
+            });
+        }
+    };
+    
+    const confirmDeleteType = async (id) => {
+        try {
+            const response = await deleteLightType(id);
+            await fetchData();
+            // ✅ Fix: Access the message correctly
+            const successMessage = response?.data?.deleteUser?.name 
+                ? `${response.name} deleted successfully!`
+                : "deleted successfully!";
+            toast.success(successMessage, {
+                position: "top-right",
+                duration: 1000,
+            });
+        } catch (err) {
+            // ✅ Fix: Convert error to string
+            const errorMessage = err?.response?.data?.message || err?.message || "Failed to delete light type";
+            toast.error(errorMessage,{
+                duration : 1000
+            });
+        }
+    };
 
     const getId = (id, index, arithType) => {
         setSelectedWattsId(id)
@@ -166,7 +218,7 @@ export default function PartsList(){
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                         </svg>
                     </div>
-                    <div className=" border-2 hover:bg-red-600  transition-all duration-300  hover:text-white text-red-600 border-red-600 p-1.5 rounded-xl">
+                    <div onClick={()=>{handleOnTypeDelete(selectedType.typeName)}} className=" border-2 hover:bg-red-600  transition-all duration-300  hover:text-white text-red-600 border-red-600 p-1.5 rounded-xl">
                         <Trash2Icon />
                     </div>
 
@@ -178,6 +230,7 @@ export default function PartsList(){
                             const type = lightTypes.find(t => t.typeName === e.target.value)
                             const watts = lightWatts.filter(w => w.typeName === e.target.value)
                             handleTypeSelect(type, watts)
+                            setTypeId(type._id)
                         }}
                         >
                         <option value="">📦 Select product type...</option>
@@ -200,15 +253,16 @@ export default function PartsList(){
             </div>
             
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <div className="flex gap-2 w-full sm:w-auto">
                 <button 
                     onClick={()=>setShowForm(true)} 
-                    className="w-full sm:w-auto bg-linear-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-2 py-1 rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2"
+                    // disabled
+                    className="w-full sm:w-auto bg-linear-to-r disabled:opacity-50 disabled:cursor-not-allowed disabled: from-blue-500 to-blue-600 hover:opacity-80 hover:to-blue-700 text-white px-2 py-1 rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-400 flex items-center justify-center gap-2"
                 >
                     <Plus className="w-4 h-4" />
                     New Watts
                 </button>
-                <button 
+                <button
                     onClick={()=>setTypeShowForm(true)} 
                     className="w-full sm:w-auto bg-white border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50 text-gray-700 px-2 mr-5 py-1 rounded-xl font-medium shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center gap-2"
                 >

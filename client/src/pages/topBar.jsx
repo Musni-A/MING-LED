@@ -4,8 +4,9 @@ export default function TopBar( {setSidebarOpen} ){
 
   const location = useLocation();
 
-  const userData = localStorage.getItem('name')
-  const firstLetterOfUserName = userData[0];
+  const userName = localStorage.getItem('name')
+  const userRole = localStorage.getItem('jobRole')
+  const firstLetterOfUserName = userName[0];
   const date = new Date();
 
 
@@ -23,7 +24,7 @@ export default function TopBar( {setSidebarOpen} ){
               <div className="w-5 h-0.5 bg-[#0d2145] rounded" />
             </button>
             <div className="min-w-0">
-              <h1 className="text-base md:text-xl font-bold text-[#0d2145] truncate">Hello, {userData} 👋</h1>
+              <h1 className="text-base md:text-xl font-bold text-[#0d2145] truncate">Hello, {userName} 👋</h1>
               <p className="text-xs text-slate-400 mt-0.5 hidden sm:block">{date.toLocaleDateString()}</p>
             </div>
           </div>
@@ -41,11 +42,11 @@ export default function TopBar( {setSidebarOpen} ){
             </div>
             {/* Avatar */}
             <Link to={'/profile'}>
-              <div className="flex items-center gap-2 cursor-pointer bg-slate-200 px-3 py-2 rounded-2xl transition-all duration-300 hover:bg-slate-300">
+              <div className={`${location.pathname == '/profile' ? ' bg-red-600 hover:' : 'bg-slate-200 hover:bg-slate-300'} flex items-center gap-2 cursor-pointer sm:px-3 sm:py-2 rounded-2xl transition-all duration-300`}>
                 <div className={`${location.pathname == '/profile' ? ' border-3 border-red-600' : ''} w-9 h-9 rounded-full bg-[#0d2145] flex items-center justify-center text-white font-bold text-sm shrink-0`}>{ firstLetterOfUserName }</div>
                 <div className="hidden sm:block">
-                  <div className="text-xs font-semibold text-[#0d2145]">{userData}</div>
-                  <div className="text-[0.6rem] text-slate-400">Developer</div>
+                  <div className={`${location.pathname == '/profile' ? 'text-white' : 'text-[#0d2145]'} text-xs font-semibold`}>{userName}</div>
+                  <div className={`${location.pathname == '/profile' ? 'text-yellow-100' : 'text-slate-400'} text-[0.6rem] text-slate-400`}>{userRole}</div>
                 </div>
               </div>
             </Link>

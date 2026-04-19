@@ -18,7 +18,7 @@ export default function Inventory(){
     })
 
   return<>
-  <Toaster />
+  <Toaster/>
   <div className=" flex sm:h-screen bg-[#e0edfa] font-sans relative">
     <NavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
     <div className="flex-1 flex flex-col min-w-0">

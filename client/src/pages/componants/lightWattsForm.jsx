@@ -63,39 +63,6 @@ export default function LightWatts({showForm, setShowForm, fetchData, lightTypes
     }
   }
 
-  // const handleSubmit = async () => {
-  //   try {
-  //     // Create the final data with selected type name
-  //     const submitData = {
-  //       ...formData,
-  //       typeName: selectedType?.typeName || formData.typeName
-  //     }
-      
-  //     const response = await createLightWatts(submitData)
-  //     console.log(response.data)
-  //     if(response.data){
-  //       toast.success("Success")
-  //       fetchData() // Refresh data after successful submission
-  //     }
-  //     setShowForm(false)
-      
-  //     // Reset form
-  //     setFormData({
-  //       typeName: '',
-  //       watts: '',
-  //       parts: []
-  //     })
-  //     setSelectedType(null)
-  //   }
-  //   catch(err) {
-  //     toast.error(err.response?.Msg || "Something went wrong")
-  //     console.log(err.response)
-  //   }
-  //   finally {
-  //     await fetchData(); // Ensure data is refreshed after submission attempt, regardless of success or failure
-  //   }
-  // }
-
   const handleTypeSelect = (type) => {
     setSelectedType(type)
     

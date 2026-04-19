@@ -103,9 +103,10 @@ router.post('/login',(req, res, next)=>{
         if(!user){
             return res.status(401).json({Message : info?.message || "Login failed"})
         }
-        req.logIn(user, (err)=>{
+        req.logIn(user, async(err)=>{
             if(err) return next(err);
-            return res.json({message : "Login successful",user, loggedIn : true});
+            const sendUser =  await User.findById(user._id).select('-password -username')
+            return res.json({message : "Login successful",sendUser, loggedIn : true});
         });
     })(req, res, next);
 })

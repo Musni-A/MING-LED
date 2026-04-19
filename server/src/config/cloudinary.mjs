@@ -25,7 +25,7 @@ const uploadParser = multer({ storage: storage });
 export const uploadToCloudinary = async (filePath) => {
     try {
         const result = await cloudinary.uploader.upload(filePath, {
-            folder: 'employee-profiles'
+            folder: 'Ming-Led/Users images'
         });
         return result;
     } catch (error) {

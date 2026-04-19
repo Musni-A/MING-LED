@@ -39,14 +39,14 @@ function LoginPage() {
 
     try {
       const response = await getUser(form);
+      console.log(response.data)
 
       // Store user data
-      localStorage.setItem("name", response.data.user.name);
-      localStorage.setItem("jobRole", response.data.user.jobRole);
-      localStorage.setItem("userRole", response.data.user.jobRole);
+      localStorage.setItem("name", response.data.sendUser.name);
+      localStorage.setItem("jobRole", response.data.sendUser.jobRole);
       localStorage.setItem("loggedIn", response.data.loggedIn);
-      localStorage.setItem("userId", response.data.user._id);
-      localStorage.setItem("userDepartment", response.data.user.department);
+      localStorage.setItem("userId", response.data.sendUser._id);
+      localStorage.setItem("userDepartment", response.data.sendUser.department);
 
       setLogin(false);
 
