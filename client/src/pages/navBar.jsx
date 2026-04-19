@@ -104,7 +104,7 @@ export default function NavBar({sidebarOpen, setSidebarOpen}){
 
         {/* Logout */}
         <Link to='/'>
-          <div onClick={()=>localStorage.removeItem('loggedIn')} className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer text-[#7b9fd4] hover:text-white hover:bg-white/5">
+          <div onClick={()=>localStorage.removeItem('loggedIn')} className="flex items-center gap-3 px-4 sm:py-3 py-10 rounded-xl cursor-pointer text-[#7b9fd4] hover:text-white hover:bg-white/5">
             <span><LogOut /></span>
             <span className="text-sm font-medium">Logout</span>
           </div>
