@@ -229,5 +229,31 @@ router.patch('/lightWatts', async(req, res)=>{
     }
 });
 
+router.delete('/lightWatts/:id', async (req, res) => {
+    try {
+        const wattsId = req.params.id;
+        const deletedWatts = await LightWatts.findByIdAndDelete(wattsId);
+        
+        // Check if document exists
+        if (!deletedWatts) {
+            return res.status(404).json({ 
+                message: 'LightWatts record not found' 
+            });
+        }
+        
+        res.status(200).json(deletedWatts);
+    } 
+    catch(err) {
+        // ✅ Don't send the raw Error object - send a readable message
+        console.error('Error deleting lightWatts:', err);
+        
+        // Send a clean error response
+        res.status(400).json({ 
+            message: err.message || 'Failed to delete lightWatts record',
+            error: process.env.NODE_ENV === 'development' ? err.message : undefined
+        });
+    }
+});
+
 
 export default router;

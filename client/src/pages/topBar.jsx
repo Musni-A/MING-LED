@@ -11,7 +11,7 @@ export default function TopBar( {setSidebarOpen} ){
 
     return <>
     {/* Top bar */}
-        <div className="bg-white border-b overflow-hidden border-slate-300  px-4 md:px-8 py-4 flex items-center justify-between shrink-0 gap-3">
+        <div className="bg-white border-b overflow-hidden border-slate-300  px-4 md:px-8 py-2 flex items-center justify-between shrink-0 gap-3">
           <div className="flex items-center gap-3 min-w-0">
             {/* Hamburger */}
             <button
@@ -41,8 +41,8 @@ export default function TopBar( {setSidebarOpen} ){
             </div>
             {/* Avatar */}
             <Link to={'/profile'}>
-              <div className="flex items-center gap-2 cursor-pointer">
-                <div className={`${location.pathname == '/profile' ? ' border-4 border-red-600' : ''} w-9 h-9 rounded-xl bg-[#0d2145] flex items-center justify-center text-white font-bold text-sm shrink-0`}>{ firstLetterOfUserName }</div>
+              <div className="flex items-center gap-2 cursor-pointer bg-slate-200 px-3 py-2 rounded-2xl transition-all duration-300 hover:bg-slate-300">
+                <div className={`${location.pathname == '/profile' ? ' border-3 border-red-600' : ''} w-9 h-9 rounded-full bg-[#0d2145] flex items-center justify-center text-white font-bold text-sm shrink-0`}>{ firstLetterOfUserName }</div>
                 <div className="hidden sm:block">
                   <div className="text-xs font-semibold text-[#0d2145]">{userData}</div>
                   <div className="text-[0.6rem] text-slate-400">Developer</div>

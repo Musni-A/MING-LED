@@ -126,21 +126,45 @@ export default function Profile() {
           >
             <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden sticky top-4">
               {/* Avatar Section */}
-              <div className={`bg-gradient-to-br ${getDepartmentColor(userData?.department)} p-8 text-center`}>
-                <div className="relative inline-block">
-                  <div className="w-28 h-28 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto border-4 border-white shadow-xl">
-                    <img src="https://res.cloudinary.com/dzn3zqsod/image/upload/v1774090926/ChatGPT_Image_Nov_4__2025__04_57_31_PM-removebg-preview_rlrk3t.png" alt="" />
-                  </div>
-                  <button className="absolute bottom-0 right-0 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all">
-                    <Camera className="w-5 h-5 text-gray-600" />
-                  </button>
+              <div className={`bg-gradient-to-br ${getDepartmentColor(userData?.department)} p-8 text-center relative overflow-hidden`}>
+              {/* Background image - cover the entire header */}
+              <img 
+                className='absolute inset-0 w-full h-full object-cover opacity-20' 
+                src="https://res.cloudinary.com/dzn3zqsod/image/upload/v1776571583/WhatsApp_Image_2026-04-19_at_09.34.26_e22jgo.jpg" 
+                alt="Background" 
+              />
+              
+              <div className="relative inline-block">
+                {/* Profile avatar */}
+                <div className="w-28 h-28 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto border-4 border-white shadow-xl overflow-hidden">
+                  <img 
+                    src="https://res.cloudinary.com/dzn3zqsod/image/upload/v1776571583/WhatsApp_Image_2026-04-19_at_09.34.26_e22jgo.jpg" 
+                    className='w-full h-full object-cover' 
+                    alt="Profile" 
+                  />
                 </div>
-                <h2 className="text-xl font-bold text-white mt-4">{userData?.name}</h2>
-                <div className="flex items-center justify-center gap-2 mt-1">
-                  <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                  <span className="text-white/90 text-sm">{userData?.jobRole}</span>
+                
+                {/* Camera button - already well positioned */}
+                <div className="absolute cursor-pointer bottom-0 right-0 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all group">
+                  <label className="block cursor-pointer">
+                    <input type="file" accept="image/*" className="hidden" />
+                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all">
+                      <Camera className="w-5 h-5 text-gray-600" />
+                    </div>
+                    <span className="sr-only">Upload photo</span>
+                  </label>
+                  <span className="absolute bottom-full right-0 mb-2 px-2 py-1 text-xs text-white bg-gray-800 rounded opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap">
+                    Change photo
+                  </span>
                 </div>
               </div>
+              
+              <h2 className="text-xl font-bold text-white mt-4">{userData?.name}</h2>
+              <div className="flex items-center justify-center gap-2 mt-1">
+                <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                <span className="text-white/90 text-sm">{userData?.jobRole}</span>
+              </div>
+            </div>
 
               {/* Quick Info */}
               <div className="p-6 space-y-4">

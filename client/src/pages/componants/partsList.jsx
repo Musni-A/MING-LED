@@ -4,7 +4,7 @@ import { getLightType } from "../../api/lightTypeAPI"
 import toast from "react-hot-toast"
 import LightWatts from "./lightWattsForm"
 import UpdateForm from "./updateForm"
-import { getLightWatts } from "../../api/lightAPI"
+import { deleteLightWatts, getLightWatts } from "../../api/lightAPI"
 import { PlusSquare, Plus, MinusSquareIcon, BookmarkPlus, ArrowDownFromLine, LoaderCircle, Trash2Icon } from 'lucide-react';
 
 export default function PartsList(){
@@ -21,6 +21,7 @@ export default function PartsList(){
     const [getIndex, setGetIndex] = useState(null)
     const [loading, setLoading] = useState(true)
     const [lastSelectedTypeName, setLastSelectedTypeName] = useState(null)
+    const [deleteId, setDeleteId] = useState(null);
 
     const fetchData = async () => {
         try {
@@ -55,6 +56,58 @@ export default function PartsList(){
         setSelectedWatts(watts)
         setLastSelectedTypeName(type?.typeName || null) // Save the selection
     }
+
+    const handleOnDelete = (id, watts)=>{
+        toast(
+        (t) => (
+            <div className="flex flex-col gap-2">
+            <p>Delete {watts} permanently?</p>
+            <div className="flex gap-2 justify-evenly">
+                <button
+                onClick={() => {
+                    toast.dismiss(t.id);
+                    confirmDelete(id);
+                }}
+                className="px-3 py-1 bg-red-600 text-white rounded text-sm"
+                >
+                Yes, Delete
+                </button>
+                <button
+                onClick={() => toast.dismiss(t.id)}
+                className="px-3 py-1 bg-gray-300 rounded text-sm"
+                >
+                Cancel
+                </button>
+            </div>
+            </div>
+        ),
+        {
+            duration: 5000,
+            position: "top-center",
+        }
+        );
+    }
+    const confirmDelete = async (id) => {
+    setDeleteId(id);
+    try {
+      const response = await deleteLightWatts(id);
+      await fetchData();
+      // ✅ Fix: Access the message correctly
+      const successMessage = response?.data?.deleteUser?.name 
+        ? `${response.name} deleted successfully!`
+        : "deleted successfully!";
+      toast.success(successMessage, {
+        position: "top-right",
+        duration: 1000,
+      });
+    } catch (err) {
+      // ✅ Fix: Convert error to string
+      const errorMessage = err?.response?.data?.message || err?.message || "Failed to delete user";
+      toast.error(errorMessage);
+    } finally {
+      setDeleteId(null);
+    }
+  };
 
     const getId = (id, index, arithType) => {
         setSelectedWattsId(id)
@@ -107,38 +160,41 @@ export default function PartsList(){
             <div className="w-full gap-8 justify-between items-center sm:flex sm:w-auto">
             <div className="mt-1 w-full sm:w-auto">
                 <div className="flex items-center gap-3">
-                {/* Icon Badge */}
-                <div className="hidden sm:flex w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 items-center justify-center shadow-md shadow-blue-200">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                    </svg>
-                </div>
-
-                {/* Select Container */}
-                <div className="relative flex-1">
-                    <select 
-                    className="w-full sm:w-64 pl-4 pr-10 py-2.5 bg-white border-2 border-gray-200 rounded-xl text-gray-700 font-medium cursor-pointer hover:border-blue-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all appearance-none text-sm shadow-sm"
-                    onChange={(e) => {
-                        const type = lightTypes.find(t => t.typeName === e.target.value)
-                        const watts = lightWatts.filter(w => w.typeName === e.target.value)
-                        handleTypeSelect(type, watts)
-                    }}
-                    >
-                    <option value="">📦 Select product type...</option>
-                    {lightTypes.map((type) => (
-                        <option key={type._id} value={type.typeName}>
-                        {type.typeName} • {lightWatts.filter(w => w.typeName === type.typeName).length} variants
-                        </option>
-                    ))}
-                    </select>
-                    
-                    {/* Arrow */}
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                    </svg>
+                    {/* Icon Badge */}
+                    <div className="hidden sm:flex w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 items-center justify-center shadow-md shadow-blue-200">
+                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                        </svg>
                     </div>
-                </div>
+                    <div className=" border-2 hover:bg-red-600  transition-all duration-300  hover:text-white text-red-600 border-red-600 p-1.5 rounded-xl">
+                        <Trash2Icon />
+                    </div>
+
+                    {/* Select Container */}
+                    <div className="relative flex-1">
+                        <select 
+                        className="w-full sm:w-64 pl-4 pr-10 py-2.5 bg-white border-2 border-gray-200 rounded-xl text-gray-700 font-medium cursor-pointer hover:border-blue-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all appearance-none text-sm shadow-sm"
+                        onChange={(e) => {
+                            const type = lightTypes.find(t => t.typeName === e.target.value)
+                            const watts = lightWatts.filter(w => w.typeName === e.target.value)
+                            handleTypeSelect(type, watts)
+                        }}
+                        >
+                        <option value="">📦 Select product type...</option>
+                        {lightTypes.map((type) => (
+                            <option key={type._id} value={type.typeName}>
+                            {type.typeName} • {lightWatts.filter(w => w.typeName === type.typeName).length} variants
+                            </option>
+                        ))}
+                        </select>
+                        
+                        {/* Arrow */}
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                        </div>
+                    </div>
                 </div>
             </div>
             </div>
@@ -231,7 +287,7 @@ export default function PartsList(){
                                                                     <MinusSquareIcon className="w-6 h-6 text-yellow-600" />
                                                                 </button>
                                                             </div>
-                                                            <div  className="bg-red-200 p-0.5 rounded-lg flex items-center justify-center cursor-pointer hover:bg-red-300 hover:scale-105 duration-200 transition-all">
+                                                            <div onClick={()=>{handleOnDelete(watt._id, watt.watts)}} className="bg-red-200 p-0.5 rounded-lg flex items-center justify-center cursor-pointer hover:bg-red-300 hover:scale-105 duration-200 transition-all">
                                                                 <button className="text-blue-600 hover:text-blue-700">
                                                                     <Trash2Icon className="w-6 h-6 text-red-600" />
                                                                 </button>
@@ -287,7 +343,7 @@ export default function PartsList(){
                                                                 <MinusSquareIcon className="w-6 h-6 text-yellow-600" />
                                                             </button>
                                                         </div>
-                                                        <div  className="bg-red-200 p-0.5 rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-300 hover:scale-105 duration-200 transition-all">
+                                                        <div onClick={()=>{handleOnDelete(watt._id, watt.watts)}} className="bg-red-200 p-0.5 rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-300 hover:scale-105 duration-200 transition-all">
                                                             <button className="text-blue-600 hover:text-blue-700">
                                                                 <Trash2Icon className="w-6 h-6 text-red-600" />
                                                             </button>
