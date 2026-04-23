@@ -32,7 +32,8 @@ export default function UpdateForm({setShowUpdateForm, selectedWattsId, arithTyp
             // setShowUpdateForm(false)
         }
         catch(err){
-            toast.error("Failed to update light type:", err)
+          const errorMessage = err?.response?.data?.message;
+          toast.error(errorMessage)
         }
         finally{
             setLoading(false)

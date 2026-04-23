@@ -31,10 +31,10 @@ export default function TopBar( {setSidebarOpen} ){
 
           <div className="flex items-center gap-2 md:gap-4 shrink-0">
             {/* Search — hidden on mobile */}
-            <div className="hidden md:flex items-center gap-2 bg-slate-100 rounded-xl px-4 py-2">
+            {/* <div className="hidden md:flex items-center gap-2 bg-slate-100 rounded-xl px-4 py-2">
               <span className="text-slate-400 text-sm">🔍</span>
               <input placeholder="Search..." className="bg-transparent text-sm outline-none text-slate-600 w-32 lg:w-40 placeholder:text-slate-400" />
-            </div>
+            </div> */}
             {/* Bell */}
             <div className="relative cursor-pointer">
               <div className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-base">🔔</div>

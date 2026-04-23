@@ -31,7 +31,7 @@ export default function Employee(){
             </div>
             )}
             <TopBar setSidebarOpen={setSidebarOpen}/>
-            <div className="h-full overflow-y-scroll sm:px-6 sm:py-4 p-2" onClick={() =>setSidebarOpen(false)}>
+            <div className="h-full overflow-y-auto" onClick={() =>setSidebarOpen(false)}>
                 <UserList setShowForm={setShowForm} />
             </div>
         </div>

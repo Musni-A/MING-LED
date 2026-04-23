@@ -6,7 +6,8 @@ import session from "express-session";
 import passport from 'passport';
 import userRouter from './routes/users.mjs';
 import lightTypeRouter from './routes/lightType.mjs'
-import lightWatts from './routes/light.mjs'
+import lightWattsRouter from './routes/light.mjs'
+import attendenceRouter from './routes/attendanceRoutes.mjs'
 import compression from 'compression';
 
 const app = express();
@@ -31,11 +32,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api', userRouter);
 app.use('/api', lightTypeRouter)
-app.use('/api', lightWatts)
+app.use('/api', lightWattsRouter)
+app.use('/api', attendenceRouter)
 
 
 
-mongoose.connect(process.env.MONGO_URI_CLOUD)
+await mongoose.connect(process.env.MONGO_URI_CLOUD)
     .then(() => console.log("Data base connect successfully"))
     .catch((err) => console.log(`Database error ${err}`))
 

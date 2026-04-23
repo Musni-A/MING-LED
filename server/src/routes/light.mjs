@@ -116,6 +116,12 @@ router.patch('/lightWatts', async(req, res)=>{
             newQuantity = dbPart.quantity + operationQuantity;
         } else {
             // Subtraction - check for insufficient quantity
+            if(operationQuantity > dbPart.quantity){
+                return res.status(400).json({
+                    success: false,
+                    message: 'Can not reduce more than have!'
+                })
+            }
             newQuantity = dbPart.quantity - operationQuantity;
             
             if (newQuantity < 0) {

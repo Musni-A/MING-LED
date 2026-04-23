@@ -5,7 +5,7 @@ import toast from "react-hot-toast"
 import LightWatts from "./lightWattsForm"
 import UpdateForm from "./updateForm"
 import { deleteLightWatts, getLightWatts } from "../../api/lightAPI"
-import { PlusSquare, Plus, MinusSquareIcon, BookmarkPlus, ArrowDownFromLine, LoaderCircle, Trash2Icon } from 'lucide-react';
+import { PlusSquare, Plus, MinusSquareIcon, BookmarkPlus, ArrowDownFromLine, LoaderCircle, Trash2Icon, Search, X } from 'lucide-react';
 
 export default function PartsList(){
     
@@ -22,6 +22,7 @@ export default function PartsList(){
     const [getIndex, setGetIndex] = useState(null)
     const [loading, setLoading] = useState(true)
     const [lastSelectedTypeName, setLastSelectedTypeName] = useState(null)
+    const [searchWatts, setSearchWatts] = useState('') // Add search state
 
     const fetchData = async () => {
         try {
@@ -50,6 +51,11 @@ export default function PartsList(){
     useEffect(() => {
         fetchData();
     }, [])
+
+    // Filter watts based on search input
+    const filteredWatts = selectedWatts?.filter(watt => 
+        watt.watts.toString().includes(searchWatts)
+    ) || []
 
     const handleOnTypeDelete = (typeName)=>{
         toast(
@@ -86,6 +92,7 @@ export default function PartsList(){
         setSelectedType(type)
         setSelectedWatts(watts)
         setLastSelectedTypeName(type?.typeName || null) // Save the selection
+        setSearchWatts('') // Reset search when changing type
     }
 
     const handleOnDelete = (id, watts)=>{
@@ -167,7 +174,6 @@ export default function PartsList(){
         setArithType(arithType)
     }
 
-
     return <>
             {/* Modal Overlays */}
             {showTypeForm && (
@@ -206,9 +212,9 @@ export default function PartsList(){
             {/* ... */}
 
     {/* Main Container */}
-    <div className="bg-linear-to-br h-fit from-gray-50 to-white md:m-2 sm:rounded-2xl shadow-xl w-full overflow-hidden border border-gray-100">
+    <div className="bg-linear-to-br h-full from-gray-50 to-white shadow-xl w-full overflow-hidden border border-gray-100">
         {/* Header Section */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-2 border-b-2 border-gray-300 bg-white/50 backdrop-blur-sm">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-2 border-gray-300 border-b-2 bg-white/50 backdrop-blur-sm">
             <div className="w-full gap-8 justify-between items-center sm:flex sm:w-auto">
             <div className="mt-1 w-full sm:w-auto">
                 <div className="flex items-center gap-3">
@@ -218,9 +224,11 @@ export default function PartsList(){
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                         </svg>
                     </div>
-                    <div onClick={()=>{handleOnTypeDelete(selectedType.typeName)}} className=" border-2 hover:bg-red-600  transition-all duration-300  hover:text-white text-red-600 border-red-600 p-1.5 rounded-xl">
-                        <Trash2Icon />
-                    </div>
+                    {selectedType && (
+                        <div onClick={()=>{handleOnTypeDelete(selectedType.typeName)}} className=" border-2 hover:bg-red-600  transition-all duration-300  hover:text-white text-red-600 border-red-600 p-1.5 rounded-xl">
+                            <Trash2Icon />
+                        </div>
+                    )}
 
                     {/* Select Container */}
                     <div className="relative flex-1">
@@ -273,7 +281,7 @@ export default function PartsList(){
         </div>
 
         {/* Content Area */}
-        <div className="sm:max-h-125 overflow-y-auto">
+        <div className="sm:max-h-130 overflow-y-auto">
             {loading ? (
                 <div className="flex justify-center items-center py-12">
                     <LoaderCircle className="w-12 h-12 text-blue-400 animate-spin" />
@@ -284,9 +292,36 @@ export default function PartsList(){
                         <>
                             {/* Desktop: Table View (Hidden on mobile) */}
                             <div className="hidden md:block overflow-y-auto shadow-sm">
+                                {/* Search Bar for Watts - Desktop */}
+                                <div className="p-1">
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            placeholder="🔍 Search watts..."
+                                            value={searchWatts}
+                                            onChange={(e) => setSearchWatts(e.target.value)}
+                                            className="w-full px-4 py-2.5 pl-10 pr-10 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-all"
+                                        />
+                                        <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                                        {searchWatts && (
+                                            <button
+                                                onClick={() => setSearchWatts('')}
+                                                className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 p-0.5"
+                                            >
+                                                <X className="w-4 h-4" />
+                                            </button>
+                                        )}
+                                    </div>
+                                    {searchWatts && (
+                                        <div className="mt-2 text-xs text-gray-500">
+                                            Found {filteredWatts.length} result{filteredWatts.length !== 1 ? 's' : ''}
+                                        </div>
+                                    )}
+                                </div>
+
                                 <table className="w-full text-sm">
                                     <thead>
-                                        <tr className="border-b-2 border-gray-300 bg-gray-100">
+                                        <tr className="border-b-2 border-t-2 border-gray-300 bg-gray-100">
                                             <th className="px-4 py-3 text-center text-xs font-semibold text-black uppercase tracking-wider border-l-2 border-gray-300 sticky left-0 bg-gray-100 z-20 w-24">
                                                 <div className="flex flex-col items-center gap-1">
                                                     <span className="font-bold text-black">Watts</span>
@@ -307,8 +342,8 @@ export default function PartsList(){
                                         </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
-                                        {selectedWatts.length > 0 ? (
-                                            selectedWatts.map((watt, index) => (
+                                        {filteredWatts.length > 0 ? (
+                                            filteredWatts.map((watt, index) => (
                                                 <tr key={index} className={`hover:bg-blue-50/30 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}>
                                                     <td className="px-4 py-3 whitespace-nowrap text-sm font-semibold text-gray-900 border-l-2 border-r-2 border-gray-300 text-center sticky left-0 bg-inherit z-10">
                                                         <div className="flex items-center justify-center gap-2">
@@ -352,18 +387,20 @@ export default function PartsList(){
                                             ))
                                         ) : (
                                             <tr>
-                                                <td colSpan={selectedType.parts.length + 1} className="px-4 py-8 text-center text-gray-500">
+                                                <td colSpan={selectedType.parts.length + 2} className="px-4 py-8 text-center text-gray-500">
                                                     <div className="flex flex-col items-center gap-2">
                                                         <svg className="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                                         </svg>
-                                                        <span>No watts defined for this product type</span>
-                                                        <button 
-                                                            onClick={()=>setShowForm(true)}
-                                                            className="mt-2 text-blue-600 hover:text-blue-700 font-medium text-sm"
-                                                        >
-                                                            + Add your first watts
-                                                        </button>
+                                                        <span>{searchWatts ? 'No matching watts found' : 'No watts defined for this product type'}</span>
+                                                        {!searchWatts && (
+                                                            <button 
+                                                                onClick={()=>setShowForm(true)}
+                                                                className="mt-2 text-blue-600 hover:text-blue-700 font-medium text-sm"
+                                                            >
+                                                                + Add your first watts
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -373,9 +410,36 @@ export default function PartsList(){
                             </div>
 
                             {/* Mobile: Card View (Visible only on mobile) */}
-                            <div className="md:hidden space-y-4">
-                                {selectedWatts.length > 0 ? (
-                                    selectedWatts.map((watt, wattIndex) => (
+                            <div className="md:hidden space-y-4 p-4">
+                                {/* Search Bar for Watts - Mobile */}
+                                <div className="mb-2">
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            placeholder="🔍 Search watts..."
+                                            value={searchWatts}
+                                            onChange={(e) => setSearchWatts(e.target.value)}
+                                            className="w-full px-4 py-3 pl-10 pr-10 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 hover:bg-white transition-all"
+                                        />
+                                        <Search className="absolute left-3 top-3.5 w-4 h-4 text-gray-400" />
+                                        {searchWatts && (
+                                            <button
+                                                onClick={() => setSearchWatts('')}
+                                                className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                                            >
+                                                <X className="w-5 h-5" />
+                                            </button>
+                                        )}
+                                    </div>
+                                    {searchWatts && (
+                                        <div className="mt-2 text-xs text-gray-500 text-center">
+                                            Found {filteredWatts.length} result{filteredWatts.length !== 1 ? 's' : ''}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {filteredWatts.length > 0 ? (
+                                    filteredWatts.map((watt, wattIndex) => (
                                         <div key={wattIndex} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                                             {/* Watt Header */}
                                             <div className="bg-linear-to-r from-blue-500 to-blue-600 px-4 py-3">
@@ -392,12 +456,12 @@ export default function PartsList(){
                                                                 <PlusSquare className="w-6 h-6 text-blue-600" />
                                                             </button>
                                                         </div>
-                                                        <div onClick={()=>{setShowUpdateForm(true); getId(watt._id, wattIndex, 'subtract');}} className="bg-yellow-200 p-0.5 rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-300 hover:scale-105 duration-200 transition-all">
+                                                        <div onClick={()=>{setShowUpdateForm(true); getId(watt._id, wattIndex, 'subtract');}} className="bg-yellow-200 p-0.5 rounded-lg flex items-center justify-center cursor-pointer hover:bg-yellow-300 hover:scale-105 duration-200 transition-all">
                                                             <button className="text-blue-600 hover:text-blue-700">
                                                                 <MinusSquareIcon className="w-6 h-6 text-yellow-600" />
                                                             </button>
                                                         </div>
-                                                        <div onClick={()=>{handleOnDelete(watt._id, watt.watts)}} className="bg-red-200 p-0.5 rounded-lg flex items-center justify-center cursor-pointer hover:bg-blue-300 hover:scale-105 duration-200 transition-all">
+                                                        <div onClick={()=>{handleOnDelete(watt._id, watt.watts)}} className="bg-red-200 p-0.5 rounded-lg flex items-center justify-center cursor-pointer hover:bg-red-300 hover:scale-105 duration-200 transition-all">
                                                             <button className="text-blue-600 hover:text-blue-700">
                                                                 <Trash2Icon className="w-6 h-6 text-red-600" />
                                                             </button>
@@ -439,14 +503,22 @@ export default function PartsList(){
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                             </svg>
                                         </div>
-                                        <h3 className="text-lg font-semibold text-gray-800 mb-2">No Watts Found</h3>
-                                        <p className="text-gray-500 text-sm mb-4">Add watt variants for this product type</p>
-                                        <button 
-                                            onClick={()=>setShowForm(true)}
-                                            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2.5 rounded-xl font-medium"
-                                        >
-                                            Add Watts
-                                        </button>
+                                        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                                            {searchWatts ? 'No Matching Watts' : 'No Watts Found'}
+                                        </h3>
+                                        <p className="text-gray-500 text-sm mb-4">
+                                            {searchWatts 
+                                                ? `No results found for "${searchWatts}"` 
+                                                : 'Add watt variants for this product type'}
+                                        </p>
+                                        {!searchWatts && (
+                                            <button 
+                                                onClick={()=>setShowForm(true)}
+                                                className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2.5 rounded-xl font-medium"
+                                            >
+                                                Add Watts
+                                            </button>
+                                        )}
                                     </div>
                                 )}
                             </div>
@@ -490,7 +562,7 @@ export default function PartsList(){
         {/* Footer Stats */}
         {selectedType && selectedWatts && (
             <div className="px-4 md:px-6 py-3 bg-gray-50 border-t border-gray-200 text-xs text-gray-500 flex justify-between items-center">
-                <span>Showing {selectedWatts.length} watt variants</span>
+                <span>Showing {filteredWatts.length} of {selectedWatts.length} watt variants</span>
                 <span>Total Parts: {selectedType.parts.length}</span>
             </div>
         )}

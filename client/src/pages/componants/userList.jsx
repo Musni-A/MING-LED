@@ -110,7 +110,7 @@ export default function UserList({ setShowForm }) {
 
   return (
     <>
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+      <div className="bg-white border border-slate-100 shadow-sm overflow-hidden">
         <div>
           <Toaster />
         </div>
@@ -134,7 +134,7 @@ export default function UserList({ setShowForm }) {
             {/* Add button */}
             <button
               onClick={() => setShowForm(true)}
-              className="border-2 border-blue-800 bg-blue-800/20 text-blue-800 sm:text-sm text-[13px] font-semibold px-3 py-1 rounded-xl transition-all duration-300 hover:bg-blue-800 hover:text-white shadow-md flex items-center justify-center gap-2"
+              className="w-full sm:w-auto bg-linear-to-r disabled:opacity-50 disabled:cursor-not-allowed disabled: from-blue-500 to-blue-600 hover:opacity-80 hover:to-blue-700 text-white px-2 py-1 rounded-xl font-medium shadow-md hover:shadow-lg transition-all duration-400 flex items-center justify-center gap-2"
             >
               + Add Employee
             </button>

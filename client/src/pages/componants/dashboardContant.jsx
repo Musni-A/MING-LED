@@ -3,33 +3,10 @@ import { getLightWatts } from "../../api/lightAPI";
 import { getLightType } from "../../api/lightTypeAPI";
 import { Loader2Icon } from "lucide-react";
 
-// ✅ MEMOIZED: Constants outside component
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const TIME_FILTERS = ["Week", "Month", "Year"];
-const CHART_DATA = [65, 80, 45, 90, 70, 55, 85, 75, 60, 95, 50, 88];
-const STOCK_STATUS = [
-    { label: "In Stock", pct: "60%", color: "bg-[#0d2145]" },
-    { label: "Low Stock", pct: "25%", color: "bg-[#e8192c]" },
-    { label: "Out of Stock", pct: "15%", color: "bg-[#f5c800]" },
-];
-const RECENT_ACTIVITIES = [
-    { name: "Riffath", action: "Added 50x LED Strip 5050", time: "2m ago", avatar: "R", color: "bg-[#e8192c]" },
-    { name: "Azeem", action: "Updated inventory report", time: "18m ago", avatar: "A", color: "bg-[#0d2145]" },
-    { name: "Akkif", action: "Submitted production order #38", time: "1h ago", avatar: "A", color: "bg-[#f5c800]" },
-    { name: "Isnas", action: "Completed Q1 stock audit", time: "3h ago", avatar: "I", color: "bg-[#7b9fd4]" },
-    { name: "Musni", action: "Deployed dashboard v2.0", time: "5h ago", avatar: "M", color: "bg-[#e8192c]" },
-];
-const PROGRESS_STATS = [
-    { label: "Tasks Done", value: "84%", sub: "42 of 50", color: "#e8192c", bg: "#fff0f0" },
-    { label: "Storage", value: "61%", sub: "6.1 GB / 10 GB", color: "#0d2145", bg: "#f0f4ff" },
-    { label: "Performance", value: "97%", sub: "Excellent this month", color: "#d4a000", bg: "#fffbf0" },
-];
-
 export default function DashboardContent() {
     const [wattsData, setWattsData] = useState([]);
     const [typeData, setTypeData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [selectedTimeFilter, setSelectedTimeFilter] = useState(1); // Default: Month
+    const [loading, setLoading] = useState(true); // Default: Month
 
     // ✅ MEMOIZED: Process data once
     const processedData = useMemo(() => {
@@ -95,12 +72,6 @@ export default function DashboardContent() {
         console.log('API call made at:', new Date().toISOString());
     }, [fetchData]);
 
-    // ✅ MEMOIZED: Chart data based on filter
-    const chartBars = useMemo(() => {
-        // Could filter/modify CHART_DATA based on selectedTimeFilter
-        return CHART_DATA;
-    }, [selectedTimeFilter]);
-
     if (loading) {
         return (
             <div className="flex-1 flex items-center justify-center" style={{ background: "#e0edfa" }}>
@@ -132,28 +103,6 @@ export default function DashboardContent() {
                         <MobileWattItem key={watt._id} watt={watt} />
                     ))}
                 </div>
-            </div>
-
-            {/* Middle Row - Charts */}
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 mb-4 sm:mb-6">
-                {/* Bar Chart */}
-                <BarChart 
-                    chartData={chartBars} 
-                    selectedFilter={selectedTimeFilter}
-                    onFilterChange={setSelectedTimeFilter}
-                />
-                
-                {/* Donut Chart */}
-                <DonutChart stockStatus={STOCK_STATUS} />
-            </div>
-
-            {/* Bottom Row */}
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 sm:pb-6">
-                {/* Recent Activity */}
-                <RecentActivity activities={RECENT_ACTIVITIES} />
-                
-                {/* Progress Stats */}
-                <ProgressStats stats={PROGRESS_STATS} />
             </div>
         </div>
     );
@@ -288,152 +237,3 @@ const MobileWattItem = ({ watt }) => {
         </div>
     );
 };
-
-// Bar Chart Component
-const BarChart = ({ chartData, selectedFilter, onFilterChange }) => (
-    <div className="lg:col-span-2 bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6"
-        style={{ border: "1px solid #e8f0fe", boxShadow: "0 4px 16px rgba(13,33,69,0.06)" }}>
-        
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-5">
-            <div>
-                <div className="text-[#0d2145] font-black text-sm sm:text-base">Parts Usage Overview</div>
-                <div className="text-slate-400 text-xs mt-0.5">Monthly consumption trend</div>
-            </div>
-            
-            <div className="flex gap-1 sm:gap-2 overflow-x-auto pb-1 sm:pb-0">
-                {TIME_FILTERS.map((filter, i) => (
-                    <button
-                        key={filter}
-                        onClick={() => onFilterChange(i)}
-                        className="text-xs px-3 py-1.5 rounded-lg font-semibold transition-all whitespace-nowrap"
-                        style={selectedFilter === i
-                            ? { background: "linear-gradient(135deg,#0d2145,#1a3a6e)", color: "#fff" }
-                            : { background: "#f0f4f8", color: "#94a3b8" }}
-                    >
-                        {filter}
-                    </button>
-                ))}
-            </div>
-        </div>
-
-        <div className="flex items-end gap-1 sm:gap-2 lg:gap-3 h-24 sm:h-28 lg:h-32">
-            {chartData.map((height, i) => (
-                <div
-                    key={i}
-                    className="flex-1 rounded-t-md sm:rounded-t-lg transition-all duration-300 hover:opacity-80"
-                    style={{
-                        height: `${height}%`,
-                        background: i === 9
-                            ? "linear-gradient(180deg,#e8192c,#b0001a)"
-                            : i % 3 === 0
-                                ? "linear-gradient(180deg,#0d2145,#1a3a6e)"
-                                : "#e8f0fe",
-                        boxShadow: i === 9 ? "0 4px 12px rgba(232,25,44,0.3)" : ""
-                    }}
-                />
-            ))}
-        </div>
-        
-        <div className="flex justify-between mt-2">
-            {MONTHS.map((month, i) => (
-                <div
-                    key={month}
-                    className={`text-[0.5rem] sm:text-[0.55rem] text-slate-400 flex-1 text-center ${i % 2 === 0 ? 'hidden sm:block' : ''} sm:block`}
-                >
-                    {month}
-                </div>
-            ))}
-        </div>
-    </div>
-);
-
-// Donut Chart Component
-const DonutChart = ({ stockStatus }) => (
-    <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6"
-        style={{ border: "1px solid #e8f0fe", boxShadow: "0 4px 16px rgba(13,33,69,0.06)" }}>
-        <div className="text-[#0d2145] font-black text-sm sm:text-base mb-1">Stock Status</div>
-        <div className="text-slate-400 text-xs mb-4 sm:mb-5">Current inventory health</div>
-
-        <div className="flex justify-center mb-4 sm:mb-5">
-            <div className="relative w-24 h-24 sm:w-28 sm:h-28">
-                <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
-                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f0f4f8" strokeWidth="3" />
-                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="#0d2145" strokeWidth="3" strokeDasharray="60 40" />
-                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="#e8192c" strokeWidth="3" strokeDasharray="25 75" strokeDashoffset="-60" />
-                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f5c800" strokeWidth="3" strokeDasharray="15 85" strokeDashoffset="-85" />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <div className="text-lg sm:text-xl font-black text-[#0d2145]">4.8k</div>
-                    <div className="text-[0.5rem] sm:text-[0.55rem] text-slate-400">Total</div>
-                </div>
-            </div>
-        </div>
-
-        <div className="space-y-2 sm:space-y-2.5">
-            {stockStatus.map((s) => (
-                <div key={s.label} className="flex items-center gap-2">
-                    <div className={`w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full shrink-0 ${s.color}`} />
-                    <div className="text-xs sm:text-xs text-slate-500 flex-1">{s.label}</div>
-                    <div className="text-xs font-bold text-[#0d2145]">{s.pct}</div>
-                </div>
-            ))}
-        </div>
-    </div>
-);
-
-// Recent Activity Component
-const RecentActivity = ({ activities }) => (
-    <div className="lg:col-span-2 bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6"
-        style={{ border: "1px solid #e8f0fe", boxShadow: "0 4px 16px rgba(13,33,69,0.06)" }}>
-        <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <div className="text-[#0d2145] font-black text-sm sm:text-base">Recent Activity</div>
-            <span className="text-xs text-[#e8192c] font-semibold cursor-pointer hover:underline">View all →</span>
-        </div>
-        
-        <div className="space-y-2 sm:space-y-3">
-            {activities.map((activity, i) => (
-                <div
-                    key={i}
-                    className="flex items-center gap-2 sm:gap-3 py-2 sm:py-2.5 border-b border-slate-50 last:border-0"
-                >
-                    <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl ${activity.color} text-white text-xs font-black flex items-center justify-center shrink-0`}>
-                        {activity.avatar}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                        <div className="text-xs text-[#0d2145] truncate">
-                            <span className="font-bold">{activity.name}</span>{" "}
-                            <span className="hidden sm:inline">{activity.action}</span>
-                            <span className="sm:hidden">{activity.action.substring(0, 15)}...</span>
-                        </div>
-                    </div>
-                    <div className="text-[0.6rem] sm:text-[0.65rem] text-slate-400 whitespace-nowrap">{activity.time}</div>
-                </div>
-            ))}
-        </div>
-    </div>
-);
-
-// Progress Stats Component
-const ProgressStats = ({ stats }) => (
-    <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-3 sm:gap-4">
-        {stats.map((stat) => (
-            <div
-                key={stat.label}
-                className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5"
-                style={{ border: "1px solid #e8f0fe", boxShadow: "0 4px 16px rgba(13,33,69,0.06)" }}
-            >
-                <div className="flex items-center justify-between mb-2">
-                    <div className="text-xs text-slate-400 font-semibold uppercase tracking-wide">{stat.label}</div>
-                    <div className="text-base sm:text-lg font-black" style={{ color: stat.color }}>{stat.value}</div>
-                </div>
-                <div className="w-full rounded-full h-2 mb-2" style={{ background: stat.bg }}>
-                    <div
-                        className="h-2 rounded-full transition-all duration-500"
-                        style={{ width: stat.value, background: stat.color }}
-                    />
-                </div>
-                <div className="text-xs text-slate-400 truncate">{stat.sub}</div>
-            </div>
-        ))}
-    </div>
-);
