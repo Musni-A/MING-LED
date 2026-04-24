@@ -43,9 +43,12 @@ export default function LightWatts({showForm, setShowForm, fetchData, lightTypes
       }
       
       const response = await createLightWatts(submitData)
-      console.log(response.data)
-      toast.success("Success")
-      await fetchData()
+      if(response){
+        setLoading(false);
+        setShowForm(false)
+        toast.success("Success")
+        await fetchData()
+      }
       setFormData({
         typeName: '',
         watts: '',
@@ -56,10 +59,6 @@ export default function LightWatts({showForm, setShowForm, fetchData, lightTypes
     catch(err) {
       toast.error(err.response?.data?.Msg || err.response?.Msg || "Something went wrong")
       console.log(err.response)
-    }
-    finally {
-      setShowForm(false)
-      setLoading(false);
     }
   }
 

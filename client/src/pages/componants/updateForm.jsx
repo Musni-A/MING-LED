@@ -3,10 +3,13 @@ import toast from "react-hot-toast"
 import { updateLightWatts } from "../../api/lightAPI"
 import { Loader } from 'lucide-react';
 
-export default function UpdateForm({setShowUpdateForm, selectedWattsId, arithType, selectedType, selectedWatts, fetchData}) {
+export default function UpdateForm({getWatt ,setShowUpdateForm, selectedWattsId, arithType, selectedType, selectedWatts, fetchData}) {
 
     const [updateForm, setUpdateForm] = useState({})
     const [loading, setLoading] = useState(false)
+
+    const selectWatt = selectedWatts.find(watts =>watts.watts === getWatt )
+    console.log(selectWatt)
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -63,8 +66,8 @@ export default function UpdateForm({setShowUpdateForm, selectedWattsId, arithTyp
         {/* Form */}
         <div className="flex flex-col gap-4">
             <div className="grid grid-cols-2 gap-4">
-                {selectedWatts[0].parts.map((part, index) => (
-                    <div key={index} className="flex flex-col gap-1.5">
+                {selectWatt.parts.map((part, index) => (
+                  <div key={index} className="flex flex-col gap-1.5">
                         <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">{part.partsName}</label>
                         <input
                         className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none placeholder:text-white/30 focus:border-[#7b9fd4] transition-colors"

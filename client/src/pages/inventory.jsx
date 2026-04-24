@@ -23,7 +23,7 @@ export default function Inventory(){
     <NavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
     <div className="flex-1 flex flex-col min-w-0">
       <TopBar setSidebarOpen={setSidebarOpen}/>
-      <div className="h-full flex justify-between"
+      <div className="h-full flex justify-between overflow-y-auto"
         onClick={() => setSidebarOpen(false)}>
           <PartsList/>
       </div>

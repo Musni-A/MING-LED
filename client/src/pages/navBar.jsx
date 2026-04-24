@@ -76,12 +76,12 @@ export default function NavBar({sidebarOpen, setSidebarOpen}){
             },
             
             // Everyone can see Settings
-            { 
-              icon: <Settings />, 
-              label: "Settings", 
-              path: '/settings',
-              showFor: ['Admin', 'Manager', 'Assembler', 'Inventory', 'HR']
-            }
+            // { 
+            //   icon: <Settings />, 
+            //   label: "Settings", 
+            //   path: '/settings',
+            //   showFor: ['Admin', 'Manager', 'Assembler', 'Inventory', 'HR']
+            // }
           ]
           .filter(item => item.showFor.includes(userDepartment))
           .map(item => (

@@ -563,7 +563,7 @@ export default function AdminAttendanceDashboard() {
                   Saved Records for {new Date(selectedDate).toLocaleDateString()}
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                  Total saved: {markedList.length} employee(s)
+                  Total saved: {attendanceRecords.length} employee(s)
                 </p>
               </div>
             </div>
@@ -659,24 +659,24 @@ export default function AdminAttendanceDashboard() {
                       <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Department</th>
                       <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden md:table-cell">Job Role</th>
                       <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                      <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mark by</th>
                       <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Time</th>
                       <th className="px-4 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    {paginatedMarkedList.map((record) => (
+                    {attendanceRecords.map((record) => (
                       <tr key={record.userId} className="hover:bg-gray-50">
-                        <td className="px-4 sm:px-6 py-4">
-                          <div className="font-medium text-gray-900">{record.userName}</div>
-                          <div className="text-xs text-gray-500">{record.email}</div>
-                        </td>
-                        <td className="px-4 sm:px-6 py-4 text-gray-600 hidden sm:table-cell">{record.department}</td>
-                        <td className="px-4 sm:px-6 py-4 text-gray-600 hidden md:table-cell">{record.jobRole}</td>
+                        {console.log(record)}
+                        <td className="px-4 sm:px-6 py-4">{record.userId.name}</td>
+                        <td className="px-4 sm:px-6 py-4">{record.userId.department}</td>
+                        <td className="px-4 sm:px-6 py-4">{record.userId.jobRole}</td>
                         <td className="px-4 sm:px-6 py-4">
                           <span className={`px-2 py-1 text-xs rounded-full ${getStatusBadgeClass(record)}`}>
                             {getStatusText(record)}
                           </span>
                         </td>
+                        <td className="px-4 sm:px-6 py-4">{record.markedBy.name}</td>
                         <td className="px-4 sm:px-6 py-4">
                           <button
                             onClick={() => editAttendanceTime(record.userId, record.userName, record.time)}

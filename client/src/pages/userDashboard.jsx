@@ -22,7 +22,7 @@ export default function Dashboard() {
               <TopBar setSidebarOpen={setSidebarOpen} />
               <div className="h-full sm:overflow-y-scroll flex justify-between"
                   onClick={() => setSidebarOpen(false)}>
-                    <DashboardContent />
+                    {/* <DashboardContent /> */}
               </div>
           </div>
       </div>
