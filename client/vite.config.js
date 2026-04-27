@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  base : "/MING-LED/client",
+  base : "/MING-LED",
   plugins: [
     react(),
     tailwindcss()
