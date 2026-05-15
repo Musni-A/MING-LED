@@ -9,6 +9,7 @@ import lightTypeRouter from './routes/lightType.mjs'
 import lightWattsRouter from './routes/light.mjs'
 import attendenceRouter from './routes/attendanceRoutes.mjs'
 import compression from 'compression';
+import router from './routes/product.mjs';
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(cors({
         // ← add your network IP
     ]
 }))
+
 app.use(compression());
 app.use(express.json());
 app.use(session({
@@ -28,14 +30,14 @@ app.use(session({
     resave: false,
     cookie: { maxAge: (60000 * 60) * 24 }
 }))
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api', userRouter);
 app.use('/api', lightTypeRouter)
 app.use('/api', lightWattsRouter)
 app.use('/api', attendenceRouter)
-
-
+app.use('/api', router)
 
 await mongoose.connect(process.env.MONGO_URI_CLOUD)
     .then(() => console.log("Data base connect successfully"))

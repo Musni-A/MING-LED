@@ -1,30 +1,17 @@
 import { useState } from "react";
-import { deleteUser, getAllUsers } from "../../api/userAPI";
+import { deleteUser } from "../../api/userAPI";
 import { useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { LoaderCircleIcon } from "lucide-react";
+import { fetchUserData } from "../commonFun/fetchData";
+import RegisterPage from "./registerUserPage";
 
-export default function UserList({ setShowForm }) {
+export default function UserList() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState(null);
+  const [showForm, setShowForm] = useState(false)
 
-  // ❌ REMOVE THIS LINE - Don't store users in localStorage like this
-  // localStorage.setItem('users', users); // This will cause issues
-
-  const fetchData = () => {
-    getAllUsers()
-      .then((res) => {
-        setUsers(res.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        // ✅ Fix: Convert error to string
-        const errorMessage = err?.response?.data?.message || err?.message || "Failed to fetch users";
-        toast.error(errorMessage);
-        setLoading(false);
-      });
-  };
 
   const handleDelete = (user) => {
     toast(
@@ -61,11 +48,10 @@ export default function UserList({ setShowForm }) {
     setDeleteId(id);
     try {
       const response = await deleteUser(id);
-      await fetchData();
       // ✅ Fix: Access the message correctly
       const successMessage = response?.data?.deleteUser?.name 
-        ? `${response.data.deleteUser.name} deleted successfully!`
-        : "User deleted successfully!";
+      ? `${response.data.deleteUser.name} deleted successfully!`
+      : "User deleted successfully!";
       toast.success(successMessage, {
         position: "top-right",
         duration: 1000,
@@ -75,12 +61,13 @@ export default function UserList({ setShowForm }) {
       const errorMessage = err?.response?.data?.message || err?.message || "Failed to delete user";
       toast.error(errorMessage);
     } finally {
+      fetchUserData(setLoading, setUsers, toast);
       setDeleteId(null);
     }
   };
 
   useEffect(() => {
-    fetchData();
+    fetchUserData(setLoading, setUsers, toast);
   }, []);
 
   const DEPT_COLORS = {
@@ -114,6 +101,14 @@ export default function UserList({ setShowForm }) {
         <div>
           <Toaster />
         </div>
+        {showForm && (
+            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
+                onClick={() => setShowForm(false)}>
+                <div onClick={(e) => e.stopPropagation()}>
+                    <RegisterPage setShowForm={setShowForm} setUsers={setUsers} setLoading={setLoading} />
+                </div>
+            </div>
+            )}
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
           <div>

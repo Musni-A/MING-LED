@@ -4,13 +4,14 @@ import App from './App.jsx'
 import { createBrowserRouter, Routes, Route, RouterProvider } from 'react-router-dom';
 import RegisterPage from './pages/componants/registerUserPage.jsx';
 import LoginPage from './pages/loginPage.jsx';
-import Dashboard from './pages/userDashboard.jsx';
 import Employee from './pages/employee.jsx';
 import Inventory from './pages/inventory.jsx';
 import Reports from './pages/reports.jsx';
 import Attendence from './pages/attendence.jsx';
 import Settings from './pages/settings.jsx';
 import UserProfile from './pages/userProfile.jsx';
+import FinishedGoods from './pages/finishedGoods.jsx'
+import WideTableComponent from './pages/componants/deliverProduct.jsx';
 
 const router = createBrowserRouter([
   {
@@ -22,8 +23,8 @@ const router = createBrowserRouter([
     element : <LoginPage/>
   },
   {
-    path : '/dashboard',
-    element : <Dashboard/>
+    path : '/finishedGoods',
+    element : <FinishedGoods/>
   },
   {
     path : '/employee',

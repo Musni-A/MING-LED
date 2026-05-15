@@ -22,14 +22,7 @@ export default function Employee(){
         <NavBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <div className="flex-1 flex flex-col overflow-hidden min-w-0">
             {/* Modal */}
-            {showForm && (
-            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
-                onClick={() => setShowForm(false)}>
-                <div onClick={(e) => e.stopPropagation()}>
-                    <RegisterPage setShowForm={setShowForm} />
-                </div>
-            </div>
-            )}
+            
             <TopBar setSidebarOpen={setSidebarOpen}/>
             <div className="h-full overflow-y-auto" onClick={() =>setSidebarOpen(false)}>
                 <UserList setShowForm={setShowForm} />

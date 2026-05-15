@@ -2,8 +2,9 @@ import React from "react";
 import { useState } from "react";
 import { createUser } from "../../api/userAPI";
 import toast, { Toaster } from 'react-hot-toast';
+import { fetchUserData } from "../commonFun/fetchData";
 
-export default function RegisterPage({setShowForm}) {
+export default function RegisterPage({setShowForm, setLoading, setUsers}) {
 
   const empty = {
     name : '', username : '', age : '' , phoneNumber : '',
@@ -49,7 +50,6 @@ export default function RegisterPage({setShowForm}) {
   const confirmCreateUser = async () => {
     try {
       const response = await createUser(form)
-      console.log(response.data)
       setShowPopup(false)
       setShowForm(false)
       toast.success('User created successfully!')
@@ -57,6 +57,9 @@ export default function RegisterPage({setShowForm}) {
       if(err){
         toast.error("Can not create a user");
       }
+    }
+    finally{
+      fetchUserData(setLoading, setUsers, toast);
     }
   }
 

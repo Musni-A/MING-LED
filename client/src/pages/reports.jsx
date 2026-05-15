@@ -1,4 +1,3 @@
-import ModernTable from "./componants/finishingGoods";
 import NavBar from "./navBar";
 import TopBar from "./topBar";
 import { useState } from "react";
@@ -12,7 +11,6 @@ export default function Reports(){
         <div className="flex-1 flex flex-col min-w-0">
             <TopBar setSidebarOpen={setSidebarOpen}/>
             <div className="h-full overflow-y-scroll" onClick={() =>setSidebarOpen(false)}>
-                <ModernTable/>
             </div>
         </div>
     </div>

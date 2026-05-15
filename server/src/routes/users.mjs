@@ -5,7 +5,6 @@ import { User } from "../mongoose/schema/users.mjs";
 import passport from 'passport'
 import { Strategy as localStrategy } from 'passport-local';
 import { comparePassword, hashPassword } from "../util/helper.mjs"
-import uploadParser, { uploadToCloudinary } from "../config/cloudinary.mjs";
 import fs from 'fs';
 import path from 'path';
 
@@ -55,29 +54,6 @@ passport.deserializeUser(async(id, done)=>{
     }
 })
 
-// Updated upload endpoint
-router.post('/upload', uploadParser.single('image'), async (req, res) => {
-    try {
-        if (!req.file) {
-            return res.status(400).json({ message: 'No file uploaded' });
-        }
-        
-        // Upload to Cloudinary
-        const result = await uploadToCloudinary(req.file.path);
-        
-        // Delete temp file
-        fs.unlinkSync(req.file.path);
-        
-        res.status(200).json({
-            message: 'File uploaded successfully!',
-            imageUrl: result.secure_url
-        });
-    } catch (error) {
-        console.error('Upload error:', error);
-        res.status(500).json({ message: 'Server error during upload.' });
-    }
-});
-
 router.post('/register', userValidation, async(req, res)=>{
     console.log("Received registration data:", req.body);
     const error = validationResult(req);
@@ -92,7 +68,7 @@ router.post('/register', userValidation, async(req, res)=>{
         res.status(200).json(savedUser)
     }
     catch(err){
-        res.status(500).json({Message : 'Server error', error : err.message})
+        res.status(500).json({message : 'Server error', error : err.message})
     }
 });
 
@@ -101,7 +77,7 @@ router.post('/login',(req, res, next)=>{
         let loggedIn;
         if(err) return next(err);
         if(!user){
-            return res.status(401).json({Message : info?.message || "Login failed"})
+            return res.status(401).json({message : info?.message || "Login failed"})
         }
         req.logIn(user, async(err)=>{
             if(err) return next(err);
