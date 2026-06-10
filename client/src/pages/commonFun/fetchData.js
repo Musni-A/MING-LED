@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { getAllUsers } from "../../api/userAPI"
+import { getLightType } from "../../api/lightTypeAPI";
+import { getLightWatts } from "../../api/lightAPI";
+import { getFinishingGoodsHistory } from "../../api/finishingGoodsHistory";
 
 export const fetchUserData = async (setLoading, setUsers, toast) =>{
     getAllUsers()
@@ -13,3 +16,23 @@ export const fetchUserData = async (setLoading, setUsers, toast) =>{
         setLoading(false);
       });
 }
+
+export const fetchLightWattsData = async (setLightWatts, toast) => {
+  try {
+    const wattsRes = await getLightWatts();
+    setLightWatts(wattsRes.data);
+  } catch (err) {
+    toast.error(err.message);
+  }
+};
+
+export const fetchFinishingGoodsHistoryData = async (setLightWatts, toast, setFinishingGoodsHistory) => {
+    try {
+      const res = await getFinishingGoodsHistory();
+      await fetchLightWattsData(setLightWatts, toast);
+      setFinishingGoodsHistory(res.data);
+    } catch (err) {
+      console.error("Error fetching finishing goods history:", err);
+      toast.error("Failed to load delivery history");
+    }
+};

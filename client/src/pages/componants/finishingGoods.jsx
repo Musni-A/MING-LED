@@ -1,13 +1,15 @@
 // components/Inventory/ProductInventory.jsx
-import { useEffect, useState } from 'react';
-import { updateProductStock, bulkUpdateProducts } from '../../api/lightAPI';
+import { useEffect, useState, useCallback, useMemo } from 'react';
+import { updateProductStock, bulkUpdateProducts, productPriceUpdate } from '../../api/lightAPI';
 import { getLightType } from '../../api/lightTypeAPI';
 import { Link } from 'react-router-dom';
 import { 
+  Check,
   History,
   Package, 
   AlertTriangle, 
-  XCircle, 
+  XCircle,
+  XIcon, 
   DollarSign,
   Search,
   Plus,
@@ -27,8 +29,141 @@ import {
   Hash, RotateCcw, CheckSquare, 
   ArrowRight, AlertCircle
 } from 'lucide-react';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import { getLightWatts } from '../../api/lightAPI';
+import { createFinishingGoodsHistory } from '../../api/finishingGoodsHistory';
+import React from 'react';
+
+// Memoized Bulk Product Row Component for performance
+const BulkProductRow = React.memo(({ product, bulkOperation, update, removeProductFromBulk, updateBulkItem }) => {
+  const newStock = update.type === 'restock' 
+    ? product.quantity + Number(update.quantity)
+    : product.quantity - Number(update.quantity);
+  const isValid = newStock >= 0;
+  const stockChanged = update.quantity > 0;
+  
+  return (
+    <tr 
+      className={`${product.watts === 'All watts' && 'hidden'} 
+        hover:bg-purple-50/30 transition-colors
+        ${!isValid ? 'bg-red-50/50' : ''}
+      `}
+    >
+      <td className="px-4 py-3">
+        <div className="flex items-center gap-3">
+          <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-white text-xs shadow-sm ${
+            bulkOperation === 'restock' 
+              ? 'bg-gradient-to-br from-green-400 to-emerald-600'
+              : 'bg-gradient-to-br from-red-400 to-rose-600'
+          }`}>
+            {product.watts?.substring(0, 3).toUpperCase()}
+          </div>
+          <div>
+            <div className="font-semibold text-gray-900 text-sm">{product.watts}</div>
+            <div className="text-xs text-gray-400">{product.typeName}</div>
+          </div>
+        </div>
+      </td>
+      
+      <td className="px-4 py-3">
+        <div className="flex items-baseline gap-1">
+          <span className={`font-bold text-xl ${
+            product.quantity === 0 ? 'text-red-600' : 
+            product.quantity < 10 ? 'text-orange-600' : 'text-green-600'
+          }`}>
+            {product.quantity}
+          </span>
+          <span className="text-xs text-gray-400">units</span>
+        </div>
+        {product.quantity === 0 && (
+          <span className="inline-block mt-1 px-1.5 py-0.5 text-[10px] bg-red-100 text-red-700 rounded font-semibold">
+            OUT OF STOCK
+          </span>
+        )}
+        {product.quantity > 0 && product.quantity < 10 && (
+          <span className="inline-block mt-1 px-1.5 py-0.5 text-[10px] bg-orange-100 text-orange-700 rounded font-semibold">
+            LOW STOCK
+          </span>
+        )}
+      </td>
+      
+      <td className="px-4 py-3">
+        <div className="inline-flex items-center bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+          <button
+            onClick={() => updateBulkItem(product._id, Math.max(0, Number(update.quantity) - 1), product.watts, product.typeName)}
+            className="px-2 py-2 hover:bg-gray-200 text-gray-600 transition-colors"
+            disabled={update.quantity <= 0}
+          >
+            <Minus className="w-3.5 h-3.5" />
+          </button>
+          <input
+            type="number"
+            min="0"
+            value={update.quantity}
+            onChange={(e) => updateBulkItem(product._id, e.target.value, product.watts, product.typeName)}
+            className="w-16 px-2 py-2 text-center text-sm font-semibold bg-white border-x border-gray-200 outline-none focus:bg-purple-50"
+          />
+          <button
+            onClick={() => updateBulkItem(product._id, Number(update.quantity) + 1, product.watts, product.typeName)}
+            className="px-2 py-2 hover:bg-gray-200 text-gray-600 transition-colors"
+          >
+            <Plus className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </td>
+      
+      <td className="px-4 py-3">
+        {stockChanged ? (
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-400">{product.quantity}</span>
+              <ArrowRight className="w-3 h-3 text-gray-400" />
+              <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-sm font-bold ${
+                !isValid ? 'bg-red-100 text-red-700' :
+                newStock === 0 ? 'bg-red-100 text-red-700' :
+                newStock < 10 ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'
+              }`}>
+                {!isValid ? (
+                  <>
+                    <AlertTriangle className="w-3 h-3" />
+                    Invalid
+                  </>
+                ) : (
+                  newStock
+                )}
+              </span>
+            </div>
+            {!isValid && (
+              <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
+                <AlertCircle className="w-3 h-3" />
+                Cannot go below 0
+              </p>
+            )}
+          </div>
+        ) : (
+          <span className="text-gray-300 text-sm">— no change —</span>
+        )}
+      </td>
+      
+      <td className="px-4 py-3 text-center">
+        <button
+          onClick={() => removeProductFromBulk(product._id)}
+          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+          title="Remove from list"
+        >
+          <Trash2 className="w-4 h-4" />
+        </button>
+      </td>
+    </tr>
+  );
+}, (prev, next) => {
+  return prev.product._id === next.product._id &&
+         prev.update.quantity === next.update.quantity &&
+         prev.update.type === next.update.type &&
+         prev.bulkOperation === next.bulkOperation;
+});
+
+BulkProductRow.displayName = 'BulkProductRow';
 
 export default function ProductInventory({setShowDeliveryHistory, showDeliveryHistory}) {
   const [products, setProducts] = useState([]);
@@ -46,7 +181,11 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
   const [bulkLoading, setBulkLoading] = useState(false);
   const [stockUpdate, setStockUpdate] = useState({ type: "restock", price : 0, quantity: 0, reason: "" });
   const [bulkUpdates, setBulkUpdates] = useState({});
-  const [deliveryProduct, setDeliveryProduct] = useState([])
+  const [invoiceNumber, setInvoiceNumber] = useState('');
+  const [changeIntoUpdate, setChangeIntoUpdate] = useState(false);
+  const [price, setPrice] = useState(0);
+  const [selectedProductId, setSelectedProductId] = useState(null);
+  const [selectedDistributor, setSelectedDistributor] = useState('');
 
   // Bulk Update Modal State
   const [bulkSelectedProducts, setBulkSelectedProducts] = useState([]);
@@ -73,7 +212,7 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
       setProducts(response.data);
       const initialBulk = {};
       response.data.forEach(product => {
-        initialBulk[product._id] = { quantity: 0, type: 'restock' };
+        initialBulk[product._id] = { quantity: 0, type: 'restock', watts : product.watts, typeName: product.typeName };
       });
       setBulkUpdates(initialBulk);
     } catch (err) {
@@ -108,9 +247,9 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
   // Statistics
   const stats = {
     total: filteredProducts.length,
-    lowStock: filteredProducts.filter(p => p.stock > 0 && p.stock <= (p.minStock || 10)).length,
-    outOfStock: filteredProducts.filter(p => p.stock === 0).length,
-    totalValue: filteredProducts.reduce((sum, p) => sum + (p.stock * p.price), 0)
+    lowStock: filteredProducts.filter(p => p.quantity > 0 && p.quantity <= (p.minStock || 10)).length,
+    outOfStock: (filteredProducts.filter(p => p.quantity === 0).length) - (filteredProducts.filter(p => p.watts === "All watts").length),
+    totalValue: filteredProducts.reduce((sum, p) => sum + (p.quantity * p.price), 0)
   };
 
   // Initialize available products
@@ -123,101 +262,107 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
   }, []);
 
   // Add product to bulk update list
-  const addProductToBulk = (productId) => {
-    const product = availableProducts.find(p => p._id === productId);
-    if (product && !bulkSelectedProducts.find(p => p._id === productId)) {
-      setBulkSelectedProducts([...bulkSelectedProducts, product]);
-      setAvailableProducts(availableProducts.filter(p => p._id !== productId));
-      // Initialize bulk update for this product with current bulk operation
-      setBulkUpdates(prev => ({
-        ...prev,
-        [productId]: { quantity: 0, type: bulkOperation }
-      }));
-    }
-  };
+  const addProductToBulk = useCallback((productId) => {
+    setAvailableProducts(prev => {
+      const product = prev.find(p => p._id === productId);
+      if (product && !bulkSelectedProducts.find(p => p._id === productId)) {
+        setBulkSelectedProducts(sel => [...sel, product]);
+        setBulkUpdates(upd => ({
+          ...upd,
+          [productId]: { quantity: 0, type: bulkOperation, Watts: product.watts, typeName: product.typeName }
+        }));
+        return prev.filter(p => p._id !== productId);
+      }
+      return prev;
+    });
+  }, [bulkOperation, bulkSelectedProducts]);
 
   // Remove product from bulk update list
-  const removeProductFromBulk = (productId) => {
-    const product = bulkSelectedProducts.find(p => p._id === productId);
-    if (product) {
-      setBulkSelectedProducts(bulkSelectedProducts.filter(p => p._id !== productId));
-      setAvailableProducts([...availableProducts, product]);
-      const newBulkUpdates = { ...bulkUpdates };
-      delete newBulkUpdates[productId];
-      setBulkUpdates(newBulkUpdates);
-    }
-  };
+  const removeProductFromBulk = useCallback((productId) => {
+    setBulkSelectedProducts(prev => {
+      const product = prev.find(p => p._id === productId);
+      if (product) {
+        setAvailableProducts(avail => [...avail, product]);
+        setBulkUpdates(upd => {
+          const newUpdates = { ...upd };
+          delete newUpdates[productId];
+          return newUpdates;
+        });
+        return prev.filter(p => p._id !== productId);
+      }
+      return prev;
+    });
+  }, []);
 
   // Select all products
-  const selectAllProducts = () => {
+  const selectAllProducts = useCallback(() => {
     const allProducts = [...filteredProducts];
     setBulkSelectedProducts(allProducts);
     setAvailableProducts([]);
     
     const allUpdates = {};
     allProducts.forEach(product => {
-      allUpdates[product._id] = { quantity: 0, type: bulkOperation };
+      allUpdates[product._id] = { quantity: 0, type: bulkOperation, Watts: product.watts, typeName: product.typeName };
     });
     setBulkUpdates(allUpdates);
-  };
+  }, [filteredProducts, bulkOperation]);
 
   // Clear all products
-  const clearAllProducts = () => {
+  const clearAllProducts = useCallback(() => {
     setBulkSelectedProducts([]);
     setAvailableProducts(filteredProducts);
     setBulkUpdates({});
-  };
+  }, [filteredProducts]);
 
   // Update bulk item quantity only (type is now global)
-  const updateBulkItem = (productId, quantity, watts) => {
+  const updateBulkItem = useCallback((productId, quantity, watts, typeName) => {
     setBulkUpdates(prev => ({
       ...prev,
       [productId]: {
         ...prev[productId],
-        Watts : watts,
+        Watts: watts,
         quantity: parseInt(quantity) || 0,
-        type: bulkOperation // Always use global operation
+        type: bulkOperation,
+        typeName: typeName
       }
     }));
-  };
+  }, [bulkOperation]);
 
-  // NEW: Apply bulk operation to all selected products
-  const applyOperationToAll = (operation) => {
+  // Apply bulk operation to all selected products
+  const applyOperationToAll = useCallback((operation) => {
     setBulkOperation(operation);
-    const updatedBulk = { ...bulkUpdates };
-    bulkSelectedProducts.forEach(product => {
-      if (updatedBulk[product._id]) {
-        updatedBulk[product._id] = {
-          ...updatedBulk[product._id],
-          type: operation
-        };
-      }
+    setBulkUpdates(prev => {
+      const updated = { ...prev };
+      Object.keys(updated).forEach(productId => {
+        updated[productId] = { ...updated[productId], type: operation };
+      });
+      return updated;
     });
-    setBulkUpdates(updatedBulk);
-  };
+  }, []);
 
-  // NEW: Set same quantity for all products
-  const setQuantityForAll = (quantity) => {
-    const qty = parseInt(quantity) || 0;
-    const updatedBulk = { ...bulkUpdates };
-    bulkSelectedProducts.forEach(product => {
-      if (updatedBulk[product._id]) {
-        updatedBulk[product._id] = {
-          ...updatedBulk[product._id],
-          Watts : product.watts,
-          quantity: qty
-        };
-      }
-    });
-    setBulkUpdates(updatedBulk);
-  };
+  const handleChangePrice = async (newPrice) => {
+    try {
+        const response = await productPriceUpdate({ price: newPrice, productId: selectedProductId });
+        console.log('Price update response:', response);
+        
+        // Handle success
+        if (response?.data?.success) {
+            toast.success('Prices updated successfully!');
+        }
+        await fetchLight();
+
+    } catch (error) {
+        console.error('Price update failed:', error);
+        toast.error(error.response?.data?.message || 'Failed to update prices');
+    }
+};
 
   const getStockStatus = (product) => {
-    const minStock = product.minStock || 10;
-    if (product.stock === 0) {
+    const minStock = product.minStock || 50;
+    if (product.quantity === 0) {
       return { label: "Out of Stock", color: "bg-red-100 text-red-700", icon: XCircle };
     }
-    if (product.stock <= minStock) {
+    if (product.quantity <= minStock) {
       return { label: "Low Stock", color: "bg-orange-100 text-orange-700", icon: AlertTriangle };
     }
     return { label: "In Stock", color: "bg-green-100 text-green-700", icon: Package };
@@ -249,13 +394,22 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
 
   // Bulk update products
   const handleBulkUpdate = async () => {
-    const updatesToSend = Object.entries(bulkUpdates)
-      .filter(([_productId, update]) => update.quantity > 0)
-      .map(([productId, update]) => ({
-        productId,
-        quantity: update.quantity,
-        type: update.type,
-        watts : update.Watts
+    // Map all selected products with their complete data + update info
+    const updatesToSend = bulkSelectedProducts
+      .filter(product => {
+        const update = bulkUpdates[product._id];
+        return update && update.quantity > 0;
+      })
+      .map(product => ({
+        // Include ALL product data
+        ...product,
+        // Add/override with update-specific fields
+        invoiceNumber: invoiceNumber,
+        quantity: bulkUpdates[product._id].quantity,
+        type: bulkUpdates[product._id].type,
+        watts: bulkUpdates[product._id].Watts,
+        productId: product._id,
+        typeName: bulkUpdates[product._id].typeName
       }));
 
     if (updatesToSend.length === 0) {
@@ -263,9 +417,13 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
       return;
     }
 
+
     setBulkLoading(true);
     try {
-      const response = await bulkUpdateProducts({ updates: updatesToSend });
+      const response2 = await createFinishingGoodsHistory(updatesToSend, selectedDistributor);
+      console.log(response2.data);
+      const response = await bulkUpdateProducts(updatesToSend);
+      console.log(response.data);
       await fetchLight();
       setShowBulkUpdateModal(false);
       setBulkSelectedProducts([]);
@@ -279,17 +437,18 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center h-96">
-        <LoaderCircle className="w-12 h-12 text-blue-400 animate-spin mb-4" />
-        <p className="text-gray-500">Loading products...</p>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="flex flex-col items-center justify-center h-96">
+  //       <LoaderCircle className="w-12 h-12 text-blue-400 animate-spin mb-4" />
+  //       <p className="text-gray-500">Loading products...</p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className={` ${showDeliveryHistory == 'hidden' ? 'block' : 'hidden'} min-h-screen bg-gray-50`}>
+      <Toaster />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
         {/* Header */}
@@ -323,9 +482,13 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
                   </svg>
                 </div>
               </div>
-                <button onClick={()=>{setShowDeliveryHistory('block')}} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 sm:w-fit w-55 flex items-center gap-2">
-                  <History className="w-4 h-4" />
+                <button onClick={()=>{setShowDeliveryHistory('block')}} className="px-4 py-2 bg-red-600/70 text-white rounded-lg hover:bg-red-800 sm:w-fit w-55 flex items-center gap-2 transition-all duration-300">
+                  <Package className="w-4 h-4" />
                   Delivery history
+                </button>
+                <button onClick={()=>{setShowDeliveryHistory('block')}} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-900 sm:w-fit w-55 flex items-center gap-2 transition-all duration-300">
+                  <History className="w-4 h-4" />
+                  Restock history
                 </button>
             </div>
           </div>
@@ -365,7 +528,7 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-500">Total Value</p>
-                <p className="text-2xl font-bold text-green-600">${stats.totalValue.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-green-600">LKR.{stats.totalValue.toLocaleString()}</p>
               </div>
               <DollarSign className="w-8 h-8 text-green-500 opacity-50" />
             </div>
@@ -403,7 +566,7 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
                 className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center gap-2"
               >
                 <RefreshCw className="w-4 h-4" />
-                Product deliver
+                Product deliver / Restock
               </button>
           </div>
         </div>
@@ -425,7 +588,6 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
                   <thead className="bg-gray-50 border-b">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">SKU</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stock</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
@@ -441,9 +603,8 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
                         <tr key={product._id} className={` ${product.typeName.includes('Common') && 'hidden'} hover:bg-gray-50 transition-colors`}>
                           <td className="px-6 py-4">
                             <div className="font-medium text-gray-900">{product.watts}</div>
-                            <div className="text-xs text-gray-500">{product.description?.substring(0, 50)}</div>
+                            <div className="text-xs text-gray-500">{product.typeName}</div>
                           </td>
-                          <td className="px-6 py-4 text-gray-600 text-sm">{product.sku}</td>
                           <td className="px-6 py-4">
                             <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-700">
                               {product.typeName}
@@ -451,13 +612,7 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
                            </td>
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-2">
-                              <div className="w-16 bg-gray-200 rounded-full h-1.5">
-                                <div 
-                                  className="bg-blue-600 h-1.5 rounded-full"
-                                  style={{ width: `${Math.min(100, (product.stock / (product.maxStock || 100)) * 100)}` }}
-                                />
-                              </div>
-                              <span className="text-sm font-medium">{product.stock}</span>
+                              <span className="text-sm font-medium">{product.quantity}</span>
                             </div>
                            </td>
                           <td className="px-6 py-4">
@@ -466,19 +621,58 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
                               {status.label}
                             </span>
                            </td>
-                          <td className="px-6 py-4 text-gray-900 font-medium">${product.price}</td>
+                          <td className="px-6 py-4 text-gray-900 font-medium">
+                            {changeIntoUpdate && product._id === selectedProductId ? (
+                              <input 
+                                type="number"
+                                defaultValue={product.price}
+                                onChange={(e) => {setPrice(e.target.value);}}
+                                className="w-20 px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              />
+                            ) : (
+                              <p className="text-sm text-gray-500">
+                                LKR.{product.price}
+                              </p>
+                            )}
+                          </td>
                           <td className="px-6 py-4">
                             <div className="flex gap-2">
-                              <button 
+                              {changeIntoUpdate && product._id === selectedProductId ? 
+                              (<div className='flex gap-2'>
+                                <button 
+                                  onClick={() => {
+                                    setChangeIntoUpdate(false);
+                                    handleChangePrice(price);
+                                  }}
+                                  className="p-1 text-blue-600 hover:bg-blue-50 rounded"
+                                  title="Update Stock"
+                                >
+                                  <Check className='w-5 h-5' />
+                                </button> 
+                                <button 
+                                  onClick={() => {
+                                    setChangeIntoUpdate(false);
+                                    setSelectedProductId(null)
+                                  }}
+                                  className="p-1 text-red-600 hover:bg-blue-50 rounded"
+                                  title="Update Stock"
+                                >
+                                  <XIcon className='w-5 h-5' />
+                                </button>
+                              </div>) : 
+                              (<button 
                                 onClick={() => {
-                                  setSelectedProduct(product);
-                                  setShowStockModal(true);
+                                  setChangeIntoUpdate(true);
+                                  setSelectedProductId(product._id);
+                                  setPrice(product.price)
                                 }}
+                                
                                 className="p-1 text-blue-600 hover:bg-blue-50 rounded"
                                 title="Update Stock"
                               >
                                 <Edit2 className="w-4 h-4" />
-                              </button>
+                              </button>)}
+                              
                               <button 
                                 onClick={() => {
                                   setSelectedProduct(product);
@@ -488,9 +682,6 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
                                 title="View Details"
                               >
                                 <Eye className="w-4 h-4" />
-                              </button>
-                              <button className="p-1 text-red-600 hover:bg-red-50 rounded" title="Delete">
-                                <Trash2 className="w-4 h-4" />
                               </button>
                             </div>
                            </td>
@@ -591,10 +782,10 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
                     <div>
                       <label className="text-xs text-gray-500 uppercase font-semibold">Current Stock</label>
                       <p className={`text-2xl font-bold ${
-                        selectedProduct.stock === 0 ? 'text-red-600' : 
-                        selectedProduct.stock <= (selectedProduct.minStock || 10) ? 'text-orange-600' : 'text-green-600'
+                        selectedProduct.quantity === 0 ? 'text-red-600' : 
+                        selectedProduct.quantity <= (selectedProduct.minStock || 10) ? 'text-orange-600' : 'text-green-600'
                       }`}>
-                        {selectedProduct.stock} units
+                        {selectedProduct.quantity} units
                       </p>
                     </div>
                     <div>
@@ -758,15 +949,15 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
                     className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
-                {stockUpdate.type === "sale" && stockUpdate.quantity > selectedProduct.stock && (
+                {stockUpdate.type === "sale" && stockUpdate.quantity > selectedProduct.quantity && (
                   <p className="text-red-500 text-sm mb-3">
-                    ⚠️ Cannot remove more than available stock ({selectedProduct.stock} units)
+                    ⚠️ Cannot remove more than available stock ({selectedProduct.quantity} units)
                   </p>
                 )}
                 <div className="flex gap-3">
                   <button
                     onClick={updateStock}
-                    disabled={stockUpdate.quantity <= 0 || (stockUpdate.type === "sale" && stockUpdate.quantity > selectedProduct.stock)}
+                    disabled={stockUpdate.quantity <= 0 || (stockUpdate.type === "sale" && stockUpdate.quantity > selectedProduct.quantity)}
                     className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
                   >
                     Update Stock
@@ -795,7 +986,7 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
                     <Package className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900">Bulk Stock Update</h3>
+                    <h3 className="text-lg font-bold text-gray-900">Product Delivery / Restock</h3>
                     <p className="text-xs text-gray-500">
                       Update multiple products at once — fast and efficient
                     </p>
@@ -893,31 +1084,52 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
                       </div>
                     </div>
 
-                    {/* Quantity for All */}
-                    <div>
-                      <label className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">
-                        Apply quantity to all selected
-                      </label>
-                      <div className="flex gap-2">
-                        <div className="relative flex-1">
-                          <input
-                            type="number"
-                            min="0"
-                            placeholder="e.g. 10"
-                            onChange={(e) => setQuantityForAll(e.target.value)}
-                            className="w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
-                          />
-                          <Hash className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <div className='flex gap-2 justify-evenly'>
+                      <div>
+                        <label className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">
+                          Enter invoice No
+                        </label>
+                        <div className="flex gap-2 pt-1">
+                          <div className="relative flex-1">
+                            <input
+                              type="text"
+                              min="0"
+                              placeholder="Enter invoice No"
+                              onChange={(e) => setInvoiceNumber(e.target.value)}
+                              disabled={bulkOperation === 'restock'}
+                              className="w-full pl-5 pr-3 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
+                            />
+                          </div>
                         </div>
-                        <button
-                          onClick={() => setQuantityForAll(0)}
-                          className="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-medium transition-colors flex items-center gap-1.5"
-                        >
-                          <RotateCcw className="w-4 h-4" />
-                          Reset
-                        </button>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2 block">
+                          Select distributor
+                        </label>
+                        <div className="flex gap-2 pt-1">
+                          <div className="relative flex-1">
+                            <select name="distributor" id=""
+                              disabled={bulkOperation === 'restock'}
+                              onChange={(e)=>{
+                                setSelectedDistributor(e.target.value);
+                              }}
+                              className="w-full pl-2 mr-3 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all"
+                            >
+                              <option value="">Select distributor</option>
+                              {[
+                                'Trincomale',
+                                'Ampara',
+                                'Badulla',
+                                'Colombo'
+                              ].map(o =>(
+                                <option key={o} value={o}>{o}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
                       </div>
                     </div>
+                    
                   </div>
                 </div>
 
@@ -943,8 +1155,8 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
                       >
                         <option value="">+ Search and add product...</option>
                         {availableProducts.map(product => (
-                          <option key={product._id} value={product._id}>
-                            {product.watts} — Stock: {product.stock} | SKU: {product.sku}
+                          <option className={`${product.watts === "All watts" && 'hidden'}`} key={product._id} value={product._id}>
+                            {product.watts} — Stock: {product.quantity} | Variant: {product.typeName}
                           </option>
                         ))}
                       </select>
@@ -955,7 +1167,7 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
                       className="px-4 py-2.5 bg-purple-50 text-purple-700 border border-purple-200 rounded-lg hover:bg-purple-100 text-sm font-medium transition-all flex items-center gap-1.5"
                     >
                       <CheckSquare className="w-4 h-4" />
-                      Select All ({filteredProducts.length})
+                      Select All ({bulkSelectedProducts.filter(product => product.watts !== "All watts").length})
                     </button>
                     
                     <button
@@ -978,7 +1190,7 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
                     </div>
                     {bulkSelectedProducts.length > 0 && (
                       <span className="text-xs bg-purple-100 text-purple-700 px-2.5 py-1 rounded-full font-semibold">
-                        {bulkSelectedProducts.length} products
+                        { bulkSelectedProducts.filter((pro )=> pro.watts !== "All watts" ).length } products
                       </span>
                     )}
                   </div>
@@ -1004,138 +1216,21 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
                               Quantity to {bulkOperation === 'restock' ? 'Add' : 'Remove'}
                             </th>
                             <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">After Update</th>
-                            <th className="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
+                            <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Action</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                          {bulkSelectedProducts.map((product, idx) => {
+                          {bulkSelectedProducts.map((product) => {
                             const update = bulkUpdates[product._id] || { quantity: 0, type: bulkOperation };
-                            const newStock = update.type === 'restock' 
-                              ? product.stock + Number(update.quantity)
-                              : product.stock - Number(update.quantity);
-                            const isValid = newStock >= 0;
-                            const stockChanged = update.quantity > 0;
-                            
                             return (
-                              <tr 
-                                key={product._id} 
-                                className={`${product.typeName.includes('Common') && 'hidden'} 
-                                  hover:bg-purple-50/30 transition-colors
-                                  ${!isValid ? 'bg-red-50/50' : ''}
-                                `}
-                              >
-                                {/* Product Info */}
-                                <td className="px-4 py-3">
-                                  <div className="flex items-center gap-3">
-                                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center font-bold text-white text-xs shadow-sm ${
-                                      bulkOperation === 'restock' 
-                                        ? 'bg-gradient-to-br from-green-400 to-emerald-600'
-                                        : 'bg-gradient-to-br from-red-400 to-rose-600'
-                                    }`}>
-                                      {product.watts?.substring(0, 3).toUpperCase()}
-                                    </div>
-                                    <div>
-                                      <div className="font-semibold text-gray-900 text-sm">{product.watts}</div>
-                                      <div className="text-xs text-gray-500">SKU: {product.sku}</div>
-                                      <div className="text-xs text-gray-400">{product.typeName}</div>
-                                    </div>
-                                  </div>
-                                </td>
-                                
-                                {/* Current Stock */}
-                                <td className="px-4 py-3">
-                                  <div className="flex items-baseline gap-1">
-                                    <span className={`font-bold text-xl ${
-                                      product.stock === 0 ? 'text-red-600' : 
-                                      product.stock < 10 ? 'text-orange-600' : 'text-green-600'
-                                    }`}>
-                                      {product.stock}
-                                    </span>
-                                    <span className="text-xs text-gray-400">units</span>
-                                  </div>
-                                  {product.stock === 0 && (
-                                    <span className="inline-block mt-1 px-1.5 py-0.5 text-[10px] bg-red-100 text-red-700 rounded font-semibold">
-                                      OUT OF STOCK
-                                    </span>
-                                  )}
-                                  {product.stock > 0 && product.stock < 10 && (
-                                    <span className="inline-block mt-1 px-1.5 py-0.5 text-[10px] bg-orange-100 text-orange-700 rounded font-semibold">
-                                      LOW STOCK
-                                    </span>
-                                  )}
-                                </td>
-                                
-                                {/* Quantity Input with +/- buttons */}
-                                <td className="px-4 py-3">
-                                  <div className="inline-flex items-center bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
-                                    <button
-                                      onClick={() => updateBulkItem(product._id, Math.max(0, Number(update.quantity) - 1), product.watts)}
-                                      className="px-2 py-2 hover:bg-gray-200 text-gray-600 transition-colors"
-                                      disabled={update.quantity <= 0}
-                                    >
-                                      <Minus className="w-3.5 h-3.5" />
-                                    </button>
-                                    <input
-                                      type="number"
-                                      min="0"
-                                      value={update.quantity}
-                                      onChange={(e) => updateBulkItem(product._id, e.target.value, product.watts)}
-                                      className="w-16 px-2 py-2 text-center text-sm font-semibold bg-white border-x border-gray-200 outline-none focus:bg-purple-50"
-                                    />
-                                    <button
-                                      onClick={() => updateBulkItem(product._id, Number(update.quantity) + 1, product.watts)}
-                                      className="px-2 py-2 hover:bg-gray-200 text-gray-600 transition-colors"
-                                    >
-                                      <Plus className="w-3.5 h-3.5" />
-                                    </button>
-                                  </div>
-                                </td>
-                                
-                                {/* New Stock with Visual Indicator */}
-                                <td className="px-4 py-3">
-                                  {stockChanged ? (
-                                    <div>
-                                      <div className="flex items-center gap-2">
-                                        <span className="text-xs text-gray-400">{product.stock}</span>
-                                        <ArrowRight className="w-3 h-3 text-gray-400" />
-                                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-sm font-bold ${
-                                          !isValid ? 'bg-red-100 text-red-700' :
-                                          newStock === 0 ? 'bg-red-100 text-red-700' :
-                                          newStock < 10 ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'
-                                        }`}>
-                                          {!isValid ? (
-                                            <>
-                                              <AlertTriangle className="w-3 h-3" />
-                                              Invalid
-                                            </>
-                                          ) : (
-                                            newStock
-                                          )}
-                                        </span>
-                                      </div>
-                                      {!isValid && (
-                                        <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
-                                          <AlertCircle className="w-3 h-3" />
-                                          Cannot go below 0
-                                        </p>
-                                      )}
-                                    </div>
-                                  ) : (
-                                    <span className="text-gray-300 text-sm">— no change —</span>
-                                  )}
-                                </td>
-                                
-                                {/* Remove Action */}
-                                <td className="px-4 py-3 text-center">
-                                  <button
-                                    onClick={() => removeProductFromBulk(product._id)}
-                                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                                    title="Remove from list"
-                                  >
-                                    <Trash2 className="w-4 h-4" />
-                                  </button>
-                                </td>
-                              </tr>
+                              <BulkProductRow
+                                key={product._id}
+                                product={product}
+                                bulkOperation={bulkOperation}
+                                update={update}
+                                removeProductFromBulk={removeProductFromBulk}
+                                updateBulkItem={updateBulkItem}
+                              />
                             );
                           })}
                         </tbody>
@@ -1151,7 +1246,9 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
                 <div className="px-6 py-3 bg-gradient-to-r from-purple-50 via-white to-purple-50 border-b border-gray-100 grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
                     <p className="text-xs text-gray-500 font-medium">Products Selected</p>
-                    <p className="text-lg font-bold text-purple-700">{bulkSelectedProducts.length}</p>
+                    <p className="text-lg font-bold text-purple-700">
+                      {bulkSelectedProducts.filter(product => product.watts !== "All watts").length}
+                    </p>
                   </div>
                   <div>
                     <p className="text-xs text-gray-500 font-medium">Operation</p>
@@ -1189,7 +1286,7 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
                     Cancel
                   </button>
                   <button
-                    onClick={() => { handleBulkUpdate(); console.log(bulkUpdates); }}
+                    onClick={() => { handleBulkUpdate(); setInvoiceNumber(''); setSelectedDistributor(''); }}
                     disabled={bulkLoading || bulkSelectedProducts.length === 0 || Object.values(bulkUpdates).every(u => !u.quantity)}
                     className={`flex-1 py-2.5 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 shadow-lg ${
                       bulkOperation === 'restock'
@@ -1214,13 +1311,13 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
             </div>
             
             {/* Animation styles */}
-            {/* <style>{`
+            <style>{`
               @keyframes fadeIn {
                 from { opacity: 0; }
                 to { opacity: 1; }
               }
               .animate-fadeIn { animation: fadeIn 0.2s ease-out; }
-            `}</style> */}
+            `}</style>
           </div>
         )}
       </div>

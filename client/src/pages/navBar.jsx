@@ -20,7 +20,7 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
 
   const userDepartment = localStorage.getItem("userDepartment");
   const userRole = localStorage.getItem("userRole");
-  const userName = localStorage.getItem("userName") || "User";
+  const userName = localStorage.getItem("name") || "User";
 
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
@@ -118,7 +118,7 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
       <aside
         className={`
           fixed lg:static h-screen inset-y-0 left-0 z-30
-          w-72 bg-gradient-to-b from-blue-900 via-blue-950 to-slate-900
+          w-64   bg-gradient-to-b from-blue-900 via-blue-950 to-slate-900
           flex flex-col shrink-0
           transform transition-all duration-300 ease-in-out
           shadow-2xl border-r border-white/5
@@ -159,15 +159,15 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
         </div>
 
         {/* User Profile Card */}
-        <div className="mx-4 mb-6 p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm relative">
+        <div className="mx-4 mb-6 px-3 py-1 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm relative">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#e8192c] to-[#c0001f] flex items-center justify-center text-white font-bold text-sm shadow-lg">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#e8192c] to-[#c0001f] flex items-center justify-center text-white font-bold text-sm shadow-lg">
                 {userName.charAt(0).toUpperCase()}
               </div>
-              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-blue-950" />
+              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border border-blue-950" />
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="flex flex-row justify-between w-60">
               <div className="text-white font-semibold text-sm truncate">
                 {userName}
               </div>

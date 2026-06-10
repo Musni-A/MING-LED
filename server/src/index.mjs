@@ -9,7 +9,8 @@ import lightTypeRouter from './routes/lightType.mjs'
 import lightWattsRouter from './routes/light.mjs'
 import attendenceRouter from './routes/attendanceRoutes.mjs'
 import compression from 'compression';
-import router from './routes/product.mjs';
+import ProductRouter from './routes/product.mjs';
+import finishingGoodsHistoryRouter from './routes/finishingGoodsHistory.mjs';
 
 const app = express();
 
@@ -38,7 +39,8 @@ app.use('/api', userRouter);
 app.use('/api', lightTypeRouter)
 app.use('/api', lightWattsRouter)
 app.use('/api', attendenceRouter)
-app.use('/api', router)
+app.use('/api', ProductRouter)
+app.use('/api', finishingGoodsHistoryRouter)
 
 await mongoose.connect(process.env.MONGO_URI_CLOUD)
     .then(() => console.log("Data base connect successfully"))

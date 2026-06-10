@@ -1,5 +1,5 @@
 import { useState } from "react"
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { createLightWatts } from "../../api/lightAPI";
 import { LoaderIcon } from "lucide-react";
 
@@ -79,49 +79,52 @@ export default function LightWatts({showForm, setShowForm, fetchData, lightTypes
   }
 
   return (
-    <>
-      {/* Card */}
-      <div className={`relative w-full max-w-xl bg-blue-950 backdrop-blur-xl border border-white/8 rounded-3xl p-7 shadow-[0_32px_80px_rgba(0,0,0,0.4)] duration-300 transition-transform ${showForm ? 'scale-100' : 'scale-70 pointer-events-none'} `}>
+    <div className={`w-full max-w-xl bg-white rounded-2xl border border-slate-200 p-6 shadow-2xl duration-300 transition-transform ${showForm ? 'scale-100' : 'scale-95 pointer-events-none'} `}>
+      <Toaster />
 
-        {/* Logo */}
-        <div className="flex items-center gap-4 mb-3">
-          <div className="flex items-end gap-1">
-            <div className="w-2.5 h-8 rounded-full bg-[#e8192c]" />
-            <div className="w-2.5 h-6 rounded-full bg-[#f5c800]" />
-            <div className="w-2.5 h-8 rounded-full bg-[#7b9fd4]" />
+          {/* Header */}
+          <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-linear-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center shadow-md">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v20" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-800 text-base">New Watts</h3>
+                <p className="text-xs text-slate-400 font-medium">Define a new watts type with its parts</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => { setShowForm(false); setSelectedType(null); }}
+              className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
+            >
+              ✕
+            </button>
           </div>
-          <div>
-            <div className="text-2xl font-extrabold text-white tracking-[0.2em] leading-none">MING</div>
-            <div className="text-[0.6rem] text-[#7b9fd4] tracking-[0.3em] mt-0.5">WORTH SPENDING</div>
-          </div>
-          <div className="text-right">
-            <h2 className="text-2xl font-extrabold text-white leading-none">New Watts</h2>
-            <p className="text-[0.6rem] text-[#7b9fd4] tracking-[0.3em] mt-0.5">Define a new watts type with its parts</p>
-          </div>
-        </div>
 
-
-        <div className="flex flex-col gap-4 ">
+          <div className="flex flex-col gap-4 ">
 
           {/* Type Name - Show as disabled text since it comes from selection */}
           <div className="flex justify-between gap-1">
             <div className="flex flex-col gap-1">
-              <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">Type Name *</label>
-              <select 
-                className="bg-white/5 border sm:w-full w-35 border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none placeholder:text-white/30 focus:border-[#7b9fd4] transition-colors"
-                onChange={(e) => {
-                  const type = lightTypes.find(t => t.typeName === e.target.value)
-                  handleTypeSelect(type)
-                }}
-                value={selectedType?.typeName || ''}
-              >
-                <option value="" disabled className="text-gray-500">Select a type</option>
-                {lightTypes.map((type) => (
-                  <option key={type._id} value={type.typeName} className="text-black">
-                    {type.typeName}
-                  </option>
-                ))}
-              </select>
+              <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wide mb-1.5">Type Name *</label>
+              <div className="relative">
+                <select 
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-slate-800 text-sm outline-none focus:border-blue-400 transition-colors appearance-none cursor-pointer"
+                  onChange={(e) => {
+                    const type = lightTypes.find(t => t.typeName === e.target.value)
+                    handleTypeSelect(type)
+                  }}
+                  value={selectedType?.typeName || ''}
+                >
+                  <option value="" disabled className="text-gray-500">Select a type</option>
+                  {lightTypes.map((type) => (
+                    <option key={type._id} value={type.typeName} className="text-slate-800">
+                      {type.typeName}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
             {/* Display selected type name (readonly) */}
             {selectedType && (
@@ -139,12 +142,12 @@ export default function LightWatts({showForm, setShowForm, fetchData, lightTypes
           
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-[#7b9fd4] font-semibold uppercase tracking-wide">Watts</label>
+            <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wide mb-1.5">Watts</label>
             <input 
               value={formData.watts} 
               name="watts" 
               onChange={handleTypeNameOnChange} 
-              className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none placeholder:text-white/30 focus:border-[#7b9fd4] transition-colors"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-slate-800 text-sm outline-none placeholder:text-slate-350 focus:border-blue-400 transition-colors"
               type="text" 
               placeholder="Enter wattage"
             />
@@ -160,25 +163,25 @@ export default function LightWatts({showForm, setShowForm, fetchData, lightTypes
                 <div className="flex flex-col gap-2 mr-3">
                   {formData.parts.map((part, index) => (
                     <div key={index} className="flex items-center gap-2">
-                      <span className="text-[#7b9fd4] text-xs font-bold w-5">{index + 1}.</span>
+                      <span className="text-slate-500 text-xs font-semibold w-5">{index + 1}.</span>
                       
                       {/* Part Name - Display only (from selected type) */}
-                      <div className="flex-1 flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-2 py-3">
+                      <div className="flex-1 flex items-center gap-2 bg-slate-50 border border-slate-150 rounded-xl px-3 py-2">
                         <input
                           value={part.partsName}
                           disabled
-                          className="bg-transparent w-20 text-white/60 text-sm outline-none flex-1 cursor-not-allowed"
+                          className="bg-transparent w-20 text-slate-800/70 text-sm outline-none flex-1 cursor-not-allowed"
                         />
                       </div>
                       
                       {/* Quantity - Editable */}
-                      <div className="flex-1 flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus-within:border-[#7b9fd4]">
+                      <div className="flex-1 flex items-center gap-2 bg-slate-50 border border-slate-150 rounded-xl px-3 py-2 focus-within:border-blue-400">
                         <input
                           value={part.quantity}
                           onChange={(e) => handlePartsNameOnChange(index, 'quantity', e.target.value)}
                           type="number"
                           placeholder="Enter quantity"
-                          className="bg-transparent w-10 text-white text-sm outline-none flex-1 placeholder:text-white/30"
+                          className="bg-transparent w-10 text-slate-800 text-sm outline-none flex-1 placeholder:text-slate-350"
                           min="0"
                         />
                       </div>
@@ -196,37 +199,36 @@ export default function LightWatts({showForm, setShowForm, fetchData, lightTypes
           </div>
 
           {/* Submit */}
-          <div className="flex justify-evenly gap-4">
-            {loading ? (
-              <div className="mt-2 w-full py-3.5 rounded-xl text-white font-bold text-base cursor-pointer border-none bg-linear-to-r from-[#e8192c] to-[#c0001f] shadow-[0_8px_24px_rgba(232,25,44,0.3)] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed">
-                <LoaderIcon className="animate-spin mx-auto" />
-              </div>
-            ) : (
-              <button 
-                onClick={handleSubmit} 
-                disabled={!selectedType || !formData.watts}
-                className="mt-2 w-full py-3.5 rounded-xl text-white font-bold text-base cursor-pointer border-none bg-linear-to-r from-[#e8192c] to-[#c0001f] shadow-[0_8px_24px_rgba(232,25,44,0.3)] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+              <button
+                onClick={() => {
+                  setShowForm(false)
+                  setSelectedType(null)
+                  setFormData({
+                    typeName: '',
+                    watts: '',
+                    parts: []
+                  })
+                }}
+                className="px-4 py-2 rounded-xl text-slate-500 hover:bg-slate-100 text-xs font-bold transition-colors"
               >
-              Save Light Type →
-            </button>)}
-
-            <button 
-              onClick={() => {
-                setShowForm(false)
-                setSelectedType(null)
-                setFormData({
-                  typeName: '',
-                  watts: '',
-                  parts: []
-                })
-              }} 
-              className="mt-2 w-full py-3.5 rounded-xl text-[#7b9fd4] font-semibold text-sm cursor-pointer border border-white/10 bg-transparent hover:bg-white/5 transition-colors"
-            >
-              Cancel
-            </button>
-          </div>
+                Cancel
+              </button>
+              {loading ? (
+                <div className="px-5 py-2.5 rounded-xl bg-linear-to-r from-blue-600 to-indigo-700 text-white text-xs font-bold shadow-md">
+                  <LoaderIcon className="animate-spin mx-auto" />
+                </div>
+              ) : (
+                <button 
+                  onClick={handleSubmit} 
+                  disabled={!selectedType || !formData.watts}
+                  className="px-5 py-2.5 rounded-xl bg-linear-to-r from-blue-600 to-indigo-700 text-white text-xs font-bold shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Save Watts
+                </button>
+              )}
+            </div>
         </div>
-      </div>
-    </>
+    </div>
   )
 }

@@ -393,6 +393,50 @@ router.patch('/lightWatts', async(req, res)=>{
     }
 });
 
+router.patch('/bulkUpdateProducts', async(req, res)=>{
+    const updateData = req.body;
+    try{
+        const updatePromises = updateData.map(async ({ type, invoiceNumber, ...update }) => {
+
+            const previousProduct = await LightWatts.findById(update._id);
+
+            let newQuantity;
+
+            if(type === 'restock'){
+                newQuantity = previousProduct.quantity + update.quantity; // Update the quantity by adding the new quantity
+            } else if(type === 'sale'){
+                newQuantity = previousProduct.quantity - update.quantity; // Update the quantity by subtracting the new quantity
+                if(newQuantity < 0){
+                    // throw new Error(`Insufficient stock for product with ID ${update._id}. Available: ${previousProduct.quantity}, Requested: ${update.quantity}`);
+                    res.status(400).json({
+                        success: false,
+                        message: `Insufficient stock for product ${update.watts}. Available: ${previousProduct.quantity}, Requested: ${update.quantity}`
+                    });
+                    return; // Stop further processing
+                }
+            }
+
+            return LightWatts.findByIdAndUpdate(update._id, { ...update, quantity: newQuantity }, { returnDocument: 'after' });
+        });
+        const updatedTypes = await Promise.all(updatePromises);
+        res.status(200).json(updatedTypes);
+    }
+    catch(err){
+        res.status(400).json({Msg : err.name})
+    }
+})
+
+router.patch('/productPriceUpdate', async (req, res) => {
+    try{
+        const newPrice = req.body;
+        const updateProduct = await LightWatts.findByIdAndUpdate(newPrice.productId, {price : newPrice.price})
+        res.status(200).json({updateProduct, message : 'Price changed'})
+    }
+    catch(err){
+        res.status(400).json({Msg : err.name})
+    }
+});
+
 router.delete('/lightWatts/:id', async (req, res) => {
     try {
         const wattsId = req.params.id;
