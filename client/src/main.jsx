@@ -8,11 +8,12 @@ import LoginPage from './pages/loginPage.jsx';
 import Employee from './pages/employee.jsx';
 import Inventory from './pages/inventory.jsx';
 import Reports from './pages/reports.jsx';
-import Attendence from './pages/attendence.jsx';
+import Attendance from './pages/attendance.jsx';
 import Settings from './pages/settings.jsx';
 import UserProfile from './pages/userProfile.jsx';
 import FinishedGoods from './pages/finishedGoods.jsx'
 import WideTableComponent from './pages/componants/deliverProduct.jsx';
+import NotFoundAnimated from './pages/componants/notFound.jsx';
 
 const router = createBrowserRouter([
   {
@@ -40,8 +41,8 @@ const router = createBrowserRouter([
     element : <Reports/>
   },
   {
-    path : '/Attendence',
-    element : <Attendence/>
+    path : '/Attendance',
+    element : <Attendance/>
   },
   {
     path : '/settings',
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
   {
     path : '/profile',
     element : <UserProfile/>
+  },
+  {
+    path: '*',  // This catches all undefined routes
+    element: <NotFoundAnimated />
   }
 ])
 

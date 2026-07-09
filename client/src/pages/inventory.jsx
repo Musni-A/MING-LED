@@ -5,11 +5,13 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Toaster } from 'react-hot-toast';
 import PartsList from "./componants/partsList";
+import PartsHistoryViewer from "./componants/partsHistory";
 
 
 export default function Inventory(){
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [partsHistoryViewerOpen, setPartsHistoryViewerOpen] = useState(false)
   const loggedIn = localStorage.getItem('loggedIn');
     useEffect(()=>{
       if(!loggedIn){
@@ -25,7 +27,12 @@ export default function Inventory(){
       <TopBar setSidebarOpen={setSidebarOpen}/>
       <div className="h-full  flex justify-between overflow-y-auto"
         onClick={() => setSidebarOpen(false)}>
-          <PartsList/>
+          {!partsHistoryViewerOpen &&
+            <PartsList setPartsHistoryViewerOpen={setPartsHistoryViewerOpen} partsHistoryViewerOpen={partsHistoryViewerOpen} />
+          }
+          { partsHistoryViewerOpen &&
+            <PartsHistoryViewer setPartsHistoryViewerOpen={setPartsHistoryViewerOpen} partsHistoryViewerOpen={partsHistoryViewerOpen} />
+          }
       </div>
     </div>
   </div>

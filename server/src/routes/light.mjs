@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { LightWatts } from "../mongoose/schema/lightWatts.mjs";
-import { Product } from "../mongoose/schema/product.mjs";
 
 const router = Router();
 
@@ -51,35 +50,17 @@ router.post('/lightWatts', async (req, res) => {
         const sanitizedWatts = body.watts;
         const sanitizedTypeName = body.typeName.trim();
         
-        
-        // ============ 4. CREATE DOCUMENTS ============
+        // ============ 3. CREATE DOCUMENT ============
         const lightWattsData = body;
-        
         const lightWatts = new LightWatts(lightWattsData);
         
-        const productData = {
-            name: sanitizedWatts.toString(),
-            type: sanitizedTypeName,
-            price: body.price || 0,
-            stock: body.stock || 0,
-            createdAt: new Date(),
-            createdBy: req.user?._id || null
-        };
+        // ============ 4. SAVE ONLY LIGHTWATTS ============
+        const savedLightWatts = await lightWatts.save();
         
-        const product = new Product(productData);
-        
-        // ============ 5. PARALLEL SAVING WITH TRANSACTION ============
-        // Use Promise.all for better performance
-        const [savedLightWatts, savedProduct] = await Promise.all([
-            lightWatts.save(),
-            product.save()
-        ]);
-        
-        // ============ 6. LOGGING ============
+        // ============ 5. LOGGING ============
         const responseTime = Date.now() - startTime;
         console.log(`[INFO] LightWatts created successfully:`, {
             lightWattsId: savedLightWatts._id,
-            productId: savedProduct._id,
             watts: sanitizedWatts,
             type: sanitizedTypeName,
             responseTime: `${responseTime}ms`,
@@ -89,23 +70,19 @@ router.post('/lightWatts', async (req, res) => {
             timestamp: new Date().toISOString()
         });
         
-        // ============ 7. SUCCESS RESPONSE ============
+        // ============ 6. SUCCESS RESPONSE ============
         res.status(201).json({ 
             success: true,
-            message: 'LightWatts and Product created successfully',
+            message: 'LightWatts created successfully',
             data: {
                 lightWatts: {
                     id: savedLightWatts._id,
                     watts: savedLightWatts.watts,
                     typeName: savedLightWatts.typeName,
+                    price: savedLightWatts.price,
+                    quantity: savedLightWatts.quantity,
+                    parts: savedLightWatts.parts,
                     createdAt: savedLightWatts.createdAt
-                },
-                product: {
-                    id: savedProduct._id,
-                    name: savedProduct.name,
-                    type: savedProduct.type,
-                    price: savedProduct.price,
-                    stock: savedProduct.stock
                 }
             },
             metadata: {
@@ -115,7 +92,7 @@ router.post('/lightWatts', async (req, res) => {
         });
         
     } catch (err) {
-        // ============ 8. ERROR HANDLING ============
+        // ============ 7. ERROR HANDLING ============
         const responseTime = Date.now() - startTime;
         
         // Log error for debugging
@@ -162,7 +139,7 @@ router.post('/lightWatts', async (req, res) => {
         }
         
         // Generic error response
-        res.status(500).json({ 
+        return res.status(500).json({ 
             success: false,
             message: process.env.NODE_ENV === 'production' 
                 ? 'Internal server error. Please try again later.'
@@ -236,11 +213,17 @@ router.patch('/lightWatts', async(req, res)=>{
         
         // Validate quantity
         if (isNaN(parsedQuantity)) {
-            throw new Error(`Invalid quantity for part "${partsName}": ${quantity}`);
+            return res.status(404).json({ 
+                success: false,
+                message: `Invalid quantity for part "${partsName}": ${quantity}`
+            });
         }
         
         if (parsedQuantity < 0) {
-            throw new Error(`Quantity cannot be negative for part "${partsName}"`);
+            return res.status(404).json({ 
+                success: false,
+                message: `Quantity cannot be negative for part "${partsName}"` 
+            });
         }
         
         return {
@@ -335,16 +318,16 @@ router.patch('/lightWatts', async(req, res)=>{
         data: updatedLightWatts,
         summary: {
             before: lightWatts.parts.map(p => ({ 
-                name: p.partsName, 
+                partsName: p.partsName, 
                 quantity: p.quantity 
             })),
             operation: arithType,
-            changes: parts.map(p => ({ 
-                name: p.partsName, 
+            changedQuantity: parts.map(p => ({ 
+                partsName: p.partsName, 
                 [arithType]: p.quantity 
             })),
             after: updatedLightWatts.parts.map(p => ({ 
-                name: p.partsName, 
+                partsName: p.partsName, 
                 quantity: p.quantity 
             }))
         }

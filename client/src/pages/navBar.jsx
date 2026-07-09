@@ -19,7 +19,7 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
   const navigate = useNavigate();
 
   const userDepartment = localStorage.getItem("userDepartment");
-  const userRole = localStorage.getItem("userRole");
+  const jobRole = localStorage.getItem("jobRole");
   const userName = localStorage.getItem("name") || "User";
 
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -49,28 +49,28 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
       icon: <PackageCheckIcon size={20} />,
       label: "Finishing Goods",
       path: "/finishedGoods",
-      showFor: ["Admin", "Manager", "Assembler", "Inventory", "HR", "Assist-Accountant"],
+      showFor: ["Admin", "Manager", "Finishing Goods Store keeper", "HR", "Assist-Accountant"],
       badge: null,
     },
     {
       icon: <Repeat2Icon size={20} />,
       label: "Parts Inventory",
       path: "/inventory",
-      showFor: ["Admin", "Inventory", "Assist-Accountant"],
+      showFor: ["Admin", "Componant Parts Store keeper", "Assist-Accountant"],
       badge: null,
     },
-    {
-      icon: <BookCheck size={20} />,
-      label: "Production Reports",
-      path: "/reports",
-      showFor: ["Admin", "Manager", "Assist-Accountant"],
-      badge: null,
-    },
+    // {
+    //   icon: <BookCheck size={20} />,
+    //   label: "Production Reports",
+    //   path: "/reports",
+    //   showFor: ["Admin", "Manager", "Assist-Accountant"],
+    //   badge: null,
+    // },
     {
       icon: <UserCheck size={20} />,
       label: "Attendance",
-      path: "/Attendence",
-      showFor: ["Admin", "Manager", "Assembler", "HR"],
+      path: "/attendance",
+      showFor: ["Admin", "Manager", "Assembler", "HR", "Assist-Accountant"],
       badge: null,
     },
     {
@@ -83,12 +83,12 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
   ];
 
   const filteredItems = navItems.filter((item) =>
-    item.showFor.includes(userDepartment)
+    item.showFor.includes(jobRole)
   );
 
   // Get role badge color
   const getRoleBadgeColor = () => {
-    switch (userDepartment) {
+    switch (jobRole) {
       case "Admin":
         return "bg-red-500/20 text-red-300 border-red-500/30";
       case "Manager":
@@ -328,6 +328,7 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
               >
                 Logout
               </button>
+              
             </div>
           </div>
         </div>

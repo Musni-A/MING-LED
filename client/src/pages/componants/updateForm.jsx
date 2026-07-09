@@ -2,6 +2,7 @@ import { useState } from "react"
 import toast from "react-hot-toast"
 import { updateLightWatts } from "../../api/lightAPI"
 import { Loader } from 'lucide-react';
+import { createPartsHistory } from "../../api/partsHistory";
 
 export default function UpdateForm({getWatt ,setShowUpdateForm, selectedWattsId, arithType, selectedType, selectedWatts, fetchData}) {
 
@@ -9,7 +10,6 @@ export default function UpdateForm({getWatt ,setShowUpdateForm, selectedWattsId,
     const [loading, setLoading] = useState(false)
 
     const selectWatt = selectedWatts.find(watts =>watts.watts === getWatt )
-    console.log(selectWatt)
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -30,6 +30,8 @@ export default function UpdateForm({getWatt ,setShowUpdateForm, selectedWattsId,
                 parts: updateForm,
                 arithType: arithType
             })
+            const partsHistoryResponse = await createPartsHistory(response.data);
+            console.log(partsHistoryResponse.data)
             fetchData()
             toast.success(response.data.message)
             // setShowUpdateForm(false)

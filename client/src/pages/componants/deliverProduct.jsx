@@ -260,6 +260,7 @@ const WideTableComponent = ({ setShowDeliveryHistory, showDeliveryHistory }) => 
 
       {/* Table Container 1 */}
       <div
+       className='h-full'
         style={{
           backgroundColor: '#fff',
           borderRadius: '16px',
@@ -268,292 +269,209 @@ const WideTableComponent = ({ setShowDeliveryHistory, showDeliveryHistory }) => 
           overflow: 'hidden',
         }}
       >
-        <div style={{ overflowX: 'auto', maxWidth: '100%', maxHeight: 'calc(100vh - 320px)', position: 'relative' }}>
-          <table style={{ 
-  borderCollapse: 'separate', 
-  borderSpacing: 0, 
-  minWidth: 'max-content', 
-  fontSize: '13px', 
-  width: '100%',
-  fontFamily: 'system-ui, -apple-system, sans-serif'
-}}>
-  <thead>
-    <tr>
-      {/* Fixed Column 1: Invoice Number */}
-      <th
-        className={selectedArithType === 'sale' ? '' : 'hidden'}
-        style={{
-          padding: '16px 20px',
-          backgroundColor: '#f8fafc',
-          position: 'sticky',
-          left: 0,
-          top: 0,
-          zIndex: 4,
-          minWidth: '120px',
-          textAlign: 'left',
-          fontWeight: 700,
-          color: '#1e293b',
-          borderBottom: '2px solid #e2e8f0',
-          borderRight: '2px solid #e2e8f0',
-          fontSize: '12px',
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-        }}
-      >
-        <div className="flex items-center gap-2">
-          <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          Invoice #
-        </div>
-      </th>
-      
-      {/* Fixed Column 2: Distributor */}
-      <th
-        className={selectedArithType === 'sale' ? '' : 'hidden'}
-        style={{
-          padding: '16px 20px',
-          backgroundColor: '#f8fafc',
-          position: 'sticky',
-          left: '120px',
-          top: 0,
-          zIndex: 3,
-          minWidth: '140px',
-          textAlign: 'left',
-          fontWeight: 700,
-          color: '#1e293b',
-          borderBottom: '2px solid #e2e8f0',
-          borderRight: '2px solid #e2e8f0',
-          fontSize: '12px',
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-        }}
-      >
-        <div className="flex items-center gap-2">
-          <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-          </svg>
-          Distributor
-        </div>
-      </th>
-      
-      {/* Fixed Column 3: Date */}
-      <th
-        style={{
-          padding: '16px 20px',
-          backgroundColor: '#f8fafc',
-          position: 'sticky',
-          left: selectedArithType === 'sale' ? '260px' : '0px',
-          top: 0,
-          zIndex: 3,
-          minWidth: '120px',
-          fontWeight: 700,
-          color: '#1e293b',
-          borderBottom: '2px solid #e2e8f0',
-          borderRight: '2px solid #e2e8f0',
-          fontSize: '12px',
-          textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-          textAlign: 'left',
-        }}
-      >
-        <div className="flex items-center gap-2">
-          <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          Date
-        </div>
-      </th>
-      
-      {/* Dynamic Watt Columns */}
-      {lightWatts.map((watts, idx) => (
-        <th 
-          className={`hover:bg-indigo-50 cursor-pointer transition-colors ${watts.watts === 'All watts' ? 'hidden' : ''}`}
-          key={idx}
-          onMouseEnter={() => setHoveredCol(idx)}
-          onMouseLeave={() => setHoveredCol(null)}
-          style={{
-            padding: '16px 12px',
-            backgroundColor: hoveredCol === idx ? '#eef2ff' : '#f8fafc',
-            whiteSpace: 'nowrap',
-            fontWeight: 700,
-            color: '#1e293b',
-            borderBottom: '2px solid #e2e8f0',
-            position: 'sticky',
-            top: 0,
-            zIndex: 1,
-            minWidth: '100px',
-            textAlign: 'center',
-            transition: 'all 0.2s ease',
-            fontSize: '13px',
-          }}
+        <div className="overflow-x-auto relative" style={{ maxHeight: 'calc(100vh - 220px)' }}>
+  <table className="w-full min-w-max border-separate" style={{ borderSpacing: 0, fontSize: '13px' }}>
+    <thead className="sticky top-0 z-10">
+      <tr>
+        {/* Fixed Column 1: Invoice Number */}
+        <th
+          className={`${selectedArithType === 'sale' ? '' : 'hidden'} sticky left-0 z-20 bg-slate-50 px-5 py-4 text-left border-b-2 border-r-2 border-slate-200 min-w-[120px]`}
+          style={{ left: 0, top: 0 }}
         >
-          <div className="flex flex-col items-center gap-1">
-            <span className="bg-gradient-to-r from-indigo-600 to-indigo-700 bg-clip-text text-transparent font-black text-base">
-              {watts.watts}
-            </span>
-            <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
-              {watts.typeName}
-            </span>
+          <div className="flex items-center gap-2">
+            <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span className="font-bold text-xs uppercase tracking-wide text-slate-700">Invoice #</span>
           </div>
         </th>
-      ))}
-    </tr>
-  </thead>
-  
-  <tbody>
-    {paginatedData.map((row, rowIndex) => {
-      const isEven = rowIndex % 2 === 0;
-      return (
-        <tr
-          key={row._id || rowIndex}
-          onMouseEnter={() => setHoveredRow(rowIndex)}
-          onMouseLeave={() => setHoveredRow(null)}
-          className="group transition-colors duration-200"
-          style={{
-            backgroundColor: hoveredRow === rowIndex ? '#f8fafc' : isEven ? '#ffffff' : '#fafcff',
-          }}
+        
+        {/* Fixed Column 2: Distributor */}
+        <th
+          className={`${selectedArithType === 'sale' ? '' : 'hidden'} sticky bg-slate-50 px-5 py-4 text-left border-b-2 border-r-2 border-slate-200 min-w-[140px]`}
+          style={{ left: '120px', top: 0, zIndex: 19 }}
         >
-          {/* Invoice Number Cell */}
-          <td
-            className={selectedArithType === 'sale' ? '' : 'hidden'}
-            style={{
-              padding: '16px 20px',
-              textAlign: 'left',
-              fontWeight: 600,
-              color: '#1e293b',
-              borderBottom: '1px solid #e2e8f0',
-              borderRight: '2px solid #e2e8f0',
-              backgroundColor: hoveredRow === rowIndex ? '#f8fafc' : isEven ? '#ffffff' : '#fafcff',
-              position: 'sticky',
-              left: 0,
-              zIndex: 2,
-            }}
-          >
-            <span className="inline-flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-              <span className="font-mono text-sm font-semibold">#{row.invoiceNumber}</span>
-            </span>
-          </td>
-          
-          {/* Distributor Cell */}
-          <td
-            className={selectedArithType === 'sale' ? '' : 'hidden'}
-            style={{
-              padding: '16px 20px',
-              textAlign: 'left',
-              fontWeight: 500,
-              color: '#475569',
-              borderBottom: '1px solid #e2e8f0',
-              borderRight: '2px solid #e2e8f0',
-              backgroundColor: hoveredRow === rowIndex ? '#f8fafc' : isEven ? '#ffffff' : '#fafcff',
-              position: 'sticky',
-              left: '120px',
-              zIndex: 1,
-            }}
-          >
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 rounded-full text-xs font-medium text-slate-700">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              {row.distributor}
-            </span>
-          </td>
-          
-          {/* Date Cell */}
-          <td
-            style={{
-              padding: '16px 20px',
-              textAlign: 'left',
-              fontWeight: 500,
-              color: '#475569',
-              borderBottom: '1px solid #e2e8f0',
-              borderRight: '2px solid #e2e8f0',
-              backgroundColor: hoveredRow === rowIndex ? '#f8fafc' : isEven ? '#ffffff' : '#fafcff',
-              position: 'sticky',
-              left: selectedArithType === 'sale' ? '260px' : '0px',
-              top: 0,
-              zIndex: 2,
-            }}
-          >
-            <span className="inline-flex items-center gap-1.5 text-xs text-slate-600">
-              <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              {new Date(row.createdAt).toLocaleDateString('en-US', { 
-                year: 'numeric', 
-                month: 'short', 
-                day: 'numeric' 
-              })}
-            </span>
-          </td>
-          
-          {/* Quantity Cells */}
-          {lightWatts.map((watts, idx) => {
-            const quantity = getProductQuantity(row, watts);
-            const status = getStockStatusColor(quantity);
-            return (
-              <td
-                className={`hover:bg-indigo-50/30 cursor-pointer transition-all duration-200 ${watts.watts === 'All watts' ? 'hidden' : ''}`}
-                key={idx}
-                onMouseEnter={() => setHoveredCol(idx)}
-                onMouseLeave={() => setHoveredCol(null)}
-                style={{
-                  padding: '16px 12px',
-                  textAlign: 'center',
-                  fontWeight: 600,
-                  backgroundColor: hoveredCol === idx ? '#fefce8' : 'transparent',
-                  borderBottom: '1px solid #e2e8f0',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                {quantity > 0 ? (
-                  <div className="inline-flex flex-col items-center gap-1">
-                    <span
-                      className="inline-flex items-center justify-center min-w-[48px] px-3 py-1.5 rounded-full font-bold text-sm shadow-sm transition-transform hover:scale-105"
-                      style={{
-                        backgroundColor: status.bg,
-                        color: status.color,
-                      }}
-                    >
-                      {quantity}
-                    </span>
-                    <span className="text-[10px] text-slate-400">units</span>
-                  </div>
-                ) : (
-                  <div className="inline-flex flex-col items-center gap-1">
-                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-50 text-slate-300">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                      </svg>
-                    </span>
-                  </div>
-                )}
-              </td>
-            );
-          })}
-        </tr>
-      );
-    })}
-
-    {filteredData.length === 0 && (
-      <tr>
-        <td colSpan={lightWatts.length + 3} style={{ padding: '80px 20px', textAlign: 'center' }}>
-          <div className="flex flex-col items-center justify-center gap-4">
-            <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center">
-              <svg className="w-10 h-10 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-              </svg>
-            </div>
-            <div className="text-center">
-              <div className="text-lg font-semibold text-slate-600 mb-1">No delivery records found</div>
-              <div className="text-sm text-slate-400">Try adjusting your search or filters to see results</div>
-            </div>
+          <div className="flex items-center gap-2">
+            <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+            <span className="font-bold text-xs uppercase tracking-wide text-slate-700">Distributor</span>
           </div>
-        </td>
+        </th>
+        
+        {/* Fixed Column 3: Date */}
+        <th
+          className="sticky bg-slate-50 px-5 py-4 text-left border-b-2 border-r-2 border-slate-200 min-w-[120px]"
+          style={{ left: selectedArithType === 'sale' ? '260px' : '0px', top: 0, zIndex: 18 }}
+        >
+          <div className="flex items-center gap-2">
+            <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span className="font-bold text-xs uppercase tracking-wide text-slate-700">Date</span>
+          </div>
+        </th>
+        
+        {/* Dynamic Watt Columns */}
+        {lightWatts.map((watts, idx) => (
+          <th 
+            key={idx}
+            onMouseEnter={() => setHoveredCol(idx)}
+            onMouseLeave={() => setHoveredCol(null)}
+            className={`
+              ${watts.watts === 'All watts' ? 'hidden' : ''}
+              sticky top-0 z-10 px-3 py-4 text-center border-b-2 border-slate-200 min-w-[100px] transition-all duration-200
+              ${hoveredCol === idx ? 'bg-indigo-50' : 'bg-slate-50'}
+              hover:bg-indigo-50 cursor-pointer
+            `}
+          >
+            <div className="flex flex-col items-center gap-1">
+              <span className="bg-gradient-to-r from-indigo-600 to-indigo-700 bg-clip-text text-transparent font-black text-base">
+                {watts.watts}
+              </span>
+              <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
+                {watts.typeName}
+              </span>
+            </div>
+          </th>
+        ))}
+        
+        {/* Total Value Column */}
+        <th className="sticky top-0 z-10 bg-indigo-100 px-3 py-4 text-center border-b-2 border-indigo-200 min-w-[120px]">
+          <div className="flex flex-col items-center gap-1">
+            <span className="font-black text-base text-indigo-700">Total Value</span>
+            <span className="text-[10px] font-medium text-indigo-500 uppercase tracking-wider">(LKR)</span>
+          </div>
+        </th>
       </tr>
-    )}
-  </tbody>
-</table>
-        </div>
+    </thead>
+    
+    <tbody>
+      {paginatedData.map((row, rowIndex) => {
+        const isEven = rowIndex % 2 === 0;
+        const rowTotal = row.products?.reduce((sum, p) => sum + (p.quantity * p.price), 0) || 0;
+        
+        return (
+          <tr
+            key={row._id || rowIndex}
+            onMouseEnter={() => setHoveredRow(rowIndex)}
+            onMouseLeave={() => setHoveredRow(null)}
+            className={`group transition-colors duration-200 ${hoveredRow === rowIndex ? 'bg-slate-50' : isEven ? 'bg-white' : 'bg-slate-50/30'}`}
+          >
+            {/* Invoice Number Cell */}
+            <td
+              className={`${selectedArithType === 'sale' ? '' : 'hidden'} sticky left-0 z-10 px-5 py-4 border-b border-r-2 border-slate-200 bg-inherit`}
+            >
+              <div className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>
+                <div className="font-mono text-sm font-semibold text-slate-700">#{row.invoiceNumber}</div>
+              </div>
+            </td>
+            
+            {/* Distributor Cell */}
+            <td
+              className={`${selectedArithType === 'sale' ? '' : 'hidden'} sticky px-5 py-4 border-b border-r-2 border-slate-200 bg-inherit`}
+              style={{ left: '120px', zIndex: 9 }}
+            >
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 rounded-full text-xs font-medium text-slate-700">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                {row.distributor}
+              </span>
+            </td>
+            
+            {/* Date Cell */}
+            <td
+              className="sticky px-5 py-4 border-b border-r-2 border-slate-200 bg-inherit"
+              style={{ left: selectedArithType === 'sale' ? '260px' : '0px', zIndex: 9 }}
+            >
+              <span className="inline-flex items-center gap-1.5 text-xs text-slate-600">
+                <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                {new Date(row.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+              </span>
+            </td>
+            
+            {/* Quantity Cells */}
+            {lightWatts.map((watts, idx) => {
+              const product = row.products?.find(p => p.watts === watts.watts && p.typeName === watts.typeName);
+              const quantity = product?.quantity || 0;
+              const getStockStatusColor = (qty) => {
+                if (qty === 0) return { bg: '#fee2e2', color: '#dc2626' };
+                if (qty < 10) return { bg: '#fed7aa', color: '#ea580c' };
+                if (qty < 50) return { bg: '#fef08a', color: '#ca8a04' };
+                return { bg: '#dcfce7', color: '#16a34a' };
+              };
+              const status = getStockStatusColor(quantity);
+              
+              return (
+                <td
+                  key={idx}
+                  onMouseEnter={() => setHoveredCol(idx)}
+                  onMouseLeave={() => setHoveredCol(null)}
+                  className={`
+                    ${watts.watts === 'All watts' ? 'hidden' : ''}
+                    px-3 py-4 text-center border-b border-slate-200 transition-all duration-200
+                    ${hoveredCol === idx ? 'bg-amber-50' : 'bg-inherit'}
+                    hover:bg-indigo-50/30 cursor-pointer
+                  `}
+                >
+                  {quantity > 0 ? (
+                    <div className="inline-flex flex-col items-center gap-1">
+                      <span
+                        className="inline-flex items-center justify-center min-w-[48px] px-3 py-1.5 rounded-full font-bold text-sm shadow-sm transition-transform hover:scale-105"
+                        style={{ backgroundColor: status.bg, color: status.color }}
+                      >
+                        {quantity}
+                      </span>
+                      <span className="text-[10px] text-slate-400">units</span>
+                    </div>
+                  ) : (
+                    <div className="inline-flex flex-col items-center gap-1">
+                      <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-50 text-slate-300">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                        </svg>
+                      </span>
+                    </div>
+                  )}
+                </td>
+              );
+            })}
+            
+            {/* Total Value Cell */}
+            <td className="px-3 py-4 text-center border-b border-slate-200 bg-indigo-50/30 font-bold">
+              <div className="inline-flex flex-col items-center gap-1">
+                <span className="inline-flex items-center justify-center px-3 py-1.5 rounded-full font-bold text-sm bg-indigo-100 text-indigo-700">
+                  LKR {rowTotal.toLocaleString()}
+                </span>
+                <span className="text-[10px] text-indigo-400">total value</span>
+              </div>
+            </td>
+          </tr>
+        );
+      })}
+      {/* No Data Row */}
+      {filteredData.length === 0 && (
+        <tr>
+          <td colSpan={lightWatts.length + 4} className="px-5 py-20 text-center">
+            <div className="flex flex-col items-center justify-center gap-4">
+              <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center">
+                <svg className="w-10 h-10 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+              </div>
+              <div className="text-center">
+                <div className="text-lg font-semibold text-slate-600 mb-1">No delivery records found</div>
+                <div className="text-sm text-slate-400">Try adjusting your search or filters to see results</div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>
 
         {/* Pagination */}
         {totalPages > 1 && (

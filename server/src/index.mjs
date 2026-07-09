@@ -9,8 +9,8 @@ import lightTypeRouter from './routes/lightType.mjs'
 import lightWattsRouter from './routes/light.mjs'
 import attendenceRouter from './routes/attendanceRoutes.mjs'
 import compression from 'compression';
-import ProductRouter from './routes/product.mjs';
 import finishingGoodsHistoryRouter from './routes/finishingGoodsHistory.mjs';
+import PartsHistoryRouter from './routes/PartsHistory.mjs'
 
 const app = express();
 
@@ -36,11 +36,11 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api', userRouter);
-app.use('/api', lightTypeRouter)
-app.use('/api', lightWattsRouter)
-app.use('/api', attendenceRouter)
-app.use('/api', ProductRouter)
-app.use('/api', finishingGoodsHistoryRouter)
+app.use('/api', lightTypeRouter);
+app.use('/api', lightWattsRouter);
+app.use('/api', attendenceRouter);
+app.use('/api', finishingGoodsHistoryRouter);
+app.use('/api', PartsHistoryRouter);
 
 await mongoose.connect(process.env.MONGO_URI_CLOUD)
     .then(() => console.log("Data base connect successfully"))

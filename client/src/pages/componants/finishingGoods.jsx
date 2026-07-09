@@ -482,13 +482,9 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
                   </svg>
                 </div>
               </div>
-                <button onClick={()=>{setShowDeliveryHistory('block')}} className="px-4 py-2 bg-red-600/70 text-white rounded-lg hover:bg-red-800 sm:w-fit w-55 flex items-center gap-2 transition-all duration-300">
-                  <Package className="w-4 h-4" />
-                  Delivery history
-                </button>
                 <button onClick={()=>{setShowDeliveryHistory('block')}} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-900 sm:w-fit w-55 flex items-center gap-2 transition-all duration-300">
                   <History className="w-4 h-4" />
-                  Restock history
+                  Delivery / Restock history
                 </button>
             </div>
           </div>
@@ -549,7 +545,7 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
                     setSearchTerm(e.target.value);
                     setCurrentPage(1);
                   }}
-                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-10 pr-4 focus:outline-0 shadow-2xl outline-2 outline-slate-400 py-2 rounded-lg focus:ring-2 focus:ring-blue-500"
                 />
                 {searchTerm && (
                   <button
@@ -600,7 +596,7 @@ export default function ProductInventory({setShowDeliveryHistory, showDeliveryHi
                       const status = getStockStatus(product);
                       const StockIcon = status.icon;
                       return (
-                        <tr key={product._id} className={` ${product.typeName.includes('Common') && 'hidden'} hover:bg-gray-50 transition-colors`}>
+                        <tr key={product._id} className={` ${product.watts == 'All watts' && 'hidden'} hover:bg-gray-50 transition-colors`}>
                           <td className="px-6 py-4">
                             <div className="font-medium text-gray-900">{product.watts}</div>
                             <div className="text-xs text-gray-500">{product.typeName}</div>

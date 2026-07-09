@@ -9,7 +9,8 @@ import {
   PlusSquare, Plus, MinusSquareIcon, BookmarkPlus, LoaderCircle,
   Trash2Icon, Search, X, AlertTriangle, Package, CheckCircle,
   XCircle, Eye, Factory, Gauge, Zap, ChevronDown, LayoutGrid,
-  Table2, TrendingUp, Settings2, AlertCircle, DollarSign
+  Table2, TrendingUp, Settings2, AlertCircle, DollarSign,
+  History
 } from 'lucide-react';
 
 const TRANSLATIONS = {
@@ -22,7 +23,7 @@ const TRANSLATIONS = {
   deleting:             "Deleting...",
 };
 
-export default function PartsList() {
+export default function PartsList({setPartsHistoryViewerOpen ,partsHistoryViewerOpen}) {
   const [showTypeForm,    setTypeShowForm]    = useState(false);
   const [showForm,        setShowForm]        = useState(false);
   const [showUpdateForm,  setShowUpdateForm]  = useState(false);
@@ -278,9 +279,10 @@ export default function PartsList() {
               </div>
 
               {selectedType && (
-                <button
+                <button 
+                  disabled
                   onClick={() => setIsDeletingType(selectedType)}
-                  className="p-2.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-600 border border-red-100 transition-all"
+                  className="p-2.5 disabled:cursor-not-allowed rounded-xl bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-600 border border-red-100 transition-all"
                   title="Delete this light type">
                   <Trash2Icon className="w-4 h-4" />
                 </button>
@@ -295,6 +297,11 @@ export default function PartsList() {
                 className="bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 px-4 py-2.5 rounded-xl text-sm font-semibold shadow-sm hover:shadow transition-all flex items-center gap-2 cursor-pointer">
                 <BookmarkPlus className="w-4 h-4" />
                 <span className="hidden sm:inline">New Type</span>
+              </button>
+              <button onClick={()=>{
+                setPartsHistoryViewerOpen(true)
+              }}>
+                <History/>
               </button>
             </div>
           </div>
