@@ -48,7 +48,7 @@ const PartsHistoryViewer = ({ setPartsHistoryViewerOpen }) => {
   // Fetch all available dates
   const fetchAvailableDates = async () => {
     try {
-      const response = await axios.get('/api/parts-history/dates');
+      const response = await axios.get('/parts-history/dates');
       if (response.data.success) {
         setAvailableDates(response.data.dates);
       }
