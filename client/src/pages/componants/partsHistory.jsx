@@ -20,6 +20,7 @@ import {
   RefreshCw,
   Filter
 } from 'lucide-react';
+import { getPartsHistory, getPartsHistoryByDate } from '../../api/partsHistory';
 
 const PartsHistoryViewer = ({ setPartsHistoryViewerOpen }) => {
   const [data, setData] = useState(null);
@@ -33,7 +34,7 @@ const PartsHistoryViewer = ({ setPartsHistoryViewerOpen }) => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`/api/parts-history/${selectedDate}`);
+      const response = await getPartsHistoryByDate(selectedDate);
       if (response.data.success) {
         setData(response.data.data);
       }
@@ -48,7 +49,7 @@ const PartsHistoryViewer = ({ setPartsHistoryViewerOpen }) => {
   // Fetch all available dates
   const fetchAvailableDates = async () => {
     try {
-      const response = await axios.get('/parts-history/dates');
+      const response = await getPartsHistory();
       if (response.data.success) {
         setAvailableDates(response.data.dates);
       }
