@@ -10,7 +10,6 @@ export default function Settings(){
             <div className="flex-1 flex flex-col min-w-0">
                 <TopBar setSidebarOpen={setSidebarOpen}/>
                 <div className="h-full" onClick={() =>setSidebarOpen(false)}>
-                    <h1>Settings</h1>
                 </div>
             </div>
         </div>

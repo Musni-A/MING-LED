@@ -18,8 +18,8 @@ app.use(cors({
     origin: [
         'http://localhost:5173',
         'https://ming-led.onrender.com',
-        'https://ming-led.netlify.app',
-        'https://ming-led.vercel.app'
+        'http://localhost:5000'
+
         // ← add your network IP
     ]
 }))
