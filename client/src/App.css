@@ -78,3 +78,25 @@
   animation-delay: 0.2s;
 }
 
+/* Global typography scale down — reduces sizes of text, spacing, and Tailwind rem-based utilities */
+html {
+  font-size: 14px; /* default 16px -> smaller overall scale */
+}
+
+/* Optional: slightly smaller base body font for tighter UI */
+body {
+  font-size: 0.875rem; /* ~14px at 16px root; adjusted for our new root */
+  line-height: 1.3;
+}
+
+/* Headings: scale down common headings so large titles are less dominant */
+h1 { font-size: 1.75rem; }
+h2 { font-size: 1.25rem; }
+h3 { font-size: 1rem; }
+
+/* Compact badges/tags: reduce default padding and font-size for common inline labels */
+.compact-badge, .badge, .tag {
+  font-size: 0.65rem;
+  padding: 0.125rem 0.35rem;
+}
+

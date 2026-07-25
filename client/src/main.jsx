@@ -8,8 +8,6 @@ import LoginPage from './pages/loginPage.jsx';
 import Employee from './pages/employee.jsx';
 import Inventory from './pages/inventory.jsx';
 import Reports from './pages/reports.jsx';
-import Attendance from './pages/attendance.jsx';
-import Settings from './pages/settings.jsx';
 import UserProfile from './pages/userProfile.jsx';
 import FinishedGoods from './pages/finishedGoods.jsx'
 import WideTableComponent from './pages/componants/deliverProduct.jsx';
@@ -39,14 +37,6 @@ const router = createBrowserRouter([
   {
     path : '/reports',
     element : <Reports/>
-  },
-  {
-    path : '/Attendance',
-    element : <Attendance/>
-  },
-  {
-    path : '/settings',
-    element : <Settings/>
   },
   {
     path : '/profile',

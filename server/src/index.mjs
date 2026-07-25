@@ -1,27 +1,34 @@
-import 'dotenv/config'
+import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
-import cors from 'cors'
+import cors from 'cors';
 import session from "express-session";
 import passport from 'passport';
-import userRouter from './routes/users.mjs';
-import lightTypeRouter from './routes/lightType.mjs'
-import lightWattsRouter from './routes/light.mjs'
-import attendenceRouter from './routes/attendanceRoutes.mjs'
+import { Server } from 'socket.io';
+import http from 'http';
 import compression from 'compression';
+
+// Import existing routes
+import userRouter from './routes/users.mjs';
+import lightTypeRouter from './routes/lightType.mjs';
+import lightWattsRouter from './routes/light.mjs';
 import finishingGoodsHistoryRouter from './routes/finishingGoodsHistory.mjs';
-import PartsHistoryRouter from './routes/PartsHistory.mjs'
+import PartsHistoryRouter from './routes/PartsHistory.mjs';
+
 
 const app = express();
+const server = http.createServer(app);
 
+
+// =============== MIDDLEWARE ===============
 app.use(cors({
     origin: [
-        'https://ming-led.onrender.com',
         'http://localhost:5173',
+        'https://ming-led.onrender.com',
         'http://localhost:5000'
-
-    ]
-}))
+    ],
+    credentials: true
+}));
 
 app.use(compression());
 app.use(express.json());
@@ -30,22 +37,23 @@ app.use(session({
     saveUninitialized: false,
     resave: false,
     cookie: { maxAge: (60000 * 60) * 24 }
-}))
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+// =============== ROUTES ===============
 app.use('/api', userRouter);
 app.use('/api', lightTypeRouter);
 app.use('/api', lightWattsRouter);
-app.use('/api', attendenceRouter);
 app.use('/api', finishingGoodsHistoryRouter);
 app.use('/api', PartsHistoryRouter);
 
-await mongoose.connect(process.env.MONGO_URI_CLOUD)
-    .then(() => console.log("Data base connect successfully"))
-    .catch((err) => console.log(`Database error ${err}`))
 
-// ✅ Must be PORT not MONGO_URI
-app.listen(process.env.PORT || 5000, () => {
-    console.log(`App running in port ${process.env.PORT || 5000}`)
-})
+
+// =============== DATABASE CONNECTION ===============
+await mongoose.connect(process.env.MONGO_URI_CLOUD)
+    .then(() => console.log("✅ Database connected successfully"))
+    .catch((err) => console.log(`❌ Database error ${err}`));
+
+export default app;

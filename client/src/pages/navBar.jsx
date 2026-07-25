@@ -12,6 +12,10 @@ import {
   X,
   Bell,
   HelpCircle,
+  LayoutDashboard,
+  CalendarCheck,
+  Wifi,
+  TrendingUp
 } from "lucide-react";
 
 export default function NavBar({ sidebarOpen, setSidebarOpen }) {
@@ -23,6 +27,7 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
   const userName = localStorage.getItem("name") || "User";
 
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [deviceStatus, setDeviceStatus] = useState(null);
 
   // Close sidebar when clicking outside on mobile
   useEffect(() => {
@@ -36,15 +41,26 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
     };
   }, [sidebarOpen]);
 
+
   const handleLogout = () => {
     localStorage.removeItem("loggedIn");
     localStorage.removeItem("userDepartment");
-    localStorage.removeItem("userRole");
+    localStorage.removeItem("jobRole");
+    localStorage.removeItem("name");
     localStorage.removeItem("userName");
-    navigate("/");
+    navigate("/login");
   };
 
   const navItems = [
+    // Dashboard - Unified View
+    {
+      icon: <LayoutDashboard size={20} />,
+      label: "Dashboard",
+      path: "/",
+      showFor: ["Admin", "Manager", "HR", "Assist-Accountant", "Finishing Goods Store keeper", "Componant Parts Store keeper"],
+      badge: null,
+    },
+    // Stock Management - Finishing Goods
     {
       icon: <PackageCheckIcon size={20} />,
       label: "Finishing Goods",
@@ -52,6 +68,7 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
       showFor: ["Admin", "Manager", "Finishing Goods Store keeper", "HR", "Assist-Accountant"],
       badge: null,
     },
+    // Stock Management - Parts Inventory
     {
       icon: <Repeat2Icon size={20} />,
       label: "Parts Inventory",
@@ -59,26 +76,29 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
       showFor: ["Admin", "Componant Parts Store keeper", "Assist-Accountant"],
       badge: null,
     },
-    // {
-    //   icon: <BookCheck size={20} />,
-    //   label: "Production Reports",
-    //   path: "/reports",
-    //   showFor: ["Admin", "Manager", "Assist-Accountant"],
-    //   badge: null,
-    // },
+    // Stock Reports
     {
-      icon: <UserCheck size={20} />,
-      label: "Attendance",
-      path: "/attendance",
-      showFor: ["Admin", "Manager", "Assembler", "HR", "Assist-Accountant"],
+      icon: <TrendingUp size={20} />,
+      label: "Reports",
+      path: "/reports",
+      showFor: ["Admin", "Manager", "Assist-Accountant"],
       badge: null,
     },
+    // Employee Management
     {
       icon: <User size={20} />,
       label: "Employee",
       path: "/employee",
       showFor: ["Admin", "HR", "Assist-Accountant"],
       badge: null,
+    },
+    // Device Sync (Admin only)
+    {
+      icon: <Wifi size={20} />,
+      label: "Device Sync",
+      path: "/settings",
+      showFor: ["Admin", "Manager"],
+      badge: deviceStatus?.connected ? "Online" : "Offline",
     },
   ];
 
@@ -95,10 +115,12 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
         return "bg-blue-500/20 text-blue-300 border-blue-500/30";
       case "HR":
         return "bg-purple-500/20 text-purple-300 border-purple-500/30";
-      case "Inventory":
+      case "Finishing Goods Store keeper":
         return "bg-amber-500/20 text-amber-300 border-amber-500/30";
-      case "Assembler":
+      case "Componant Parts Store keeper":
         return "bg-emerald-500/20 text-emerald-300 border-emerald-500/30";
+      case "Assist-Accountant":
+        return "bg-cyan-500/20 text-cyan-300 border-cyan-500/30";
       default:
         return "bg-slate-500/20 text-slate-300 border-slate-500/30";
     }
@@ -118,7 +140,7 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
       <aside
         className={`
           fixed lg:static h-screen inset-y-0 left-0 z-30
-          w-64   bg-gradient-to-b from-blue-900 via-blue-950 to-slate-900
+          w-64 bg-gradient-to-b from-blue-900 via-blue-950 to-slate-900
           flex flex-col shrink-0
           transform transition-all duration-300 ease-in-out
           shadow-2xl border-r border-white/5
@@ -152,7 +174,7 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
                 MING
               </div>
               <div className="text-[#7b9fd4] text-[0.55rem] tracking-[0.25em] mt-1 font-semibold">
-                WORTH SPENDING
+                LED SYSTEMS
               </div>
             </div>
           </Link>
@@ -224,7 +246,13 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
                   </span>
 
                   {item.badge && (
-                    <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-yellow-500 text-yellow-950">
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      item.badge === "Online" 
+                        ? "bg-green-500 text-green-950"
+                        : item.badge === "Offline"
+                        ? "bg-red-500 text-red-950"
+                        : "bg-yellow-500 text-yellow-950"
+                    }`}>
                       {item.badge}
                     </span>
                   )}
@@ -259,15 +287,17 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
                 className="group-hover:scale-110 transition-transform"
               />
             </button>
-            <button
-              className="flex-1 flex items-center justify-center p-2.5 rounded-lg text-slate-300 hover:bg-white/10 hover:text-white transition-all duration-200 group"
-              title="Settings"
-            >
-              <Settings
-                size={18}
-                className="group-hover:rotate-90 transition-transform duration-300"
-              />
-            </button>
+            <Link to="/settings" className="flex-1">
+              <button
+                className="w-full flex items-center justify-center p-2.5 rounded-lg text-slate-300 hover:bg-white/10 hover:text-white transition-all duration-200 group"
+                title="Settings"
+              >
+                <Settings
+                  size={18}
+                  className="group-hover:rotate-90 transition-transform duration-300"
+                />
+              </button>
+            </Link>
             <button
               className="flex-1 flex items-center justify-center p-2.5 rounded-lg text-slate-300 hover:bg-white/10 hover:text-white transition-all duration-200 group"
               title="Help"
@@ -328,7 +358,6 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
               >
                 Logout
               </button>
-              
             </div>
           </div>
         </div>

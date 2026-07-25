@@ -6,10 +6,10 @@ const usersSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    username : {
-        type : String,
-        required : true,
-        trim : true,
+    username: {
+        type: String,
+        required: true,
+        trim: true,
         unique: true
     },
     age: {
@@ -30,19 +30,19 @@ const usersSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    department : {
-        type : String,
-        required : true
+    department: {
+        type: String,
+        required: true
     },
-    jobRole : {
-        type : String,
-        required : true
+    jobRole: {
+        type: String,
+        required: true
     },
     imageUrl: {
         type: String,
         default: null,
         trim: true
-    }
+    },
 }, { timestamps: true });
 
 export const User = mongoose.model('User', usersSchema);

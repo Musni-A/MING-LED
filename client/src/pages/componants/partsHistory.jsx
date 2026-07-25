@@ -27,7 +27,7 @@ const PartsHistoryViewer = ({ setPartsHistoryViewerOpen }) => {
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [expandedWatt, setExpandedWatt] = useState(null);
-  const [filterType, setFilterType] = useState('all'); // 'all', 'add', 'subtract'
+  const [filterType, setFilterType] = useState('add'); //'add', 'subtract'
   const [availableDates, setAvailableDates] = useState([]);
 
   // Fetch data for selected date
@@ -132,7 +132,7 @@ const PartsHistoryViewer = ({ setPartsHistoryViewerOpen }) => {
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 to-slate-100">
-      <div className="max-w-7xl mx-auto px-4 py-2">
+      <div className=" mx-auto px-4 py-2">
         
         {/* Header */}
         <div className="mb-8">
@@ -221,17 +221,6 @@ const PartsHistoryViewer = ({ setPartsHistoryViewerOpen }) => {
           
           {/* Filter Buttons */}
           <div className="flex gap-3 mt-4">
-            <button
-              onClick={() => setFilterType('all')}
-              className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
-                filterType === 'all'
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
-              }`}
-            >
-              <Filter className="w-4 h-4" />
-              All ({data?.partsOfWatts?.length || 0})
-            </button>
             <button
               onClick={() => setFilterType('add')}
               className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
@@ -322,7 +311,7 @@ const PartsHistoryViewer = ({ setPartsHistoryViewerOpen }) => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-slate-500">Total Value</p>
-                  <p className="text-2xl font-bold text-emerald-600">${stats.totalValue.toLocaleString()}</p>
+                  <p className="text-2xl font-bold text-emerald-600">${(stats.totalValue * stats.totalComponents).toLocaleString()}</p>
                 </div>
                 <div className="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center">
                   <TrendingUp className="w-5 h-5 text-emerald-600" />
