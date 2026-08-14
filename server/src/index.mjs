@@ -14,11 +14,15 @@ import lightTypeRouter from './routes/lightType.mjs';
 import lightWattsRouter from './routes/light.mjs';
 import finishingGoodsHistoryRouter from './routes/finishingGoodsHistory.mjs';
 import PartsHistoryRouter from './routes/PartsHistory.mjs';
+// import otpCodeSenderRouter from './routes/otpCodeSender.mjs';
 
 
 const app = express();
 const server = http.createServer(app);
 
+// app.listen(process.env.PORT || 5000, () => {
+//     console.log(`Server is running on port ${process.env.PORT || 5000}`);
+// });
 
 // =============== MIDDLEWARE ===============
 app.use(cors({
@@ -48,6 +52,8 @@ app.use('/api', lightTypeRouter);
 app.use('/api', lightWattsRouter);
 app.use('/api', finishingGoodsHistoryRouter);
 app.use('/api', PartsHistoryRouter);
+// app.use('/api', otpCodeSenderRouter);
+
 
 
 

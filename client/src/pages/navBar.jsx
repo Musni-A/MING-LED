@@ -48,7 +48,7 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
     localStorage.removeItem("jobRole");
     localStorage.removeItem("name");
     localStorage.removeItem("userName");
-    navigate("/login");
+    navigate("/ ");
   };
 
   const navItems = [
