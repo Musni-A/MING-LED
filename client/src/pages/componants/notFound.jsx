@@ -52,7 +52,7 @@ const NotFound = () => {
                 Oops! You've wandered off the path
               </h2>
               <p className="text-slate-500 text-sm max-w-md mx-auto">
-                The page you're looking for doesn't exist or has been moved. 
+                The page you are looking for doesn't exist or has been moved. 
                 Let's get you back on track!
               </p>
             </div>
