@@ -49,7 +49,7 @@ const NotFound = () => {
             {/* Message */}
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-slate-800 mb-2">
-                Oops! You've wandered off the path
+                Oops! You have wandered off the path
               </h2>
               <p className="text-slate-500 text-sm max-w-md mx-auto">
                 The page you are looking for doesn't exist or has been moved. 
