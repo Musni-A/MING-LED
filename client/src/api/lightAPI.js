@@ -9,4 +9,4 @@ export const updateLightWatts = (data) => API.patch('/lightWatts', data)
 export const deleteLightWatts = (id) => API.delete(`/lightWatts/${id}`)
 export const updateProductStock = (productId, data) => API.patch(`/updateProductStock/${productId}`, data);
 export const bulkUpdateProducts = (data) => API.patch('/bulkUpdateProducts', data);
-export const productPriceUpdate = (data) => API.patch('/productPriceUpdate', data);
+export const productPriceUpdate = (dta) => API.patch('/productPriceUpdate', dta);
