@@ -314,7 +314,7 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
         <div className="px-3 pb-6 pt-2 border-t border-white/10">
           <button
             onClick={() => setShowLogoutConfirm(true)}
-            className="w-full flex items-center gap-3 px-4 md:mb-0 mb-8 py-3 rounded-xl cursor-pointer text-slate-300 hover:text-white hover:bg-red-500/20 hover:border-red-500/30 border border-transparent transition-all duration-200 group"
+            className="w-full flex items-center gap-3 px-4 md:mb-0 mb-14 py-3 rounded-xl cursor-pointer text-slate-300 hover:text-white hover:bg-red-500/20 hover:border-red-500/30 border border-transparent transition-all duration-200 group"
           >
             <LogOut
               size={20}
