@@ -37,25 +37,7 @@ function App() {
             <span className="font-semibold">MING-LED System</span>
             <div className="w-10" />
           </header>
-
           <TopBar />
-          
-          <main className="flex-1 overflow-y-auto">
-            <Routes>
-              {/* Main Routes */}
-              <Route path="/" element={<Navigate to="/attendance" replace />} />
-              <Route path="/attendance" element={<Attendance />} />
-              <Route path="/employee" element={<Employee />} />
-              <Route path="/finishedGoods" element={<FinishedGoods />} />
-              <Route path="/inventory" element={<Inventory />} />
-              <Route path="/reports" element={<Reports />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/profile" element={<UserProfile />} />
-              
-              {/* Fallback */}
-              <Route path="*" element={<Navigate to="/attendance" replace />} />
-            </Routes>
-          </main>
         </div>
       </div>
     </Router>
