@@ -20,9 +20,9 @@ import PartsHistoryRouter from './routes/PartsHistory.mjs';
 const app = express();
 const server = http.createServer(app);
 
-// app.listen(process.env.PORT || 5000, () => {
-//     console.log(`Server is running on port ${process.env.PORT || 5000}`);
-// });
+app.listen(process.env.PORT || 5000, () => {
+    console.log(`Server is running on port ${process.env.PORT || 5000}`);
+});
 
 // =============== MIDDLEWARE ===============
 app.use(cors({
