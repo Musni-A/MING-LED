@@ -48,18 +48,12 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
     localStorage.removeItem("jobRole");
     localStorage.removeItem("name");
     localStorage.removeItem("userName");
-    navigate("/ ");
+    navigate("/");
   };
 
   const navItems = [
     // Dashboard - Unified View
-    {
-      icon: <LayoutDashboard size={20} />,
-      label: "Dashboard",
-      path: "/",
-      showFor: ["Admin", "Manager", "HR", "Assist-Accountant", "Finishing Goods Store keeper", "Componant Parts Store keeper"],
-      badge: null,
-    },
+    
     // Stock Management - Finishing Goods
     {
       icon: <PackageCheckIcon size={20} />,
