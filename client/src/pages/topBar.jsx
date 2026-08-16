@@ -6,7 +6,7 @@ export default function TopBar( {setSidebarOpen} ){
 
   const userName = localStorage.getItem('name')
   const userRole = localStorage.getItem('jobRole')
-  const firstLetterOfUserName = userName[0];
+  const firstLetterOfUserName = userName ? userName.charAt(0).toUpperCase() : '';
   const date = new Date();
 
 
