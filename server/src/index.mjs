@@ -4,21 +4,15 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import session from "express-session";
 import passport from 'passport';
-import { Server } from 'socket.io';
-import http from 'http';
 import compression from 'compression';
-
-// Import existing routes
 import userRouter from './routes/users.mjs';
 import lightTypeRouter from './routes/lightType.mjs';
 import lightWattsRouter from './routes/light.mjs';
 import finishingGoodsHistoryRouter from './routes/finishingGoodsHistory.mjs';
 import PartsHistoryRouter from './routes/PartsHistory.mjs';
-// import otpCodeSenderRouter from './routes/otpCodeSender.mjs';
 
 
 const app = express();
-const server = http.createServer(app);
 
 app.listen(process.env.PORT || 5000, () => {
     console.log(`Server is running on port ${process.env.PORT || 5000}`);
@@ -37,7 +31,7 @@ app.use(cors({
 app.use(compression());
 app.use(express.json());
 app.use(session({
-    secret: process.env.SESSION_SECRET || "fallback_secret",
+    secret: process.env.JWT_SECRET || "fallback_secret",
     saveUninitialized: false,
     resave: false,
     cookie: { maxAge: (60000 * 60) * 24 }
@@ -52,14 +46,10 @@ app.use('/api', lightTypeRouter);
 app.use('/api', lightWattsRouter);
 app.use('/api', finishingGoodsHistoryRouter);
 app.use('/api', PartsHistoryRouter);
-// app.use('/api', otpCodeSenderRouter);
-
-
-
 
 // =============== DATABASE CONNECTION ===============
 await mongoose.connect(process.env.MONGO_URI_CLOUD)
-    .then(() => console.log("✅ Database connected successfully"))
-    .catch((err) => console.log(`❌ Database error ${err}`));
+    .then(() => console.log("Database connected successfully"))
+    .catch((err) => console.log(`${err}`));
 
 export default app;

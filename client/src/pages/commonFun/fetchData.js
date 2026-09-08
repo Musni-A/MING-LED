@@ -1,6 +1,6 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { getAllUsers } from "../../api/userAPI"
-import { getLightType } from "../../api/lightTypeAPI";
+// import { getLightType } from "../../api/lightTypeAPI";
 import { getLightWatts } from "../../api/lightAPI";
 import { getFinishingGoodsHistory } from "../../api/finishingGoodsHistory";
 

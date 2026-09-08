@@ -55,7 +55,6 @@ passport.deserializeUser(async(id, done)=>{
 })
 
 router.post('/register', userValidation, async(req, res)=>{
-    console.log("Received registration data:", req.body);
     const error = validationResult(req);
     if(!error.isEmpty()){
         return res.status(400).json({Error : error.array()})
@@ -65,7 +64,8 @@ router.post('/register', userValidation, async(req, res)=>{
         body.password = hashPassword(body.password);
         const user = new User(body);
         const savedUser = await user.save();
-        res.status(200).json(savedUser)
+        const sendUser = await User.findById(savedUser._id).select('-password -username')
+        res.status(200).json(sendUser)
     }
     catch(err){
         res.status(500).json({message : 'Server error', error : err.message})
