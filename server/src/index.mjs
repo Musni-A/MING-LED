@@ -44,11 +44,11 @@ app.use(session({
     store: MongoStore.create({
         mongoUrl: process.env.MONGO_URI_CLOUD,
         collectionName: 'sessions',
-        ttl: 10,
+        ttl: 100,
         crypto: { secret: process.env.SESSION_SECRET }
     }),
     cookie: {
-        maxAge: 10 * 1000,  // expires after 10 seconds
+        maxAge: 100 * 1000,  // expires after 10 seconds
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax'
