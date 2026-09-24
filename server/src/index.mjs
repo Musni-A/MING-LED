@@ -48,7 +48,7 @@ app.use(session({
         crypto: { secret: process.env.SESSION_SECRET }
     }),
     cookie: {
-        maxAge: 100 * 1000,  // expires after 10 seconds
+        maxAge: 100 * 1000,
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax'

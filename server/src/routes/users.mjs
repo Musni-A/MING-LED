@@ -106,8 +106,9 @@ router.post('/register', userValidation, async (req, res) => {
 });
 
 // Other routes (users, users/:id, patch, delete) — unchanged
-router.get('/users', isAuthenticated, async (req, res) => {
+router.get('/users', async (req, res) => {
     try {
+        console.log(req.session.userId);
         const users = await User.find().select('-password -username');
         res.status(200).json(users);
     } catch (err) {
@@ -116,7 +117,7 @@ router.get('/users', isAuthenticated, async (req, res) => {
 });
 
 
-router.get('/users/:id', isAuthenticated, async (req, res) => {
+router.get('/users/:id', async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         if (!user) return res.json({ msg: "User not found" });
