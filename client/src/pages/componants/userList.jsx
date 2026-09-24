@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { fetchUserData } from "../commonFun/fetchData";
 import RegisterPage from "./registerUserPage";
+import {useNavigate} from "react-router-dom"
 
 const TRANSLATIONS = {
   deleteEmployee: "Delete Employee",
@@ -54,8 +55,10 @@ export default function UserList() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
+  const navigate = useNavigate();
+
   useEffect(() => {
-    fetchUserData(setLoading, setUsers, toast);
+    fetchUserData(setLoading, setUsers, toast, navigate);
   }, []);
 
   const confirmDelete = async (id) => {
@@ -74,7 +77,7 @@ export default function UserList() {
       const errorMessage = err?.response?.data?.message || err?.message || "Failed to delete user";
       toast.error(errorMessage);
     } finally {
-      fetchUserData(setLoading, setUsers, toast);
+      fetchUserData(setLoading, setUsers, toast, navigate);
       setDeleteId(null);
     }
   };
@@ -375,14 +378,13 @@ export default function UserList() {
                       {/* Name Card */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0d2145] to-[#254275] text-white font-bold text-sm flex items-center justify-center shrink-0 shadow-md shadow-[#0d2145]/5 hover:rotate-6 transition-all duration-300">
+                          <div className="w-10 h-10 rounded-xl cursor-pointer bg-gradient-to-br from-[#0d2145] to-[#254275] text-white font-bold text-sm flex items-center justify-center shrink-0 shadow-md shadow-[#0d2145]/5 hover:rotate-6 transition-all duration-300">
                             {getInitials(user.name)}
                           </div>
                           <div>
-                            <div className="font-semibold text-slate-800 text-sm group-hover:text-blue-600 transition-colors">
+                            <div className="font-semibold cursor-pointer text-slate-800 text-sm group-hover:text-blue-600 transition-colors">
                               {user.name}
                             </div>
-                            <div className="text-xs text-slate-400">@{user.username || "username"}</div>
                           </div>
                         </div>
                       </td>

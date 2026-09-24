@@ -1,7 +1,4 @@
-import axios from "axios";
-import { baseURL } from "./userAPI";
-
-export const API = axios.create({baseURL: baseURL});
+import { API } from "./userAPI";
 
 export const createLightType = (data)=> API.post('/lightType', data);
 export const getLightType = ()=> API.get('/lightType')

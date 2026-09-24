@@ -1,9 +1,10 @@
-import express from "express"
+import {Router} from "express"
 import { FinishingGoodsHistory } from "../mongoose/schema/finishingGoodsHistory.mjs";
+import { isAuthenticated } from "../middleware/auth.mjs";
 
-const router = express.Router();
+const router = Router();
 
-router.post( '/finishingGoodsHistory', async (req , res)=>{
+router.post( '/finishingGoodsHistory', isAuthenticated, async (req , res)=>{
     try{
         const data = req.body;
         const distributor = req.query.distributor;
@@ -115,7 +116,7 @@ router.post( '/finishingGoodsHistory', async (req , res)=>{
     }
 });
 
-router.get('/getFinishingGoodsHistory', async(req, res)=>{
+router.get('/getFinishingGoodsHistory', isAuthenticated, async(req, res)=>{
     try{
         const finishingGoodsHistory = await FinishingGoodsHistory.find();
         return res.status(200).json(finishingGoodsHistory)

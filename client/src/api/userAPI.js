@@ -2,9 +2,9 @@ import axios from 'axios';
 
 // 'http://localhost:5000/api'
 // ''https://ming-led-server.onrender.com/api''
-export const baseURL = 'https://ming-led-server.onrender.com/api';
+const baseURL = 'http://localhost:5000/api';
 
-export const API = axios.create({baseURL : baseURL});
+export const API = axios.create({ baseURL, withCredentials: true });
 
 export const createUser = (data) => API.post('/register', data);
 export const getUser = (data) => API.post('/login', data);
@@ -12,3 +12,4 @@ export const getAllUsers = () => API.get('/users')
 export const deleteUser = (id) => API.delete(`/users/${id}`)
 export const findUser = (id) => API.get(`/users/${id}`)
 export const updateUser = (id, data, upType) => API.patch(`/users/${id}`, {data, upType})
+export const loggedOut = () => API.post('/logout')

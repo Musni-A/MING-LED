@@ -3,8 +3,9 @@ import { getAllUsers } from "../../api/userAPI"
 // import { getLightType } from "../../api/lightTypeAPI";
 import { getLightWatts } from "../../api/lightAPI";
 import { getFinishingGoodsHistory } from "../../api/finishingGoodsHistory";
+import {handleLogout} from "./logout"
 
-export const fetchUserData = async (setLoading, setUsers, toast) =>{
+export const fetchUserData = async (setLoading, setUsers, toast, navigate) =>{
     getAllUsers()
       .then((res) => {
         setUsers(res.data);
@@ -14,6 +15,9 @@ export const fetchUserData = async (setLoading, setUsers, toast) =>{
         const errorMessage = err?.response?.data?.message || err?.message || "Failed to fetch users";
         toast.error(errorMessage);
         setLoading(false);
+        if (err.response && err.response.status === 401) {
+          handleLogout(navigate);
+        }
       });
 }
 

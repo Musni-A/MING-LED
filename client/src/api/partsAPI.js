@@ -1,7 +1,4 @@
-import axios from "axios";
-import { baseURL } from "./userAPI";
-
-export const API = axios.create({baseURL: baseURL});
+import { API } from "./userAPI";
 
 export const test = (testData)=> API.post('/test', testData)
 export const createParts = (data) => API.post('/parts', data)

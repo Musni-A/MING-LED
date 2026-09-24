@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
+import MongoStore from 'connect-mongo';
 import cors from 'cors';
 import session from "express-session";
 import passport from 'passport';
@@ -10,6 +11,8 @@ import lightTypeRouter from './routes/lightType.mjs';
 import lightWattsRouter from './routes/light.mjs';
 import finishingGoodsHistoryRouter from './routes/finishingGoodsHistory.mjs';
 import PartsHistoryRouter from './routes/PartsHistory.mjs';
+import cookieParser from 'cookie-parser'
+import { isAuthenticated } from './middleware/auth.mjs';
 
 
 const app = express();
@@ -28,19 +31,29 @@ app.use(cors({
     credentials: true
 }));
 
+app.use(cookieParser("Musni"))
 app.use(compression());
 app.use(express.json());
+
 app.use(session({
-    secret: process.env.JWT_SECRET || "fallback_secret",
-    saveUninitialized: false,
+    name: 'sessionId',
+    secret: process.env.SESSION_SECRET,
     resave: false,
-    cookie: { maxAge: (60000 * 60) * 24 } // 24 hours}
+    saveUninitialized: false,
+    rolling: true,
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGO_URI_CLOUD,
+        collectionName: 'sessions',
+        ttl: 10,
+        crypto: { secret: process.env.SESSION_SECRET }
+    }),
+    cookie: {
+        maxAge: 10 * 1000,  // expires after 10 seconds
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax'
+    }
 }));
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-// =============== ROUTES ===============
 app.use('/api', userRouter);
 app.use('/api', lightTypeRouter);
 app.use('/api', lightWattsRouter);

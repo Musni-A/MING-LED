@@ -2,6 +2,8 @@ import {response, Router} from 'express'
 import express from 'express'
 import { LightType } from '../mongoose/schema/lightType.mjs';
 import { body } from 'express-validator';
+import { isAuthenticated } from '../middleware/auth.mjs';
+
 
 const app = express();
 const router = Router();
@@ -9,7 +11,6 @@ const router = Router();
 router.post('/lightType',async (req,res)=>{
     try{
         const { body } = req;
-        console.log(body)
         const lightType = new LightType(body)
         const saveLight = await lightType.save()
         res.status(200).json({Msg : "Add success", saveLight})
@@ -19,7 +20,7 @@ router.post('/lightType',async (req,res)=>{
     }
 })
 
-router.get('/lightType', async(req, res)=>{
+router.get('/lightType', isAuthenticated, async(req, res)=>{
     try{
         const lightType = await LightType.find()
         res.status(200).json(lightType)
@@ -29,7 +30,7 @@ router.get('/lightType', async(req, res)=>{
     }
 })
 
-router.delete('/lightType/:id', async(req, res)=>{
+router.delete('/lightType/:id', isAuthenticated, async(req, res)=>{
     try{
         const id = req.params.id;
         if(!id){

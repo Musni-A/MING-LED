@@ -8,10 +8,9 @@ function LoginPage() {
   const navigate = useNavigate();
 
   
-  // ✅ Role-based routing function
+  // Role-based routing function
   const getDashboardRoute = (jobRole) => {
     const roleRoutes = {
-      'admin': '/finishedGoods',
       'manager': '/reports',
       'supervisor': '/employee',
       'Componant Parts Store keeper': '/inventory',
@@ -24,7 +23,7 @@ function LoginPage() {
     return roleRoutes[jobRole] || '/';
   };
   
-  // ✅ Redirect if already logged in
+  //  Redirect if already logged in
   useEffect(() => {
     const loggedIn = localStorage.getItem("loggedIn") === "true";
     if (loggedIn) {
@@ -47,7 +46,7 @@ function LoginPage() {
     try {
       const response = await getUser(form);
       const user = response.data.sendUser;
-      
+      console.log("User data received:", response.data);
       // Store user data
       localStorage.setItem("name", user.name);
       localStorage.setItem("jobRole", user.jobRole);
@@ -58,7 +57,7 @@ function LoginPage() {
       setLogin(false);
       
       if (response.data.loggedIn) {
-        // ✅ Navigate based on job role
+        // Navigate based on job role
         const dashboardRoute = getDashboardRoute(user.jobRole);
         navigate(dashboardRoute);
       }

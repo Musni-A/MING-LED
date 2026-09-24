@@ -17,6 +17,8 @@ import {
   Wifi,
   TrendingUp
 } from "lucide-react";
+import { handleLogout } from "./commonFun/logout";
+import {loggedOut} from "../api/userAPI"
 
 export default function NavBar({ sidebarOpen, setSidebarOpen }) {
   const location = useLocation();
@@ -27,7 +29,6 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
   const userName = localStorage.getItem("name") || "User";
 
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  const [deviceStatus, setDeviceStatus] = useState(null);
 
   // Close sidebar when clicking outside on mobile
   useEffect(() => {
@@ -42,14 +43,7 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
   }, [sidebarOpen]);
 
 
-  const handleLogout = () => {
-    localStorage.removeItem("loggedIn");
-    localStorage.removeItem("userDepartment");
-    localStorage.removeItem("jobRole");
-    localStorage.removeItem("name");
-    localStorage.removeItem("userName");
-    navigate("/");
-  };
+  
 
   const navItems = [
     // Dashboard - Unified View
@@ -92,7 +86,6 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
       label: "Device Sync",
       path: "/settings",
       showFor: ["Admin", "Manager"],
-      badge: deviceStatus?.connected ? "Online" : "Offline",
     },
   ];
 
@@ -176,14 +169,18 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
 
         {/* User Profile Card */}
         <div className="mx-4 mb-6 px-3 py-1 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm relative">
-          <div className="flex items-center gap-3">
-            <div className="relative">
+          <div className="flex items-center gap-1">
+            <div className="relative flex items-center justify-center">
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#e8192c] to-[#c0001f] flex items-center justify-center text-white font-bold text-sm shadow-lg">
                 {userName.charAt(0).toUpperCase()}
               </div>
-              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border border-blue-950" />
+              <span className="relative flex h-2 w-2 -left-2 top-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+              </span>
+              {/* <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border border-blue-950" /> */}
             </div>
-            <div className="flex flex-row justify-between w-60">
+            <div className="flex flex-row justify-between w-60 gap-2">
               <div className="text-white font-semibold text-sm truncate">
                 {userName}
               </div>
@@ -347,7 +344,7 @@ export default function NavBar({ sidebarOpen, setSidebarOpen }) {
                 Cancel
               </button>
               <button
-                onClick={handleLogout}
+                onClick={() => {handleLogout(navigate), loggedOut();}}
                 className="flex-1 px-4 py-2.5 rounded-lg bg-gradient-to-r from-red-600 to-red-700 text-white font-medium hover:from-red-700 hover:to-red-800 transition-all shadow-lg shadow-red-500/30"
               >
                 Logout

@@ -1,11 +1,13 @@
 import { Router } from "express";
 import { LightWatts } from "../mongoose/schema/lightWatts.mjs";
+import { isAuthenticated } from '../middleware/auth.mjs';
+
 
 const router = Router();
 
-router.post('/lightWatts', async (req, res) => {
+router.post('/lightWatts', isAuthenticated, async (req, res) => {
     const startTime = Date.now(); // Performance monitoring
-    
+
     try {
         // ============ 1. INPUT VALIDATION ============
         const { body } = req;
@@ -59,16 +61,6 @@ router.post('/lightWatts', async (req, res) => {
         
         // ============ 5. LOGGING ============
         const responseTime = Date.now() - startTime;
-        console.log(`[INFO] LightWatts created successfully:`, {
-            lightWattsId: savedLightWatts._id,
-            watts: sanitizedWatts,
-            type: sanitizedTypeName,
-            responseTime: `${responseTime}ms`,
-            ip: req.ip,
-            endpoint: req.originalUrl,
-            method: req.method,
-            timestamp: new Date().toISOString()
-        });
         
         // ============ 6. SUCCESS RESPONSE ============
         res.status(201).json({ 
@@ -94,17 +86,6 @@ router.post('/lightWatts', async (req, res) => {
     } catch (err) {
         // ============ 7. ERROR HANDLING ============
         const responseTime = Date.now() - startTime;
-        
-        // Log error for debugging
-        console.error(`[ERROR] Failed to create LightWatts:`, {
-            error: err.message,
-            stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
-            body: req.body,
-            responseTime: `${responseTime}ms`,
-            ip: req.ip,
-            endpoint: req.originalUrl,
-            timestamp: new Date().toISOString()
-        });
         
         // Handle specific MongoDB errors
         if (err.code === 11000) {
@@ -151,7 +132,7 @@ router.post('/lightWatts', async (req, res) => {
     }
 });
 
-router.get('/lightWatts', async(req, res)=>{
+router.get('/lightWatts', isAuthenticated, async(req, res)=>{
     try{
         const lightWatts = await LightWatts.find();
         res.status(200).json(lightWatts)
@@ -334,14 +315,6 @@ router.patch('/lightWatts', async(req, res)=>{
     });
 
     } catch (err) {
-        // Detailed error logging
-        console.error('Error in parts operation:', {
-            message: err.message,
-            stack: err.stack,
-            body: req.body,
-            timestamp: new Date().toISOString()
-        });
-
         // Handle specific MongoDB errors
         if (err.name === 'CastError') {
             return res.status(400).json({
@@ -435,9 +408,6 @@ router.delete('/lightWatts/:id', async (req, res) => {
         res.status(200).json(deletedWatts);
     } 
     catch(err) {
-        // ✅ Don't send the raw Error object - send a readable message
-        console.error('Error deleting lightWatts:', err);
-        
         // Send a clean error response
         res.status(400).json({ 
             message: err.message || 'Failed to delete lightWatts record',

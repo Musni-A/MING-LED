@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { PartsHistory } from '../mongoose/schema/partsHistory.mjs';
+import { isAuthenticated } from '../middleware/auth.mjs';
 
 const router = Router();
 
@@ -100,7 +101,7 @@ router.get('/parts-history/:date', async (req, res) => {
 });
 
 // Get all available dates
-router.get('/parts-history/dates', async (req, res) => {
+router.get('/parts-history/dates', isAuthenticated, async (req, res) => {
     try {
         const dates = await PartsHistory.find({}, 'date').sort({ date: -1 });
         res.json({
