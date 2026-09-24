@@ -15,6 +15,7 @@ export const fetchUserData = async (setLoading, setUsers, toast, navigate) =>{
         const errorMessage = err?.response?.data?.message || err?.message || "Failed to fetch users";
         toast.error(errorMessage);
         setLoading(false);
+        console.error("Error fetching users:", err);
         if (err.response && err.response.status === 401) {
           handleLogout(navigate);
         }
