@@ -44,7 +44,6 @@ router.post('/login', async (req, res) => {
             // Store user info in session
             req.session.userId = user._id.toString();
             req.session.name = user.name;
-
             // Save before responding
             await req.session.save(async (err) => {
                 if (err) return res.status(500).json({ message: "Session save failed" });
