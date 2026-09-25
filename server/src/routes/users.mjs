@@ -38,7 +38,7 @@ router.post('/login', async (req, res) => {
         }
 
         // 🔄 Regenerate session to prevent session fixation
-        req.session.regenerate((err) => {
+        await req.session.regenerate( async (err) => {
             if (err) return res.status(500).json({ message: "Session error" });
 
             // Store user info in session
@@ -46,7 +46,7 @@ router.post('/login', async (req, res) => {
             req.session.name = user.name;
 
             // Save before responding
-            req.session.save(async (err) => {
+            await req.session.save(async (err) => {
                 if (err) return res.status(500).json({ message: "Session save failed" });
 
                 const sendUser = await User.findById(user._id).select('-password -username');
