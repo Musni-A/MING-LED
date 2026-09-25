@@ -51,8 +51,7 @@ app.use(session({
         maxAge: 100 * 1000,
         httpOnly: true,
         secure: true,
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        sameSite: 'lax'
+        sameSite: 'none'
     }
 }));
 app.use('/api', userRouter);
