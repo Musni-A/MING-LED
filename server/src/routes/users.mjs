@@ -1,11 +1,9 @@
 import { Router } from "express";
-import express from "express";
 import { body, matchedData, validationResult } from "express-validator";
 import { User } from "../mongoose/schema/users.mjs";
 import { comparePassword, hashPassword } from "../util/helper.mjs";
 import { isAuthenticated } from "../middleware/auth.mjs";
 
-const app = express();
 const router = Router();
 
 const userValidation = [

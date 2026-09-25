@@ -1,11 +1,7 @@
-import {response, Router} from 'express'
-import express from 'express'
+import { Router} from 'express'
 import { LightType } from '../mongoose/schema/lightType.mjs';
-import { body } from 'express-validator';
 import { isAuthenticated } from '../middleware/auth.mjs';
 
-
-const app = express();
 const router = Router();
 
 router.post('/lightType',async (req,res)=>{
