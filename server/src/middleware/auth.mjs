@@ -5,7 +5,7 @@ export const isAuthenticated = (req, res, next) => {
     console.log("Session ID:", req.sessionID);
     console.log("Session:", req.session);
     console.log("userId:", req.session?.userId);
-    if (!req.session) {
+    if (!req.session || !req.session.userId) {
         return res.status(401).json({
             message: "You have been logged out. Please log in again.",
             code: "SESSION_EXPIRED",
