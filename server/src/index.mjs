@@ -43,14 +43,14 @@ app.use(session({
     store: MongoStore.create({
         mongoUrl: process.env.MONGO_URI_CLOUD,
         collectionName: 'sessions',
-        ttl: 100,
+        ttl: 24 * 60 * 60, // 1 day
         crypto: { secret: process.env.SESSION_SECRET }
     }),
     cookie: {
-        maxAge: 100 * 1000,
+        maxAge: 24 * 60 * 60 * 1000, // 1 day
         httpOnly: true,
-        secure: true,
-        sameSite: 'none'
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
     }
 }));
 app.use('/api', userRouter);

@@ -32,28 +32,34 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ message: "Invalid username or password" });
         }
 
-        const isMatch = comparePassword(password, user.password);
+        // ✅ await if comparePassword is async (bcrypt)
+        const isMatch = await comparePassword(password, user.password);
         if (!isMatch) {
             return res.status(401).json({ message: "Invalid username or password" });
         }
 
         // 🔄 Regenerate session to prevent session fixation
-        await req.session.regenerate( async (err) => {
+        req.session.regenerate((err) => {
             if (err) return res.status(500).json({ message: "Session error" });
 
-            // Store user info in session
+            // Store user info
             req.session.userId = user._id.toString();
             req.session.name = user.name;
+
             // Save before responding
-            await req.session.save(async (err) => {
+            req.session.save(async (err) => {
                 if (err) return res.status(500).json({ message: "Session save failed" });
 
-                const sendUser = await User.findById(user._id).select('-password -username');
-                return res.json({
-                    message: "Login successful",
-                    sendUser,
-                    loggedIn: true
-                });
+                try {
+                    const sendUser = await User.findById(user._id).select('-password -username');
+                    return res.json({
+                        message: "Login successful",
+                        sendUser,
+                        loggedIn: true
+                    });
+                } catch (findErr) {
+                    return res.status(500).json({ message: "Server error", error: findErr.message });
+                }
             });
         });
     } catch (err) {
@@ -92,7 +98,7 @@ router.post('/register', userValidation, async (req, res) => {
     }
     try {
         const body = matchedData(req);
-        body.password = hashPassword(body.password);
+        body.password = await hashPassword(body.password);
         const user = new User(body);
         const savedUser = await user.save();
         const sendUser = await User.findById(savedUser._id).select('-password -username');
@@ -102,15 +108,9 @@ router.post('/register', userValidation, async (req, res) => {
     }
 });
 
-router.get('/users', async (req, res) => {
+// Other routes (users, users/:id, patch, delete) — unchanged
+router.get('/users', isAuthenticated, async (req, res) => {
     try {
-        if (!req.session.userId) {
-            console.log("=== GET /users ===");
-            console.log("Session ID:", req.sessionID);
-            console.log("Session:", req.session);
-            console.log("userId:", req.session?.userId);
-            return res.status(401).json({ message: "Not logged in" });
-        }
         const users = await User.find().select('-password -username');
         res.status(200).json(users);
     } catch (err) {
@@ -118,16 +118,9 @@ router.get('/users', async (req, res) => {
     }
 });
 
-router.get('/users/:id', async (req, res) => {
+
+router.get('/users/:id', isAuthenticated, async (req, res) => {
     try {
-        
-        if (!req.session.userId) {
-            console.log("=== GET /users/:id ===");
-            console.log("Session ID:", req.sessionID);
-            console.log("Session:", req.session);
-            console.log("userId:", req.session?.userId);
-            return res.status(401).json({ message: "Not logged in" });
-        }
         const user = await User.findById(req.params.id);
         if (!user) return res.json({ msg: "User not found" });
         res.status(200).json(user);
@@ -144,7 +137,7 @@ router.patch('/users/:id', async (req, res) => {
         if (!user) return res.json({ msg: "User not found" });
 
         if (updates.upType === 'updatePassword') {
-            const compareResult = comparePassword(updates.data.currentPassword, user.password);
+            const compareResult = await comparePassword(updates.data.currentPassword, user.password);
             if (!compareResult) {
                 return res.json({ msg: "Current password is incorrect" });
             }
