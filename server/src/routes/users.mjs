@@ -102,9 +102,15 @@ router.post('/register', userValidation, async (req, res) => {
     }
 });
 
-// Other routes (users, users/:id, patch, delete) — unchanged
-router.get('/users', isAuthenticated, async (req, res) => {
+router.get('/users', async (req, res) => {
     try {
+        console.log("=== GET /users ===");
+        console.log("Session ID:", req.sessionID);
+        console.log("Session:", req.session);
+        console.log("userId:", req.session?.userId);
+        if (!req.session.userId) {
+            return res.status(401).json({ message: "Not logged in" });
+        }
         const users = await User.find().select('-password -username');
         res.status(200).json(users);
     } catch (err) {
@@ -112,9 +118,15 @@ router.get('/users', isAuthenticated, async (req, res) => {
     }
 });
 
-
-router.get('/users/:id', isAuthenticated, async (req, res) => {
+router.get('/users/:id', async (req, res) => {
     try {
+        console.log("=== GET /users/:id ===");
+        console.log("Session ID:", req.sessionID);
+        console.log("Session:", req.session);
+        console.log("userId:", req.session?.userId);
+        if (!req.session.userId) {
+            return res.status(401).json({ message: "Not logged in" });
+        }
         const user = await User.findById(req.params.id);
         if (!user) return res.json({ msg: "User not found" });
         res.status(200).json(user);
