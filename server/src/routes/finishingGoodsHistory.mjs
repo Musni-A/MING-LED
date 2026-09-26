@@ -118,6 +118,7 @@ router.post( '/finishingGoodsHistory', isAuthenticated, async (req , res)=>{
 
 router.get('/getFinishingGoodsHistory', isAuthenticated, async(req, res)=>{
     try{
+        console.log("User ID:", req.session.userId);
         const finishingGoodsHistory = await FinishingGoodsHistory.find();
         return res.status(200).json(finishingGoodsHistory)
     }

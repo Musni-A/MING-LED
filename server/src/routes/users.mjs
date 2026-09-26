@@ -111,6 +111,7 @@ router.post('/register', userValidation, async (req, res) => {
 // Other routes (users, users/:id, patch, delete) — unchanged
 router.get('/users', isAuthenticated, async (req, res) => {
     try {
+        console.log("User ID:", req.session.userId);
         const users = await User.find().select('-password -username');
         res.status(200).json(users);
     } catch (err) {
