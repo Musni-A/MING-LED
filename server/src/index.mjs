@@ -23,10 +23,7 @@ app.listen(process.env.PORT || 5000, () => {
 
 // =============== MIDDLEWARE ===============
 app.use(cors({
-    origin: [
-        'https://ming-led.onrender.com',
-        'http://localhost:5173',
-    ],
+    origin: process.env.NODE_ENV === 'production' ? 'https://ming-led.onrender.com' : 'http://localhost:3000',
     credentials: true
 }));
 
@@ -61,7 +58,7 @@ app.use('/api', PartsHistoryRouter);
 
 // =============== DATABASE CONNECTION ===============
 await mongoose.connect(process.env.MONGO_URI_CLOUD)
-    .then(() => console.log("Database connected successfully"+process.env.NODE_ENV))
+    .then(() => console.log("Database connected successfully"))
     .catch((err) => console.log(`${err}`));
 
 export default app;
