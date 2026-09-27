@@ -61,7 +61,7 @@ app.use('/api', PartsHistoryRouter);
 
 // =============== DATABASE CONNECTION ===============
 await mongoose.connect(process.env.MONGO_URI_CLOUD)
-    .then(() => console.log("Database connected successfully"))
+    .then(() => console.log("Database connected successfully"+process.env.NODE_ENV))
     .catch((err) => console.log(`${err}`));
 
 export default app;
