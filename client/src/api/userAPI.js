@@ -2,9 +2,9 @@ import axios from 'axios';
 
 // 'http://localhost:5000/api'
 // ''https://ming-led-server.onrender.com/api''
-const baseURL = 'https://ming-led-server.onrender.com/api';
+const baseURL = 'http://localhost:5000/api';
 
-export const API = axios.create({ baseURL, withCredentials: true, headers: { 'Content-Type': 'application/json' } });
+export const API = axios.create({ baseURL, withCredentials: true });
 
 export const createUser = (data) => API.post('/register', data);
 export const getUser = (data) => API.post('/login', data);
