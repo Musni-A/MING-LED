@@ -24,8 +24,6 @@ app.use(cors({
 app.use(cookieParser());
 app.use(compression());
 app.use(express.json());
-console.log("NODE_ENV:", process.env.NODE_ENV);
-console.log("SESSION_SECRET exists:", !!process.env.SESSION_SECRET);
 app.use(session({
     name: 'sessionId',
 
