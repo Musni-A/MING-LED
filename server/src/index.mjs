@@ -16,8 +16,8 @@ const app = express();
 
 app.use(cors({
     origin: process.env.NODE_ENV === 'production'
-        ? 'https://ming-led.onrender.com'
-        : 'http://localhost:5173',
+        ? ['https://ming-led.onrender.com', "https://ming-led.vercel.app" ]
+        : ['http://localhost:5173'],
     credentials: true
 }));
 
