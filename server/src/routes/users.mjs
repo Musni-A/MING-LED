@@ -40,13 +40,40 @@ router.post('/login', async (req, res) => {
         }
 
         // 3. Now regenerate session (only for valid users)
-        
+        req.session.regenerate((err) => {
+            if (err) {
+                console.error("Session regeneration error:", err);
+                return res.status(500).json({ message: "Session error" });
+            }
 
-        // 4. Store user info
-        req.session.userId = user._id.toString();
-        req.session.name = user.name;
+            // 4. Store user info
+            req.session.userId = user._id.toString();
+            req.session.name = user.name;
 
-           
+            // 5. Save session
+            req.session.save(async (err) => {
+                if (err) {
+                    console.error("Session save error:", err);
+                    return res.status(500).json({ message: "Session save failed" });
+                }
+
+                console.log("Session saved:", req.sessionID);
+
+                try {
+                    const sendUser = await User.findById(user._id)
+                        .select("-password -username");
+
+                    return res.status(200).json({
+                        message: "Login successful",
+                        sendUser,
+                        loggedIn: true
+                    });
+                } catch (findErr) {
+                    console.error("Find user error:", findErr);
+                    return res.status(500).json({ message: "Server error" });
+                }
+            });
+        });
 
     } catch (err) {
         return res.status(500).json({ message: 'Server error', error: err.message });
