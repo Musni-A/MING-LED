@@ -40,25 +40,45 @@ router.post('/login', async (req, res) => {
 
         // 🔄 Regenerate session to prevent session fixation
         req.session.regenerate((err) => {
-            if (err) return res.status(500).json({ message: "Session error" });
+            if (err) {
+                console.error("Session regeneration error:", err);
+                return res.status(500).json({
+                    message: "Session error"
+                });
+            }
 
-            // Store user info
+            // Store user information in the new session
             req.session.userId = user._id.toString();
             req.session.name = user.name;
 
-            // Save before responding
+            // Save the session before responding
             req.session.save(async (err) => {
-                if (err) return res.status(500).json({ message: "Session save failed" });
+                if (err) {
+                    console.error("Session save error:", err);
+                    return res.status(500).json({
+                        message: "Session save failed"
+                    });
+                }
+
+                console.log("Session saved successfully");
+                console.log("Session ID:", req.sessionID);
+                console.log("Session userId:", req.session.userId);
 
                 try {
-                    const sendUser = await User.findById(user._id).select('-password -username');
-                    return res.json({
+                    const sendUser = await User.findById(user._id)
+                        .select("-password -username");
+
+                    return res.status(200).json({
                         message: "Login successful",
                         sendUser,
                         loggedIn: true
                     });
                 } catch (findErr) {
-                    return res.status(500).json({ message: "Server error", error: findErr.message });
+                    console.error("Find user error:", findErr);
+
+                    return res.status(500).json({
+                        message: "Server error"
+                    });
                 }
             });
         });
