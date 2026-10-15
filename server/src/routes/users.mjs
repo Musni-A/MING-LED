@@ -27,42 +27,37 @@ router.post('/login', async (req, res) => {
     }
 
     try {
+        // 1. Find user
         const user = await User.findOne({ username });
         if (!user) {
             return res.status(401).json({ message: "Invalid username or password" });
         }
 
-        // ✅ await if comparePassword is async (bcrypt)
+        // 2. ✅ CHECK PASSWORD FIRST (before any session work)
         const isMatch = await comparePassword(password, user.password);
         if (!isMatch) {
             return res.status(401).json({ message: "Invalid username or password" });
         }
 
-        // 🔄 Regenerate session to prevent session fixation
+        // 3. Now regenerate session (only for valid users)
         req.session.regenerate((err) => {
             if (err) {
                 console.error("Session regeneration error:", err);
-                return res.status(500).json({
-                    message: "Session error"
-                });
+                return res.status(500).json({ message: "Session error" });
             }
 
-            // Store user information in the new session
+            // 4. Store user info
             req.session.userId = user._id.toString();
             req.session.name = user.name;
 
-            // Save the session before responding
+            // 5. Save session
             req.session.save(async (err) => {
                 if (err) {
                     console.error("Session save error:", err);
-                    return res.status(500).json({
-                        message: "Session save failed"
-                    });
+                    return res.status(500).json({ message: "Session save failed" });
                 }
 
-                console.log("Session saved successfully");
-                console.log("Session ID:", req.sessionID);
-                console.log("Session userId:", req.session.userId);
+                console.log("Session saved:", req.sessionID);
 
                 try {
                     const sendUser = await User.findById(user._id)
@@ -75,13 +70,11 @@ router.post('/login', async (req, res) => {
                     });
                 } catch (findErr) {
                     console.error("Find user error:", findErr);
-
-                    return res.status(500).json({
-                        message: "Server error"
-                    });
+                    return res.status(500).json({ message: "Server error" });
                 }
             });
         });
+
     } catch (err) {
         return res.status(500).json({ message: 'Server error', error: err.message });
     }

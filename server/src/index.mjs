@@ -26,9 +26,7 @@ app.use(compression());
 app.use(express.json());
 app.use(session({
     name: 'sessionId',
-
     secret: process.env.SESSION_SECRET,
-
     resave: false,
     saveUninitialized: false,
     rolling: true,
@@ -36,15 +34,17 @@ app.use(session({
     store: MongoStore.create({
         mongoUrl: process.env.MONGO_URI_CLOUD,
         collectionName: 'sessions',
-        ttl: 24 * 60 * 60
+        ttl: 24 * 60 * 60,
+        autoRemove: 'native',
+        touchAfter: 24 * 3600,
     }),
 
     cookie: {
         maxAge: 24 * 60 * 60 * 1000,
-        httpOnly: process.env.NODE_ENV === 'production',
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
-    }
+        httpOnly: true,                                          // always
+        secure: process.env.NODE_ENV === 'production',           // HTTPS only in prod
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    },
 }));
 
 app.use('/api', userRouter);
