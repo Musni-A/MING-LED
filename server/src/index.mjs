@@ -16,7 +16,7 @@ import PartsHistoryRouter from './routes/PartsHistory.mjs';
 const app = express();
 
 // 🔑 CRITICAL for Render / Heroku / any proxy
-app.set('trust proxy', 1);
+// app.set('trust proxy', 1);
 
 // 1. Connect DB first
 await mongoose.connect(process.env.MONGO_URI_CLOUD)
