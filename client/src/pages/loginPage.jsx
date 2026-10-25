@@ -132,7 +132,8 @@ function LoginPage() {
                 {/* Submit */}
                 <button 
                   type="submit"
-                  className="flex justify-center items-center mt-2 w-full py-3 rounded-lg text-white font-bold text-base cursor-pointer border-none bg-gradient-to-r from-[#e8192c] to-[#c0001f] shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 hover:scale-105 active:scale-95 transition-all"
+                  disabled={login}
+                  className={`flex justify-center disabled:opacity-50 disabled:cursor-not-allowed items-center mt-2 w-full py-3 rounded-lg text-white font-bold text-base cursor-pointer border-none bg-gradient-to-r from-[#e8192c] to-[#c0001f] shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 hover:scale-105 active:scale-95 transition-all`}
                 >
                   { !login ? "Login →" : <LoaderIcon className="animate-spin" size={20} /> }
                 </button>

@@ -61,6 +61,28 @@ app.use(session({
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     },
 }));
+// app.use(session({
+//     name: 'sessionId',
+
+//     secret: process.env.SESSION_SECRET,
+
+//     resave: false,
+//     saveUninitialized: false,
+//     rolling: true,
+
+//     store: MongoStore.create({
+//         mongoUrl: process.env.MONGO_URI_CLOUD,
+//         collectionName: 'sessions',
+//         ttl: 24 * 60 * 60
+//     }),
+
+//     cookie: {
+//         maxAge: 24 * 60 * 60 * 1000,
+//         httpOnly: process.env.NODE_ENV === 'production',
+//         secure: process.env.NODE_ENV === 'production',
+//         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+//     }
+// }));
 
 // 5. Routes
 app.use('/api', userRouter);
